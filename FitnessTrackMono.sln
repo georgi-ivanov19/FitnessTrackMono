@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitnessTrackMono.Server", "Server\FitnessTrackMono.Server.csproj", "{8ADFA1AB-F0F2-41CF-AB54-AA3C9B5927BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FitnessTrackMono.Server", "Server\FitnessTrackMono.Server.csproj", "{8ADFA1AB-F0F2-41CF-AB54-AA3C9B5927BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitnessTrackMono.Client", "Client\FitnessTrackMono.Client.csproj", "{307B7C66-ABD1-40C4-B80F-731904A0F84A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FitnessTrackMono.Client", "Client\FitnessTrackMono.Client.csproj", "{307B7C66-ABD1-40C4-B80F-731904A0F84A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitnessTrackMono.Shared", "Shared\FitnessTrackMono.Shared.csproj", "{9B8FCA5C-8B75-4BD3-89A8-2B07591B6EE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FitnessTrackMono.Shared", "Shared\FitnessTrackMono.Shared.csproj", "{9B8FCA5C-8B75-4BD3-89A8-2B07591B6EE9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

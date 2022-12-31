@@ -1,0 +1,69 @@
+﻿@page "/measurements"
+@using FitnessTrackMono.Shared.Models;
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+@inject HttpClient Http;
+@inject IMeasurementsService MeasurementService
+@inject NavigationManager NavManager
+<PageTitle> Measurements </PageTitle>
+<h3>Measurements</h3>
+@*@if (loading)
+{
+   <h3>Loading...</h3>
+}
+else
+{*@
+<table class="table">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Value</th>
+            <th>Unit</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var measurement in MeasurementService.Measurements)
+        {
+            <tr>
+                <td>@measurement.Type</td>
+                <td>@measurement.Value</td>
+                <td>@measurement.Unit</td>
+                <td>@measurement.Date.ToShortDateString() </td>
+                <td>
+                    <button class="btn btn-primary" @onclick="(() => ShowMeasurement(measurement.Id))">
+                        <i class="oi oi-pencil"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<button class="btn btn-primary" @onclick="CreateNewMeasurement"> Add </button>
+@*}*@
+
+@code {
+    private bool loading = true;
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await MeasurementService.GetMeasurements();
+            //loading = false;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+
+    }
+
+    void ShowMeasurement(int id)
+    {
+        NavManager.NavigateTo($"measurement/{id}");
+    }
+
+    void CreateNewMeasurement()
+    {
+        NavManager.NavigateTo("measurement");
+    }
+}

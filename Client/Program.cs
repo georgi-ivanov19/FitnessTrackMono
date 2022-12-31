@@ -1,4 +1,5 @@
 using FitnessTrackMono.Client;
+using FitnessTrackMono.Client.Services.MeasurementsService;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -12,7 +13,7 @@ builder.Services.AddHttpClient("FitnessTrackMono.ServerAPI", client => client.Ba
 
 // Supply HttpClient instances that include access tokens when making requests to the server project
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("FitnessTrackMono.ServerAPI"));
-
+builder.Services.AddScoped<IMeasurementsService, MeasurementsService>();
 builder.Services.AddApiAuthorization();
 
 await builder.Build().RunAsync();
