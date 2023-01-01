@@ -1,5 +1,6 @@
 ﻿using FitnessTrackMono.Shared.Models;
 using Microsoft.AspNetCore.Components;
+using System.Diagnostics.Metrics;
 using System.Net.Http.Json;
 
 namespace FitnessTrackMono.Client.Services.MeasurementsService
@@ -58,6 +59,7 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
         public async Task DeleteMeasurement(int id)
         {
             await _http.DeleteAsync($"api/measurement/{id}");
+            Measurements.RemoveAt(Measurements.FindIndex(m => m.Id == id));
             _navManager.NavigateTo("measurements");
         }
     }

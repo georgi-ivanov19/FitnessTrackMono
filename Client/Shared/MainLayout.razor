@@ -1,11 +1,13 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="page">
+    <RadzenDialog />
     <div class="sidebar">
         <NavMenu />
     </div>
 
     <main>
+       
         <div class="top-row px-4 auth">
             <LoginDisplay />
             <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
@@ -13,6 +15,7 @@
 
         <article class="content px-4">
             @Body
+            
         </article>
     </main>
 </div>

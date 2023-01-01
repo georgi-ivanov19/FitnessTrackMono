@@ -4,6 +4,9 @@
 @inject HttpClient Http;
 @inject IMeasurementsService MeasurementService
 @inject NavigationManager NavManager
+@inject Radzen.DialogService DialogService
+
+
 <PageTitle> Measurements </PageTitle>
 <h3>Measurements</h3>
 @*@if (loading)
@@ -30,19 +33,25 @@ else
                 <td>@measurement.Unit</td>
                 <td>@measurement.Date.ToShortDateString() </td>
                 <td>
-                    <button class="btn btn-primary" @onclick="(() => ShowMeasurement(measurement.Id))">
+                    <button class="btn btn-primary" @onclick="(() => ShowForm(measurement.Id))">
                         <i class="oi oi-pencil"></i>
+                    </button>
+                </td>
+                <td>
+                    <button class="btn btn-danger" @onclick="(() => DeleteMeasurement(measurement.Id))">
+                        <i class="oi oi-delete"></i>
                     </button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-<button class="btn btn-primary" @onclick="CreateNewMeasurement"> Add </button>
-@*}*@
+<button class="btn btn-primary" @onclick="(() => ShowForm(null))"> Add </button>
 
 @code {
-    private bool loading = true;
+
+    private bool loading = true; 
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -57,13 +66,22 @@ else
 
     }
 
-    void ShowMeasurement(int id)
+    private async Task ShowForm(int? id)
     {
-        NavManager.NavigateTo($"measurement/{id}");
+        var title = id == null ? "Add Measurement" : "Edit Measurement";
+        await DialogService.OpenAsync<MeasurementForm>(title,
+        new Dictionary<string, object>() { { "Id", id } },
+        new Radzen.DialogOptions()
+            {
+                Width = "512px",
+                Resizable = true,
+                Draggable = true,
+                CloseDialogOnOverlayClick = true
+            }
+        );
     }
-
-    void CreateNewMeasurement()
+    private async Task DeleteMeasurement(int id)
     {
-        NavManager.NavigateTo("measurement");
+        await MeasurementService.DeleteMeasurement(id);
     }
 }
