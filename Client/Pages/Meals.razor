@@ -1,0 +1,91 @@
+﻿@page "/meals"
+@using FitnessTrackMono.Shared.Models;
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+@inject HttpClient Http;
+@inject IMealService MealService
+@inject NavigationManager NavManager
+@inject Radzen.DialogService DialogService
+
+
+<PageTitle> Meals </PageTitle>
+<h3>Meals</h3>
+@*@if (loading)
+{
+   <h3>Loading...</h3>
+}
+else
+{*@
+<table class="table">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Total Calories</th>
+            <th>Carbohydrates</th>
+            <th>Protein</th>
+            <th>Fats</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var meal in MealService.Meals)
+        {
+            <tr>
+                <td>@meal.Category</td>
+                <td>@meal.TotalCalories</td>
+                <td>@meal.Carbohydrates</td>
+                <td>@meal.Protein</td>
+                <td>@meal.Fats</td>
+                <td>@meal.Date.ToShortDateString() </td>
+                <td>
+                    <button class="btn btn-primary" @onclick="(() => ShowForm(meal.Id))">
+                        <i class="oi oi-pencil"></i>
+                    </button>
+                </td>
+                <td>
+                    <button class="btn btn-danger" @onclick="(() => DeleteMeal(meal.Id))">
+                        <i class="oi oi-delete"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<button class="btn btn-primary" @onclick="(() => ShowForm(null))"> Add </button>
+
+@code {
+
+    private bool loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await MealService.GetMeals();
+            //loading = false;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+
+    }
+
+    private async Task ShowForm(int? id)
+    {
+        var title = id == null ? "Add Meal" : "Edit Meal";
+        await DialogService.OpenAsync<MealForm>(title,
+        new Dictionary<string, object>() { { "Id", id } },
+        new Radzen.DialogOptions()
+            {
+                Width = "512px",
+                Resizable = true,
+                Draggable = true,
+                CloseDialogOnOverlayClick = true
+            }
+        );
+    }
+    private async Task DeleteMeal(int id)
+    {
+        await MealService.DeleteMeal(id);
+    }
+}

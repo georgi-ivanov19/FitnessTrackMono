@@ -1,0 +1,77 @@
+﻿@using FitnessTrackMono.Shared.Models;
+@inject IMealService MealService;
+
+@if (Id == null)
+{
+    <h3> Add Meal</h3>
+}
+else
+{
+    <h3> Edit Meal - @m.Id</h3>
+}
+
+<EditForm Model="m" OnSubmit="HandleSubmit">
+    <div>
+        <label for="category"> Category </label>
+        <InputSelect @bind-Value="m.Category" class="form-control">
+            <option value="Breakfast">Breakfast</option>
+            <option value="Lunch">Lunch</option>
+            <option value="Dinner">Dinner</option>
+            <option value="Snack">Snack</option>
+        </InputSelect>
+        <label for="totalCals"> Total Calories </label>
+        <InputNumber id="totalCals" @bind-Value="m.TotalCalories" class="form-control"></InputNumber>
+        <label for="carbs"> Carbohydrates </label>
+        <InputNumber id="carbs" @bind-Value="m.Carbohydrates" class="form-control"></InputNumber>
+        <label for="protein"> Protein </label>
+        <InputNumber id="protein" @bind-Value="m.Protein" class="form-control"></InputNumber>
+        <label for="fats"> Protein </label>
+        <InputNumber id="fats" @bind-Value="m.Fats" class="form-control"></InputNumber>
+        <label for="date"> Date </label>
+        <InputDate id="date" @bind-Value="m.Date" class="form-control"></InputDate>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">@btnText</button>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+    private string btnText = string.Empty;
+    private Meal m = new Meal();
+
+    protected override async Task OnInitializedAsync()
+    {
+        btnText = Id == null ? "Create" : "Submit";
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id == null)
+        {
+            m.Date = DateTime.Today;
+        }
+        else
+        {
+            m = await MealService.GetSingleMeal((int)Id);
+        }
+
+    }
+    async Task HandleSubmit()
+    {
+        if (Id == null)
+        {
+            await MealService.CreateMeal(m);
+        }
+        else
+        {
+            await MealService.UpdateMeal(m);
+        }
+    }
+
+    async Task DeleteHero()
+    {
+        await MealService.DeleteMeal(m.Id);
+    }
+}

@@ -19,6 +19,7 @@ namespace FitnessTrackMono.Server.Data
         {
             base.OnModelCreating(builder);
             builder.Entity<ApplicationUser>().Navigation(e => e.measurements).AutoInclude();
+            builder.Entity<ApplicationUser>().Navigation(e => e.meals).AutoInclude();
         }
 
         public DbSet<Measurement> Measurements => Set<Measurement>();
