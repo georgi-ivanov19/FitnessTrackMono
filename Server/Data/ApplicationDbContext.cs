@@ -22,5 +22,6 @@ namespace FitnessTrackMono.Server.Data
         }
 
         public DbSet<Measurement> Measurements => Set<Measurement>();
+        public DbSet<Meal> Meals => Set<Meal>();
     }
 }
