@@ -30,7 +30,7 @@ namespace FitnessTrackMono.Server.Controllers
             {
                 return NotFound();
             }
-            return Ok(user.routines);
+            return Ok(user.Routines);
         }
 
         [HttpGet("{id}")]
@@ -41,7 +41,7 @@ namespace FitnessTrackMono.Server.Controllers
             {
                 return NotFound();
             }
-            return Ok(user.routines.FirstOrDefault(r => r.Id == id));
+            return Ok(user.Routines.FirstOrDefault(r => r.Id == id));
         }
 
         [HttpPost]
@@ -73,7 +73,7 @@ namespace FitnessTrackMono.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteRoutine(int id)
         {
-            var dbRoutine = await _context.Routines.FirstOrDefaultAsync(m => m.Id == id);
+            var dbRoutine = await _context.Routines.FirstOrDefaultAsync(r => r.Id == id);
             if (dbRoutine == null)
             {
                 return NotFound("Routine Not Found");

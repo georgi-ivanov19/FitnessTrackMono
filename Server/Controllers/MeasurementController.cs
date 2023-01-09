@@ -30,7 +30,7 @@ namespace FitnessTrackMono.Server.Controllers
             {
                 return NotFound();
             }
-            return Ok(user.measurements);
+            return Ok(user.Measurements);
         }
 
         [HttpGet("{id}")]
@@ -41,7 +41,7 @@ namespace FitnessTrackMono.Server.Controllers
             {
                 return NotFound();
             }
-            return Ok(user.measurements.FirstOrDefault(m => m.Id == id));
+            return Ok(user.Measurements.FirstOrDefault(m => m.Id == id));
         }
 
         [HttpPost]
