@@ -18,13 +18,15 @@ namespace FitnessTrackMono.Server.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<ApplicationUser>().Navigation(e => e.measurements).AutoInclude();
-            builder.Entity<ApplicationUser>().Navigation(e => e.meals).AutoInclude();
-            builder.Entity<ApplicationUser>().Navigation(e => e.rountines).AutoInclude();
+            builder.Entity<ApplicationUser>().Navigation(e => e.Measurements).AutoInclude();
+            builder.Entity<ApplicationUser>().Navigation(e => e.Meals).AutoInclude();
+            builder.Entity<ApplicationUser>().Navigation(e => e.Routines).AutoInclude();
+            builder.Entity<Routine>().Navigation(e => e.Workouts).AutoInclude();
         }
 
         public DbSet<Measurement> Measurements => Set<Measurement>();
         public DbSet<Meal> Meals => Set<Meal>();
         public DbSet<Routine> Routines => Set<Routine>();
+        public DbSet<Workout> Workouts => Set<Workout>();
     }
 }
