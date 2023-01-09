@@ -8,9 +8,9 @@ namespace FitnessTrackMono.Client.Services.RoutineService
         // TODO: a list of workouts
 
         Task GetRoutines();
-        Task<Meal> GetSingleRoutine(int id);
-        Task CreateRoutine(Meal meal);
-        Task UpdateRoutine(Meal meal);
+        Task<Routine> GetSingleRoutine(int id);
+        Task CreateRoutine(Routine meal);
+        Task UpdateRoutine(Routine meal);
         Task DeleteRoutine(int id);
     }
 }

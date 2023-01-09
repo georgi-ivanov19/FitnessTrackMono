@@ -9,10 +9,10 @@ namespace FitnessTrackMono.Client.Services.RoutineService
 
     public class RoutineService : IRoutineService
     {
-
+        // a list of workouts
         private readonly HttpClient _http;
         private readonly NavigationManager _navManager;
-        List<Routine> Routines { get; set; } = new List<Routine>();
+        public List<Routine> Routines { get; set; } = new List<Routine>();
 
         public RoutineService(HttpClient http, NavigationManager navManager)
         {
@@ -20,7 +20,7 @@ namespace FitnessTrackMono.Client.Services.RoutineService
             _navManager = navManager;
         }
 
-        public Task CreateRoutine(Routine routine)
+        public async Task CreateRoutine(Routine routine)
         {
             var result = await _http.PostAsJsonAsync("api/routine", routine);
             var response = await result.Content.ReadFromJsonAsync<Routine>();
@@ -29,9 +29,11 @@ namespace FitnessTrackMono.Client.Services.RoutineService
             _navManager.NavigateTo("routines");
         }
 
-        public Task DeleteRoutine(int id)
+        public async Task DeleteRoutine(int id)
         {
-            throw new NotImplementedException();
+            await _http.DeleteAsync($"api/routine/{id}");
+            Routines.RemoveAt(Routines.FindIndex(r => r.Id == id));
+            _navManager.NavigateTo("routines");
         }
 
         public async Task GetRoutines()
@@ -43,16 +45,27 @@ namespace FitnessTrackMono.Client.Services.RoutineService
             }
         }
 
-        public Task<Meal> GetSingleRoutine(int id)
+        public async Task<Routine> GetSingleRoutine(int id)
         {
-            throw new NotImplementedException();
+            var result = await _http.GetFromJsonAsync<Routine>($"api/routine/{id}");
+            if (result != null)
+            {
+                return result;
+            }
+            throw new Exception("Routine not found");
         }
 
-        public Task UpdateRoutine(Meal meal)
+        public async Task UpdateRoutine(Routine routine)
         {
-            throw new NotImplementedException();
+            var result = await _http.PutAsJsonAsync($"api/routine/{routine.Id}", routine);
+            var response = await result.Content.ReadFromJsonAsync<Routine>();
+            // TODO: null check
+            int index = Routines.FindIndex(r => r.Id == routine.Id);
+            if (index != -1)
+                Routines[index] = routine;
+            _navManager.NavigateTo("meals");
         }
-        // a list of workouts
+       
 
         // Task GetRoutines();
         // Task<Meal> GetSingleRoutine(int id);
