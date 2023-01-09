@@ -2,6 +2,7 @@
 using FitnessTrackMono.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
+using System.Reflection.Metadata.Ecma335;
 
 namespace FitnessTrackMono.Client.Services.RoutineService
 {
@@ -9,11 +10,9 @@ namespace FitnessTrackMono.Client.Services.RoutineService
 
     public class RoutineService : IRoutineService
     {
-        // a list of workouts
         private readonly HttpClient _http;
         private readonly NavigationManager _navManager;
         public List<Routine> Routines { get; set; } = new List<Routine>();
-
         public RoutineService(HttpClient http, NavigationManager navManager)
         {
             _http = http;
@@ -31,14 +30,14 @@ namespace FitnessTrackMono.Client.Services.RoutineService
 
         public async Task DeleteRoutine(int id)
         {
-            await _http.DeleteAsync($"api/routine/{id}");
+            await _http.DeleteAsync($"api/routines/{id}");
             Routines.RemoveAt(Routines.FindIndex(r => r.Id == id));
             _navManager.NavigateTo("routines");
         }
 
         public async Task GetRoutines()
         {
-            var result = await _http.GetFromJsonAsync<List<Routine>>("api/routine");
+            var result = await _http.GetFromJsonAsync<List<Routine>>("api/routines");
             if (result != null)
             {
                 this.Routines = result;
@@ -47,7 +46,7 @@ namespace FitnessTrackMono.Client.Services.RoutineService
 
         public async Task<Routine> GetSingleRoutine(int id)
         {
-            var result = await _http.GetFromJsonAsync<Routine>($"api/routine/{id}");
+            var result = await _http.GetFromJsonAsync<Routine>($"api/routines/{id}");
             if (result != null)
             {
                 return result;
@@ -57,7 +56,7 @@ namespace FitnessTrackMono.Client.Services.RoutineService
 
         public async Task UpdateRoutine(Routine routine)
         {
-            var result = await _http.PutAsJsonAsync($"api/routine/{routine.Id}", routine);
+            var result = await _http.PutAsJsonAsync($"api/routines/{routine.Id}", routine);
             var response = await result.Content.ReadFromJsonAsync<Routine>();
             // TODO: null check
             int index = Routines.FindIndex(r => r.Id == routine.Id);
@@ -65,12 +64,10 @@ namespace FitnessTrackMono.Client.Services.RoutineService
                 Routines[index] = routine;
             _navManager.NavigateTo("meals");
         }
-       
-
-        // Task GetRoutines();
-        // Task<Meal> GetSingleRoutine(int id);
-        // Task CreateRoutine(Meal meal);
-        // Task UpdateRoutine(Meal meal);
-        // Task DeleteRoutine(int id);
+        
+        public List<Workout> GetWorkouts(int routineId)
+        {
+            return Routines[routineId].Workouts;
+        }
     }
 }
