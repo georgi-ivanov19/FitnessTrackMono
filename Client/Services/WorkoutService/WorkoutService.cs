@@ -1,4 +1,5 @@
-﻿using FitnessTrackMono.Shared.Models;
+﻿using FitnessTrackMono.Client.Pages;
+using FitnessTrackMono.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
 using static System.Net.WebRequestMethods;
@@ -51,9 +52,15 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
             }
         }
 
-        public Task UpdateWorkout(Workout workout)
+        public async Task UpdateWorkout(Workout workout)
         {
-            throw new NotImplementedException();
+            var result = await _http.PutAsJsonAsync($"api/workouts/{workout.Id}", workout);
+            var response = await result.Content.ReadFromJsonAsync<Workout>();
+            // TODO: null check
+            int index = Workouts.FindIndex(w => w.Id == workout.Id);
+            if (index != -1)
+                Workouts[index] = workout;
+            _navManager.NavigateTo("routines");
         }
     }
 }

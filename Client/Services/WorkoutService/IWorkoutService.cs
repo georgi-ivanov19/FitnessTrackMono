@@ -12,6 +12,6 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
         Task UpdateWorkout(Workout workout);
         Task DeleteWorkout(int id);
 
-        //get excercises
+        //TODO: get excercises
     }
 }
