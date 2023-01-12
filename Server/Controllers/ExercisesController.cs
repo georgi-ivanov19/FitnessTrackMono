@@ -43,7 +43,7 @@ namespace FitnessTrackMono.Server.Controllers
         [HttpGet("GetExercise/{id}")]
         public async Task<ActionResult<Exercise>> GetSingleWorkout(int id)
         {
-            var exercise = await _context.Workouts.FirstOrDefaultAsync(e => e.Id == id);
+            var exercise = await _context.Exercises.FirstOrDefaultAsync(e => e.Id == id);
             if (exercise == null)
             {
                 return NotFound("Exercise not found");
@@ -66,7 +66,7 @@ namespace FitnessTrackMono.Server.Controllers
             var dbExercise = await _context.Exercises.FirstOrDefaultAsync(ex => ex.Id == id);
             if (dbExercise == null)
             {
-                return NotFound("Workout Not Found");
+                return NotFound("Exercise Not Found");
             }
             dbExercise.WorkoutId = exercise.WorkoutId;
             dbExercise.DefaultNumberOfSets = exercise.DefaultNumberOfSets;
@@ -84,7 +84,7 @@ namespace FitnessTrackMono.Server.Controllers
             var dbExercise = await _context.Exercises.FirstOrDefaultAsync(ex => ex.Id == id);
             if (dbExercise == null)
             {
-                return NotFound("Workout Not Found");
+                return NotFound("Exercise Not Found");
             }
 
             _context.Exercises.Remove(dbExercise);

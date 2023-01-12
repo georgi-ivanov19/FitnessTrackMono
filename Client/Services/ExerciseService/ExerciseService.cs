@@ -53,8 +53,8 @@ namespace FitnessTrackMono.Client.Services.ExerciseService
 
         public async Task UpdateExercise(Exercise ex)
         {
-            var result = await _http.PutAsJsonAsync($"api/workouts/{ex.Id}", ex);
-            var response = await result.Content.ReadFromJsonAsync<Workout>();
+            var result = await _http.PutAsJsonAsync($"api/Exercises/{ex.Id}", ex);
+            var response = await result.Content.ReadFromJsonAsync<Exercise>();
             // TODO: null check
             int index = Exercises.FindIndex(ex => ex.Id == ex.Id);
             if (index != -1)
