@@ -1,0 +1,26 @@
+﻿@page "/routines"
+@using FitnessTrackMono.Shared.Models;
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+@using FitnessTrackMono.Client.Services.RoutineService;
+@inject HttpClient Http;
+@inject IRoutineService RoutineService;
+@inject NavigationManager NavManager;
+@inject Radzen.DialogService DialogService;
+
+<h3>Routines</h3>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await RoutineService.GetRoutines();
+            //loading = false;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+}
