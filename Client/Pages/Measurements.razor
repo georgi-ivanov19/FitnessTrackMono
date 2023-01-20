@@ -11,11 +11,21 @@
 <PageTitle> Measurements </PageTitle>
 <h3>Measurements</h3>
 @*@if (loading)
-{
-   <h3>Loading...</h3>
-}
-else
-{*@
+    {
+    <h3>Loading...</h3>
+    }
+    else
+    {*@
+
+<RadzenChart>
+    <RadzenLineSeries Smooth="true" Data="@MeasurementService.Measurements" CategoryProperty="Date" Title="Weight" ValueProperty="Value" RenderingOrder="1">
+        @*<RadzenSeriesTrendLine Visible="@trend" Stroke="var(--rz-danger-dark)" LineType="LineType.Dashed" />
+        <RadzenSeriesMedianLine Visible="@median" Stroke="var(--rz-success-dark)" LineType="LineType.Dotted" />
+        <RadzenSeriesMeanLine Visible="@mean" Stroke="var(--rz-info-dark)" LineType="LineType.Dotted" />
+        <RadzenSeriesModeLine Visible="@mode" Stroke="var(--rz-warning-darker)" LineType="LineType.Dotted" />*@
+    </RadzenLineSeries>
+    
+</RadzenChart>
 <table class="table">
     <thead>
         <tr>
@@ -51,13 +61,13 @@ else
 
 @code {
 
-    private bool loading = true; 
+    private bool loading = true;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            await MeasurementService.GetMeasurements(); 
+            await MeasurementService.GetMeasurements();
             //loading = false;
         }
         catch (AccessTokenNotAvailableException exception)
@@ -85,4 +95,4 @@ else
     {
         await MeasurementService.DeleteMeasurement(id);
     }
-}
+    }

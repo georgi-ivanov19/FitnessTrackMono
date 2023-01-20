@@ -1,21 +1,35 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
+<div>
     <RadzenDialog />
-    <div class="sidebar">
-        <NavMenu />
-    </div>
 
-    <main>
-       
-        <div class="top-row px-4 auth">
-            <LoginDisplay />
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
+    @* <div class="col-md-3">
+    <NavMenu />
+    </div> *@
+    <RadzenLayout>
+        <RadzenHeader>
+            <div class="d-flex align-items-center">
+                <RadzenSidebarToggle Click="@(() => sidebar1Expanded = !sidebar1Expanded)" />
+                <RadzenLabel Text="FitnessTrackMono" />
+                <span class='ms-auto d-flex align-items-center'>
+                    <LoginDisplay />
+                </span>
+            </div>
+        </RadzenHeader>
+        <RadzenSidebar @bind-Expanded="@sidebar1Expanded">
+            <RadzenPanelMenu>
+                <RadzenPanelMenuItem Text="Dashboard" Icon="dashboard" Path="/"  Class="m-2"/>
+                <RadzenPanelMenuItem Text="Measurements" Icon="query_stats" Path="measurements" Class="m-2" />
+                <RadzenPanelMenuItem Text="Meals" Icon="restaurant" Path="meals" Class="m-2" />
+                <RadzenPanelMenuItem Text="Routines" Icon="fitness_center" Path="routines" Class="m-2" />
+            </RadzenPanelMenu>
+        </RadzenSidebar>
+        <RadzenBody>
             @Body
-            
-        </article>
-    </main>
+
+        </RadzenBody>
+    </RadzenLayout>
 </div>
+@code {
+    bool sidebar1Expanded = true;
+}
