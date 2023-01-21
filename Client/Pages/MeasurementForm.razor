@@ -2,21 +2,10 @@
 @using FitnessTrackMono.Client.Services.MeasurementsService;
 @inject IMeasurementsService MeasurementsService;
 
-@if (Id == null)
-{
-    <PageTitle> Add Measurement</PageTitle>
-    <h3> Add Measurement</h3>
-}
-else
-{
-    <PageTitle> Edit Measurement</PageTitle>
-    <h3> Edit Measurement - @m.Id</h3>
-}
-
 <EditForm Model="m" OnSubmit="HandleSubmit">
     <div>
         <label for="type"> Type </label>
-        <InputText id="type" @bind-Value="m.Type" class="form-control"></InputText>
+        <RadzenDropDown Placeholder="Type" id="type" Data=@measurementTypes @bind-Value="m.Type" class="form-control"></RadzenDropDown>
         <label for="value"> Value </label>
         <InputNumber id="value" @bind-Value="m.Value" class="form-control"></InputNumber>
         <label for="unit"> Unit </label>
@@ -32,8 +21,12 @@ else
 @code {
     [Parameter]
     public int? Id { get; set; }
+    [Parameter]
+    public string? DefaultType { get; set; }
+
     private string btnText = string.Empty;
     private Measurement m = new Measurement();
+    private string[] measurementTypes = { "Weight", "Waist", "Body fat" };
 
     protected override async Task OnInitializedAsync()
     {
@@ -44,6 +37,9 @@ else
     {
         if (Id == null)
         {
+            if (DefaultType != null)
+                m.Type = DefaultType;
+
             m.Date = DateTime.Today;
         }
         else

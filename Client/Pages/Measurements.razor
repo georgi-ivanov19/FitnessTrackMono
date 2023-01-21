@@ -1,4 +1,4 @@
-﻿@page "/measurements"
+@page "/measurements"
 @using FitnessTrackMono.Shared.Models;
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 @using FitnessTrackMono.Client.Services.MeasurementsService;
@@ -7,9 +7,7 @@
 @inject NavigationManager NavManager
 @inject Radzen.DialogService DialogService
 
-
 <PageTitle> Measurements </PageTitle>
-<h3>Measurements</h3>
 @*@if (loading)
     {
     <h3>Loading...</h3>
@@ -17,49 +15,62 @@
     else
     {*@
 
-<RadzenChart>
-    <RadzenLineSeries Smooth="true" Data="@MeasurementService.Measurements" CategoryProperty="Date" Title="Weight" ValueProperty="Value" RenderingOrder="1">
-        @*<RadzenSeriesTrendLine Visible="@trend" Stroke="var(--rz-danger-dark)" LineType="LineType.Dashed" />
-        <RadzenSeriesMedianLine Visible="@median" Stroke="var(--rz-success-dark)" LineType="LineType.Dotted" />
-        <RadzenSeriesMeanLine Visible="@mean" Stroke="var(--rz-info-dark)" LineType="LineType.Dotted" />
-        <RadzenSeriesModeLine Visible="@mode" Stroke="var(--rz-warning-darker)" LineType="LineType.Dotted" />*@
-    </RadzenLineSeries>
-    
-</RadzenChart>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Type</th>
-            <th>Value</th>
-            <th>Unit</th>
-            <th>Date</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var measurement in MeasurementService.Measurements)
-        {
-            <tr>
-                <td>@measurement.Type</td>
-                <td>@measurement.Value</td>
-                <td>@measurement.Unit</td>
-                <td>@measurement.Date.ToShortDateString() </td>
-                <td>
-                    <button class="btn btn-primary" @onclick="(() => ShowForm(measurement.Id))">
-                        <i class="oi oi-pencil"></i>
-                    </button>
-                </td>
-                <td>
-                    <button class="btn btn-danger" @onclick="(() => DeleteMeasurement(measurement.Id))">
-                        <i class="oi oi-delete"></i>
-                    </button>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-<button class="btn btn-primary" @onclick="(() => ShowForm(null))"> Add </button>
+<RadzenCard class="m-2">
 
+    <RadzenTabs @bind-SelectedIndex=@selectedIndex>
+
+        <Tabs>
+            @foreach (var type in measurementTypes)
+            {
+                <RadzenTabsItem Text=@type>
+                    @if (measurementsByType(type).Count() == 0)
+                    {
+                        <RadzenChart>
+                            <div>No Entries for this type of measurement!</div>
+                        </RadzenChart>
+                    }
+                    else
+                    {
+                        <RadzenChart class="mb-5">
+                            <RadzenLineSeries Smooth="false" Data="measurementsByType(type)" CategoryProperty="Date" Title=@type ValueProperty="Value">
+                                <ChildContent>
+                                    <RadzenMarkers MarkerType="MarkerType.Circle" Fill="#874EFE" StrokeWidth="1" Size="6" />
+                                </ChildContent>
+                            </RadzenLineSeries>
+                        </RadzenChart>
+
+                    }
+
+                    <RadzenText TextStyle="TextStyle.H5" class="d-inline"> Entries </RadzenText>
+                    <RadzenButton Click=@(args => ShowForm(null, type)) Icon="add" Size="Radzen.ButtonSize.Medium" ButtonStyle="Radzen.ButtonStyle.Primary" Class="rz-border-radius-10 rz-shadow-6" />
+
+                    <RadzenDataList WrapItems="false" AllowPaging="true" PageSize="5" Data="measurementsByType(type)" TItem="Measurement">
+                        <Template Context="measurement">
+                            <RadzenRow>
+                                <RadzenColumn Size="4" Class="d-inline">
+                                    <RadzenIcon Icon="calendar_today" Style="font-size: 16px" /><b>@measurement.Date.ToShortDateString()</b> -
+                                    <span><b>@measurement.Value</b>@measurement.Unit</span>
+                                </RadzenColumn>
+                                <RadzenColumn Size="4" Class="d-inline">
+                                    <RadzenButton Click=@(args => ShowForm(measurement.Id)) Icon="edit" Size="Radzen.ButtonSize.Small" ButtonStyle="Radzen.ButtonStyle.Secondary" Class="rz-border-radius-10 rz-shadow-6" />
+                                    <RadzenButton Click=@(args => DeleteMeasurement(measurement.Id)) Icon="delete" Size="Radzen.ButtonSize.Small" ButtonStyle="Radzen.ButtonStyle.Danger" Class="rz-border-radius-10 rz-shadow-6" />
+
+                                </RadzenColumn>
+                            </RadzenRow>
+
+                        </Template>
+                    </RadzenDataList>
+
+                </RadzenTabsItem>
+            }
+        </Tabs>
+    </RadzenTabs>
+</RadzenCard>
 @code {
+    private string[] measurementTypes = { "Weight", "Waist", "Body fat" };
+    int selectedIndex = 0;
+    private IEnumerable<Measurement> weightMeasurements = new List<Measurement>();
+    private IEnumerable<Measurement> bodyFatMeasurements = new List<Measurement>();
 
     private bool loading = true;
 
@@ -69,6 +80,7 @@
         {
             await MeasurementService.GetMeasurements();
             //loading = false;
+
         }
         catch (AccessTokenNotAvailableException exception)
         {
@@ -77,11 +89,23 @@
 
     }
 
-    private async Task ShowForm(int? id)
+    private IEnumerable<Measurement> measurementsByType(string type)
+    {
+        return MeasurementService.Measurements.Where(x => x.Type == type).OrderByDescending(x => x.Date);
+    }
+
+
+    void OnChange(int index)
+    {
+        Console.WriteLine($"Tab with index {index} was selected.");
+    }
+
+    private async Task ShowForm(int? id, string? type = null)
     {
         var title = id == null ? "Add Measurement" : "Edit Measurement";
+        Console.WriteLine(type);
         await DialogService.OpenAsync<MeasurementForm>(title,
-        new Dictionary<string, object>() { { "Id", id } },
+        new Dictionary<string, object>() { { "Id", id }, { "DefaultType", type } },
         new Radzen.DialogOptions()
             {
                 Width = "512px",
@@ -95,4 +119,4 @@
     {
         await MeasurementService.DeleteMeasurement(id);
     }
-    }
+}
