@@ -11,5 +11,6 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
         Task CreateMeasurement(Measurement measurement);
         Task UpdateMeasurement(Measurement measurement);
         Task DeleteMeasurement(int id);
+        IEnumerable<Measurement> GetMeasurementsByType(string type);
     }
 }

@@ -26,6 +26,11 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
             }
         }
 
+        public IEnumerable<Measurement> GetMeasurementsByType(string type)
+        {
+            return Measurements.Where(x => x.Type == type).OrderByDescending(x => x.Date);
+        }
+
         public async Task<Measurement> GetSingleMeasurement(int id)
         {
             var result = await _http.GetFromJsonAsync<Measurement>($"api/measurement/{id}");
