@@ -8,7 +8,9 @@
 @inject Radzen.DialogService DialogService
 
 <PageTitle> Measurements </PageTitle>
-@*@if (loading)
+
+@* TODO: LOADING SKELETON
+    @if (loading)
     {
     <h3>Loading...</h3>
     }
@@ -16,9 +18,7 @@
     {*@
 
 <RadzenCard class="m-2">
-
     <RadzenTabs @bind-SelectedIndex=@selectedIndex>
-
         <Tabs>
             @foreach (var type in measurementTypes)
             {
@@ -26,41 +26,42 @@
                     @if (measurementsByType(type).Count() == 0)
                     {
                         <RadzenChart>
-                            <div>No Entries for this type of measurement!</div>
+                            <RadzenLegend Visible="false" />
+                            <RadzenText TextStyle="TextStyle.H5" class="d-inline"> No entries for this measurement type </RadzenText>
+                            <RadzenButton Click=@(args => ShowForm(null, type)) Icon="add" Size="Radzen.ButtonSize.Medium" ButtonStyle="Radzen.ButtonStyle.Primary" Class="rz-border-radius-10 rz-shadow-6" />
                         </RadzenChart>
                     }
                     else
                     {
                         <RadzenChart class="mb-5">
+                            <RadzenLegend Visible="false" />
                             <RadzenLineSeries Smooth="false" Data="measurementsByType(type)" CategoryProperty="Date" Title=@type ValueProperty="Value">
                                 <ChildContent>
                                     <RadzenMarkers MarkerType="MarkerType.Circle" Fill="#874EFE" StrokeWidth="1" Size="6" />
+                                    <RadzenSeriesDataLabels />
                                 </ChildContent>
                             </RadzenLineSeries>
                         </RadzenChart>
+                        <RadzenText TextStyle="TextStyle.H5" class="d-inline"> Entries </RadzenText>
+                        <RadzenButton Click=@(args => ShowForm(null, type)) Icon="add" Size="Radzen.ButtonSize.Medium" ButtonStyle="Radzen.ButtonStyle.Primary" Class="rz-border-radius-10 rz-shadow-6" />
 
+                        <RadzenDataList WrapItems="false" AllowPaging="true" PageSize="5" Data="measurementsByType(type)" TItem="Measurement">
+                            <Template Context="measurement">
+                                <RadzenRow>
+                                    <RadzenColumn Size="4" Class="d-inline">
+                                        <RadzenIcon Icon="calendar_today" Style="font-size: 16px" /><b>@measurement.Date.ToShortDateString()</b> -
+                                        <span><b>@measurement.Value</b>@measurement.Unit</span>
+                                    </RadzenColumn>
+                                    <RadzenColumn Size="4" Class="d-inline">
+                                        <RadzenButton Click=@(args => ShowForm(measurement.Id)) Icon="edit" Size="Radzen.ButtonSize.Small" ButtonStyle="Radzen.ButtonStyle.Secondary" Class="rz-border-radius-10 rz-shadow-6" />
+                                        <RadzenButton Click=@(args => DeleteMeasurement(measurement.Id)) Icon="delete" Size="Radzen.ButtonSize.Small" ButtonStyle="Radzen.ButtonStyle.Danger" Class="rz-border-radius-10 rz-shadow-6" />
+
+                                    </RadzenColumn>
+                                </RadzenRow>
+
+                            </Template>
+                        </RadzenDataList>
                     }
-
-                    <RadzenText TextStyle="TextStyle.H5" class="d-inline"> Entries </RadzenText>
-                    <RadzenButton Click=@(args => ShowForm(null, type)) Icon="add" Size="Radzen.ButtonSize.Medium" ButtonStyle="Radzen.ButtonStyle.Primary" Class="rz-border-radius-10 rz-shadow-6" />
-
-                    <RadzenDataList WrapItems="false" AllowPaging="true" PageSize="5" Data="measurementsByType(type)" TItem="Measurement">
-                        <Template Context="measurement">
-                            <RadzenRow>
-                                <RadzenColumn Size="4" Class="d-inline">
-                                    <RadzenIcon Icon="calendar_today" Style="font-size: 16px" /><b>@measurement.Date.ToShortDateString()</b> -
-                                    <span><b>@measurement.Value</b>@measurement.Unit</span>
-                                </RadzenColumn>
-                                <RadzenColumn Size="4" Class="d-inline">
-                                    <RadzenButton Click=@(args => ShowForm(measurement.Id)) Icon="edit" Size="Radzen.ButtonSize.Small" ButtonStyle="Radzen.ButtonStyle.Secondary" Class="rz-border-radius-10 rz-shadow-6" />
-                                    <RadzenButton Click=@(args => DeleteMeasurement(measurement.Id)) Icon="delete" Size="Radzen.ButtonSize.Small" ButtonStyle="Radzen.ButtonStyle.Danger" Class="rz-border-radius-10 rz-shadow-6" />
-
-                                </RadzenColumn>
-                            </RadzenRow>
-
-                        </Template>
-                    </RadzenDataList>
-
                 </RadzenTabsItem>
             }
         </Tabs>
@@ -91,7 +92,7 @@
 
     private IEnumerable<Measurement> measurementsByType(string type)
     {
-        return MeasurementService.Measurements.Where(x => x.Type == type).OrderByDescending(x => x.Date);
+        return MeasurementService.GetMeasurementsByType(type);
     }
 
 
