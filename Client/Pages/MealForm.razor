@@ -26,7 +26,7 @@ else
         <InputNumber id="carbs" @bind-Value="m.Carbohydrates" class="form-control"></InputNumber>
         <label for="protein"> Protein </label>
         <InputNumber id="protein" @bind-Value="m.Protein" class="form-control"></InputNumber>
-        <label for="fats"> Protein </label>
+        <label for="fats"> Fats </label>
         <InputNumber id="fats" @bind-Value="m.Fats" class="form-control"></InputNumber>
         <label for="date"> Date </label>
         <InputDate id="date" @bind-Value="m.Date" class="form-control"></InputDate>
@@ -39,19 +39,21 @@ else
 @code {
     [Parameter]
     public int? Id { get; set; }
+    [Parameter]
+    public DateTime? Date { get; set; }
     private string btnText = string.Empty;
     private Meal m = new Meal();
 
     protected override async Task OnInitializedAsync()
     {
-        btnText = Id == null ? "Create" : "Submit";
+        btnText = Id == null ? "Create" : "Confirm";
     }
 
     protected override async Task OnParametersSetAsync()
     {
         if (Id == null)
         {
-            m.Date = DateTime.Today;
+            m.Date = Date??DateTime.Today;
         }
         else
         {

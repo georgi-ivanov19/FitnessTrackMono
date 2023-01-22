@@ -11,5 +11,6 @@ namespace FitnessTrackMono.Client.Services.MealService
         Task CreateMeal(Meal meal);
         Task UpdateMeal(Meal meal);
         Task DeleteMeal(int id);
+        IEnumerable<Meal> GetMealsByDate(DateTime date);
     }
 }

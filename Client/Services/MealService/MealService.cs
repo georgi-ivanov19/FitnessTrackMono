@@ -62,5 +62,10 @@ namespace FitnessTrackMono.Client.Services.MealService
                 Meals[index] = meal;
             _navManager.NavigateTo("meals");
         }
+
+        public IEnumerable<Meal> GetMealsByDate(DateTime date)
+        {
+            return Meals.Where(m => m.Date.Date == date.Date);
+        }
     }
 }
