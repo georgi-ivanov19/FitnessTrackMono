@@ -32,6 +32,7 @@
     public int? Id { get; set; }
     [Parameter]
     public DateTime? Date { get; set; }
+
     private string btnText = string.Empty;
     private Meal m = new Meal();
 
@@ -44,7 +45,7 @@
     {
         if (Id == null)
         {
-            m.Date = Date??DateTime.Today;
+            m.Date = Date ?? DateTime.Today;
         }
         else
         {
