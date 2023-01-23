@@ -2,15 +2,6 @@
 @using FitnessTrackMono.Client.Services.MealService;
 @inject IMealService MealService;
 
-@if (Id == null)
-{
-    <h3> Add Meal</h3>
-}
-else
-{
-    <h3> Edit Meal - @m.Id</h3>
-}
-
 <EditForm Model="m" OnSubmit="HandleSubmit">
     <div>
         <label for="category"> Category </label>
