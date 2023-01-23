@@ -27,20 +27,20 @@
     <div class="container-fluid bars">
 
         <RadzenText TextStyle="TextStyle.Overline">Calories </RadzenText>
-        <RadzenProgressBar ProgressBarStyle="Radzen.ProgressBarStyle.Secondary" Value=@totalCalories Max=@mt.TargetCalories ShowValue="true" Mode="Radzen.ProgressBarMode.Determinate" />
-        <RadzenText TextStyle="TextStyle.Overline"> @totalCalories / @mt.TargetCalories</RadzenText>
+        <RadzenProgressBar ProgressBarStyle="Radzen.ProgressBarStyle.Secondary" Value=@MealService.CalculateMacros(dayMeals).Calories Max=@targets.Calories ShowValue="true" Mode="Radzen.ProgressBarMode.Determinate" />
+        <RadzenText TextStyle="TextStyle.Overline"> @MealService.CalculateMacros(dayMeals).Calories / @targets.Calories</RadzenText>
         <br />
         <RadzenText TextStyle="TextStyle.Overline">Protein </RadzenText>
-        <RadzenProgressBar ProgressBarStyle="Radzen.ProgressBarStyle.Info" Value=@totalProtein Max=@mt.TargetProtein ShowValue="true" Mode="Radzen.ProgressBarMode.Determinate" />
-        <RadzenText TextStyle="TextStyle.Overline"> @totalProtein / @mt.TargetProtein</RadzenText>
+        <RadzenProgressBar ProgressBarStyle="Radzen.ProgressBarStyle.Info" Value=@MealService.CalculateMacros(dayMeals).Protein Max=@targets.Protein ShowValue="true" Mode="Radzen.ProgressBarMode.Determinate" />
+        <RadzenText TextStyle="TextStyle.Overline"> @MealService.CalculateMacros(dayMeals).Protein / @targets.Protein</RadzenText>
         <br />
         <RadzenText TextStyle="TextStyle.Overline">Carbohydrates </RadzenText>
-        <RadzenProgressBar ProgressBarStyle="Radzen.ProgressBarStyle.Success" Value=@totalCarbohydrates Max=@mt.TargetCarbs ShowValue="true" Mode="Radzen.ProgressBarMode.Determinate" />
-        <RadzenText TextStyle="TextStyle.Overline"> @totalCarbohydrates / @mt.TargetCarbs</RadzenText>
+        <RadzenProgressBar ProgressBarStyle="Radzen.ProgressBarStyle.Success" Value=@MealService.CalculateMacros(dayMeals).Carbs Max=@targets.Carbs ShowValue="true" Mode="Radzen.ProgressBarMode.Determinate" />
+        <RadzenText TextStyle="TextStyle.Overline"> @MealService.CalculateMacros(dayMeals).Carbs / @targets.Carbs</RadzenText>
         <br />
         <RadzenText TextStyle="TextStyle.Overline">Fats </RadzenText>
-        <RadzenProgressBar ProgressBarStyle="Radzen.ProgressBarStyle.Warning" Value=@totalFats Max=@mt.TargetFats ShowValue="true" Mode="Radzen.ProgressBarMode.Determinate" />
-        <RadzenText TextStyle="TextStyle.Overline"> @totalFats / @mt.TargetFats</RadzenText>
+        <RadzenProgressBar ProgressBarStyle="Radzen.ProgressBarStyle.Warning" Value=@MealService.CalculateMacros(dayMeals).Fats Max=@targets.Fats ShowValue="true" Mode="Radzen.ProgressBarMode.Determinate" />
+        <RadzenText TextStyle="TextStyle.Overline"> @MealService.CalculateMacros(dayMeals).Fats / @targets.Fats</RadzenText>
         <br />
 
     </div>
@@ -207,29 +207,11 @@
 </RadzenCard>
 
 @code {
+    private MealMacros targets = new MealMacros(2000, 140, 200, 80);
+
     private IEnumerable<Meal> dayMeals = new List<Meal>();
     private bool loading = true;
-    private double totalProtein = 0;
-    private double totalCalories = 0;
-    private double totalCarbohydrates = 0;
-    private double totalFats = 0;
     private DateTime date = DateTime.Today;
-    private class MealTargets
-    {
-        public double TargetCalories;
-        public double TargetProtein;
-        public double TargetCarbs;
-        public double TargetFats;
-
-        public MealTargets(int t1, int t2, int t3, int t4)
-        {
-            TargetCalories = t1;
-            TargetProtein = t2;
-            TargetCarbs = t3;
-            TargetFats = t4;
-        }
-    }
-    private MealTargets mt = new MealTargets(2000, 140, 200, 80);
 
     protected override async Task OnInitializedAsync()
     {
@@ -238,8 +220,6 @@
             await MealService.GetMeals();
             dayMeals = MealService.GetMealsByDate(DateTime.Today.Date);
             date = DateTime.Today;
-            CalculateTotals(date.Date);
-            //loading = false;
         }
         catch (AccessTokenNotAvailableException exception)
         {
@@ -267,25 +247,8 @@
         await MealService.DeleteMeal(id);
     }
 
-    public void CalculateTotals(DateTime date)
-    {
-        totalCalories = 0;
-        totalCarbohydrates = 0;
-        totalFats = 0;
-        totalProtein = 0;
-        dayMeals = MealService.GetMealsByDate(date.Date);
-        foreach (var meal in dayMeals)
-        {
-            totalCalories += meal.TotalCalories;
-            totalProtein += meal.Protein;
-            totalCarbohydrates += meal.Carbohydrates;
-            totalFats += meal.Fats;
-        }
-    }
-
     private void DateChanged(string p1)
     {
         date = p1 == "next" ? date.AddDays(1) : date.AddDays(-1);
-        CalculateTotals(date.Date);
     }
 }

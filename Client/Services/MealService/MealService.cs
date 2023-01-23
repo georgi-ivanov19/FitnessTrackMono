@@ -67,5 +67,22 @@ namespace FitnessTrackMono.Client.Services.MealService
         {
             return Meals.Where(m => m.Date.Date == date.Date);
         }
+
+        public MealMacros CalculateMacros(IEnumerable<Meal> meals)
+        {
+            double totalProtein = 0;
+            double totalCalories = 0;
+            double totalCarbohydrates = 0;
+            double totalFats = 0;
+            foreach (var meal in meals)
+            {
+                totalCalories += meal.TotalCalories;
+                totalProtein += meal.Protein;
+                totalCarbohydrates += meal.Carbohydrates;
+                totalFats += meal.Fats;
+            }
+
+            return new MealMacros(totalCalories, totalProtein, totalCarbohydrates, totalFats);
+        }
     }
 }
