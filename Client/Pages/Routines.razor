@@ -8,7 +8,8 @@
 @inject Radzen.DialogService DialogService;
 
 <h3>Routines</h3>
-
+<RadzenButton Click=@(args => ShowForm(null)) Icon="add" Size="Radzen.ButtonSize.Medium"
+    ButtonStyle="Radzen.ButtonStyle.Primary" Class="rz-border-radius-10 rz-shadow-6" />
 @code {
     protected override async Task OnInitializedAsync()
     {
@@ -22,5 +23,18 @@
             exception.Redirect();
         }
     }
-
+    private async Task ShowForm(int? id)
+    {
+        var title = id == null ? "Add Routine" : "Edit Routine";
+        await DialogService.OpenAsync<RoutinesForm>(title,
+        new Dictionary<string, object>() { { "Id", id } },
+        new Radzen.DialogOptions()
+        {
+            Width = "512px",
+            Resizable = true,
+            Draggable = true,
+            CloseDialogOnOverlayClick = true
+        }
+        );
+    }
 }

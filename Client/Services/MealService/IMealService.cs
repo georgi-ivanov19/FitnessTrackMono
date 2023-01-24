@@ -2,16 +2,16 @@
 
 namespace FitnessTrackMono.Client.Services.MealService
 {
-    public interface IMealService
-    {
-        List<Meal> Meals { get; set; }
+  public interface IMealService
+  {
+    List<Meal> Meals { get; set; }
 
-        Task GetMeals();
-        Task<Meal> GetSingleMeal(int id);
-        Task CreateMeal(Meal meal);
-        Task UpdateMeal(Meal meal);
-        Task DeleteMeal(int id);
-        IEnumerable<Meal> GetMealsByDate(DateTime date);
-        MealMacros CalculateMacros(IEnumerable<Meal> meals);
-    }
+    Task GetMeals();
+    Task<Meal> GetSingleMeal(int id);
+    Task CreateMeal(Meal meal);
+    Task UpdateMeal(Meal meal);
+    Task DeleteMeal(int id);
+    IEnumerable<Meal> GetMealsByDate(DateTime date);
+    MealMacros CalculateMacros(IEnumerable<Meal> meals);
+  }
 }
