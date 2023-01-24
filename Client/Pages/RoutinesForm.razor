@@ -1,17 +1,11 @@
 @using FitnessTrackMono.Shared.Models;
-@using FitnessTrackMono.Client.Services.MeasurementsService;
-@inject IMeasurementsService MeasurementsService;
+@using FitnessTrackMono.Client.Services.RoutineService;
+@inject IRoutineService RoutineService;
 
-<EditForm Model="m" OnSubmit="HandleSubmit">
+<EditForm Model="r" OnSubmit="HandleSubmit">
     <div>
-        <label for="type"> Type </label>
-        <RadzenDropDown Placeholder="Type" id="type" Data=@measurementTypes @bind-Value="m.Type" class="form-control"></RadzenDropDown>
-        <label for="value"> Value </label>
-        <InputNumber id="value" @bind-Value="m.Value" class="form-control"></InputNumber>
-        <label for="unit"> Unit </label>
-        <InputText id="unit" @bind-Value="m.Unit" class="form-control"></InputText>
-        <label for="date"> Date </label>
-        <InputDate id="date" @bind-Value="m.Date" class="form-control"></InputDate>
+        <label for="name"> Name </label>
+        <InputText id="unit" @bind-Value="r.Name" class="form-control"></InputText>
     </div>
     <br />
     <button type="submit" class="btn btn-primary">@btnText</button>
@@ -21,12 +15,9 @@
 @code {
     [Parameter]
     public int? Id { get; set; }
-    [Parameter]
-    public string? DefaultType { get; set; }
 
     private string btnText = string.Empty;
-    private Measurement m = new Measurement();
-    private string[] measurementTypes = { "Weight", "Waist", "Body fat" };
+    private Routine r = new Routine();
 
     protected override async Task OnInitializedAsync()
     {
@@ -37,14 +28,11 @@
     {
         if (Id == null)
         {
-            if (DefaultType != null)
-                m.Type = DefaultType;
-
-            m.Date = DateTime.Today;
+            // Do nothing
         }
         else
         {
-            m = await MeasurementsService.GetSingleMeasurement((int)Id);
+            r = await RoutineService.GetSingleRoutine((int)Id);
         }
 
     }
@@ -52,16 +40,17 @@
     {
         if (Id == null)
         {
-            await MeasurementsService.CreateMeasurement(m);
+            Console.WriteLine(r);
+            await RoutineService.CreateRoutine(r);
         }
         else
         {
-            await MeasurementsService.UpdateMeasurement(m);
+            await RoutineService.UpdateRoutine(r);
         }
     }
 
     async Task DeleteHero()
     {
-        await MeasurementsService.DeleteMeasurement(m.Id);
+        await RoutineService.DeleteRoutine(r.Id);
     }
 }

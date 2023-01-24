@@ -21,7 +21,8 @@ namespace FitnessTrackMono.Client.Services.RoutineService
 
     public async Task CreateRoutine(Routine routine)
     {
-      var result = await _http.PostAsJsonAsync("api/routine", routine);
+      routine.Workouts = new List<Workout>();
+      var result = await _http.PostAsJsonAsync("api/routines", routine);
       var response = await result.Content.ReadFromJsonAsync<Routine>();
       // TODO: null check
       Routines.Add(response);
@@ -62,7 +63,7 @@ namespace FitnessTrackMono.Client.Services.RoutineService
       int index = Routines.FindIndex(r => r.Id == routine.Id);
       if (index != -1)
         Routines[index] = routine;
-      _navManager.NavigateTo("meals");
+      _navManager.NavigateTo("routines");
     }
 
     public List<Workout> GetWorkouts(int routineId)
