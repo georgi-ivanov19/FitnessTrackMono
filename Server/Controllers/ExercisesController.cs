@@ -32,7 +32,7 @@ namespace FitnessTrackMono.Server.Controllers
         return NotFound("User not found");
       }
 
-      var workout = await _context.Workouts.FirstOrDefaultAsync(w => w.Id == id);
+      var workout = _context.Workouts.Find(id);
       if (workout == null)
       {
         return NotFound("Workout not found");

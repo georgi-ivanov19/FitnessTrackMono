@@ -23,21 +23,16 @@ namespace FitnessTrackMono.Server.Controllers
       _userManager = userManager;
     }
 
-    [HttpGet("GetWorkouts/{id}")]
-    public async Task<ActionResult<List<Workout>>> GetWorkouts(int id)
+    [HttpGet]
+    public async Task<ActionResult<List<Workout>>> GetWorkouts()
     {
       var user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
       if (user == null)
       {
         return NotFound("User not found");
       }
-
-      var routine = user.Routines.FirstOrDefault(r => r.Id == id);
-      if (routine == null)
-      {
-        return NotFound("Routine not found");
-      }
-      return Ok(routine.Workouts);
+      var userWorkouts = _context.Workouts.Where(w => w.ApplicationUserId== user.Id).ToList();
+      return Ok(userWorkouts);
     }
 
     [HttpGet("GetWorkout/{id}")]

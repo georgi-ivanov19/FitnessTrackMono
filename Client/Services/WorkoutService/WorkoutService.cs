@@ -19,7 +19,8 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
         }
         public async Task CreateWorkout(Workout workout)
         {
-            var result = await _http.PostAsJsonAsync("api/workout", workout);
+            workout.Exercises = new List<Exercise>();
+            var result = await _http.PostAsJsonAsync("api/workouts", workout);
             var response = await result.Content.ReadFromJsonAsync<Workout>();
             // TODO: null check
             Workouts.Add(response);
@@ -28,14 +29,14 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
 
         public async Task DeleteWorkout(int id)
         {
-            await _http.DeleteAsync($"api/workout/{id}");
+            await _http.DeleteAsync($"api/workouts/{id}");
             Workouts.RemoveAt(Workouts.FindIndex(r => r.Id == id));
             _navManager.NavigateTo("routines");
         }
 
         public async Task<Workout> GetSingleWorkout(int id)
         {
-            var result = await _http.GetFromJsonAsync<Workout>($"api/workout/GetWorkout/{id}");
+            var result = await _http.GetFromJsonAsync<Workout>($"api/workouts/GetWorkout/{id}");
             if (result != null)
             {
                 return result;
@@ -43,9 +44,9 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
             throw new Exception("Workout not found");
         }
 
-        public async Task GetWorkouts(int routineId)
+        public async Task GetWorkouts()
         {
-            var result = await _http.GetFromJsonAsync<List<Workout>>($"api/workout/GetWorkouts/{routineId}");
+            var result = await _http.GetFromJsonAsync<List<Workout>>($"api/workouts");
             if (result != null)
             {
                 this.Workouts = result;

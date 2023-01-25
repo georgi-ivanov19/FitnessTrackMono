@@ -9,6 +9,6 @@ namespace FitnessTrackMono.Server.Models
         public string LastName { get; set; } = String.Empty;
         public List<Measurement> Measurements { get; set; } = new List<Measurement>();
         public List<Meal> Meals { get; set; } = new List<Meal>();
-        public List<Routine> Routines { get; set; } = new List<Routine>();
+        public List<Workout> Workouts { get; set; } = new List<Workout>();
     }
 }

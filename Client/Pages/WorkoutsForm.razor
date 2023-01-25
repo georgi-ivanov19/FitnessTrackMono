@@ -1,11 +1,14 @@
 @using FitnessTrackMono.Shared.Models;
-@using FitnessTrackMono.Client.Services.RoutineService;
-@inject IRoutineService RoutineService;
+@using FitnessTrackMono.Client.Services.WorkoutService;
+@inject IWorkoutService WorkoutService;
+@* @inject IRoutineService RoutineService; *@
 
 <EditForm Model="r" OnSubmit="HandleSubmit">
     <div>
         <label for="name"> Name </label>
-        <InputText id="unit" @bind-Value="r.Name" class="form-control"></InputText>
+        <InputText id="name" @bind-Value="r.Name" class="form-control"></InputText>
+        <label for="dayOfWeek"> Day of Week </label>
+        <InputText id="dayOfWeek" @bind-Value="r.DayOfWeek" class="form-control"></InputText>
     </div>
     <br />
     <button type="submit" class="btn btn-primary">@btnText</button>
@@ -17,7 +20,7 @@
     public int? Id { get; set; }
 
     private string btnText = string.Empty;
-    private Routine r = new Routine();
+    private Workout r = new Workout();
 
     protected override async Task OnInitializedAsync()
     {
@@ -32,7 +35,7 @@
         }
         else
         {
-            r = await RoutineService.GetSingleRoutine((int)Id);
+            r = await WorkoutService.GetSingleWorkout((int)Id);
         }
 
     }
@@ -40,17 +43,16 @@
     {
         if (Id == null)
         {
-            Console.WriteLine(r);
-            await RoutineService.CreateRoutine(r);
+            await WorkoutService.CreateWorkout(r);
         }
         else
         {
-            await RoutineService.UpdateRoutine(r);
+            await WorkoutService.UpdateWorkout(r);
         }
     }
 
-    async Task DeleteHero()
+    async Task DeleteWorkout()
     {
-        await RoutineService.DeleteRoutine(r.Id);
+        await WorkoutService.DeleteWorkout(r.Id);
     }
 }
