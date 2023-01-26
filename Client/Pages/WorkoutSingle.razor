@@ -1,0 +1,36 @@
+﻿@page "/workout/{id:int}"
+
+@using FitnessTrackMono.Shared.Models;
+@using FitnessTrackMono.Client.Services.WorkoutService;
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+
+@inject IWorkoutService WorkoutService;
+
+<PageTitle> @workout.Name </PageTitle>
+<RadzenCard>
+    <RadzenText TextStyle="TextStyle.H5" class="d-inline me-1"> @workout.Name </RadzenText>
+    <RadzenButton Click=@(args => StartWorkout(workout)) Icon="play_arrow" Size="Radzen.ButtonSize.Medium" ButtonStyle="Radzen.ButtonStyle.Success" Class="rz-border-radius-10 rz-shadow-6" />
+    <div class="notes mt-2">
+        <WorkoutNotes Workout="@workout"/>
+    </div>
+</RadzenCard>
+
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+    Workout workout = new Workout();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        workout = await WorkoutService.GetSingleWorkout(Id);
+    }
+
+    private void StartWorkout(Workout w)
+    {
+        Console.WriteLine($"Workout {w.Name} started!");
+    }
+}

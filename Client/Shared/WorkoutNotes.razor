@@ -1,0 +1,21 @@
+﻿@using FitnessTrackMono.Client.Services.WorkoutService;
+@inject IWorkoutService WorkoutService;
+
+<RadzenIcon Icon="edit_note" class="d-inline" Style="vertical-align: sub;"></RadzenIcon>
+<RadzenText TextStyle="TextStyle.Subtitle1" class="d-inline"> Latest Notes (@workout.DateLastCompleted.ToString("MMM d, yyyy"))</RadzenText>
+
+<div class="w-50">
+    <RadzenTextArea Rows="5" Placeholder="Enter notes here..." Value="@workout.Notes" Change=@(args => OnChange(args)) Class="w-100" Style="resize: none;" />
+</div>
+
+@code {
+    [Parameter]
+    public Workout workout { get; set; } = new Workout();
+
+    public void OnChange(string value)
+    {
+        Console.WriteLine(value);
+        workout.Notes = value;
+        WorkoutService.UpdateWorkout(workout, false);
+    }
+}

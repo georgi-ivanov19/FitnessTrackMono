@@ -22,14 +22,14 @@ namespace FitnessTrackMono.Client.Services.ExerciseSetService
             var response = await result.Content.ReadFromJsonAsync<ExerciseSet>();
             // TODO: null check
             ExerciseSets.Add(response);
-            _navManager.NavigateTo("routines");
+            _navManager.NavigateTo("workouts");
         }
 
         public async Task DeleteExerciseSet(int id)
         {
             await _http.DeleteAsync($"api/ExerciseSets/{id}");
             ExerciseSets.RemoveAt(ExerciseSets.FindIndex(es => es.Id == id));
-            _navManager.NavigateTo("routines");
+            _navManager.NavigateTo("workouts");
         }
 
         public async Task GetExerciseSets(int exId)
@@ -59,7 +59,7 @@ namespace FitnessTrackMono.Client.Services.ExerciseSetService
             int index = ExerciseSets.FindIndex(e => e.Id == es.Id);
             if (index != -1)
                 ExerciseSets[index] = es;
-            _navManager.NavigateTo("routines");
+            _navManager.NavigateTo("workouts");
         }
     }
 }

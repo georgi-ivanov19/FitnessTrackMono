@@ -1,14 +1,13 @@
 @using FitnessTrackMono.Shared.Models;
 @using FitnessTrackMono.Client.Services.WorkoutService;
 @inject IWorkoutService WorkoutService;
-@* @inject IRoutineService RoutineService; *@
 
-<EditForm Model="r" OnSubmit="HandleSubmit">
+<EditForm Model="w" OnSubmit="HandleSubmit">
     <div>
         <label for="name"> Name </label>
-        <InputText id="name" @bind-Value="r.Name" class="form-control"></InputText>
+        <InputText id="name" @bind-Value="w.Name" class="form-control"></InputText>
         <label for="dayOfWeek"> Day of Week </label>
-        <InputText id="dayOfWeek" @bind-Value="r.DayOfWeek" class="form-control"></InputText>
+        <RadzenDropDown Placeholder="Day" id="type" Data=@daysOfWeek @bind-Value="w.DayOfWeek" class="form-control"></RadzenDropDown>
     </div>
     <br />
     <button type="submit" class="btn btn-primary">@btnText</button>
@@ -20,7 +19,8 @@
     public int? Id { get; set; }
 
     private string btnText = string.Empty;
-    private Workout r = new Workout();
+    private Workout w = new Workout();
+    private string[] daysOfWeek = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
 
     protected override async Task OnInitializedAsync()
     {
@@ -35,7 +35,7 @@
         }
         else
         {
-            r = await WorkoutService.GetSingleWorkout((int)Id);
+            w = await WorkoutService.GetSingleWorkout((int)Id);
         }
 
     }
@@ -43,16 +43,16 @@
     {
         if (Id == null)
         {
-            await WorkoutService.CreateWorkout(r);
+            await WorkoutService.CreateWorkout(w);
         }
         else
         {
-            await WorkoutService.UpdateWorkout(r);
+            await WorkoutService.UpdateWorkout(w, true);
         }
     }
 
     async Task DeleteWorkout()
     {
-        await WorkoutService.DeleteWorkout(r.Id);
+        await WorkoutService.DeleteWorkout(w.Id);
     }
 }

@@ -2,7 +2,6 @@
 using FitnessTrackMono.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
-using static System.Net.WebRequestMethods;
 
 namespace FitnessTrackMono.Client.Services.WorkoutService
 {
@@ -19,19 +18,18 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
         }
         public async Task CreateWorkout(Workout workout)
         {
-            workout.Exercises = new List<Exercise>();
             var result = await _http.PostAsJsonAsync("api/workouts", workout);
             var response = await result.Content.ReadFromJsonAsync<Workout>();
             // TODO: null check
             Workouts.Add(response);
-            _navManager.NavigateTo("routines");
+            _navManager.NavigateTo("workouts");
         }
 
         public async Task DeleteWorkout(int id)
         {
             await _http.DeleteAsync($"api/workouts/{id}");
             Workouts.RemoveAt(Workouts.FindIndex(r => r.Id == id));
-            _navManager.NavigateTo("routines");
+            _navManager.NavigateTo("workouts");
         }
 
         public async Task<Workout> GetSingleWorkout(int id)
@@ -53,7 +51,7 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
             }
         }
 
-        public async Task UpdateWorkout(Workout workout)
+        public async Task UpdateWorkout(Workout workout, bool fromForm)
         {
             var result = await _http.PutAsJsonAsync($"api/workouts/{workout.Id}", workout);
             var response = await result.Content.ReadFromJsonAsync<Workout>();
@@ -61,7 +59,13 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
             int index = Workouts.FindIndex(w => w.Id == workout.Id);
             if (index != -1)
                 Workouts[index] = workout;
-            _navManager.NavigateTo("routines");
+
+            if (fromForm)
+            {
+                _navManager.NavigateTo("workouts");
+            } else { 
+                _navManager.NavigateTo($"workout/{workout.Id}"); 
+            }
         }
     }
 }
