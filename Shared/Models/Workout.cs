@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace FitnessTrackMono.Shared.Models
 {
-  public class Workout
-  {
-    public int Id { get; set; }
-    public string ApplicationUserId { get; set; } = string.Empty;
-    // public int RoutineId { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string DayOfWeek { get; set; } = string.Empty;
-    public List<Exercise> Exercises { get; set; }
-  }
+    public class Workout
+    {
+        public int Id { get; set; }
+        public string ApplicationUserId { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string DayOfWeek { get; set; } = string.Empty;
+        public List<Exercise> Exercises { get; set; } = new List<Exercise>();
+        public string Notes { get; set; } = string.Empty;
+        public DateTime DateLastCompleted { get; set; }
+    }
 }
