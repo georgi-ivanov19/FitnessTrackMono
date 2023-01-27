@@ -22,7 +22,7 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
             var response = await result.Content.ReadFromJsonAsync<Workout>();
             // TODO: null check
             Workouts.Add(response);
-            _navManager.NavigateTo("workouts");
+            _navManager.NavigateTo($"workout/{response.Id}");
         }
 
         public async Task DeleteWorkout(int id)
@@ -86,6 +86,5 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
 
             return listToReturn;
         }
-
     }
 }
