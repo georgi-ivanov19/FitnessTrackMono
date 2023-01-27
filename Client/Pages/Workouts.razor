@@ -11,7 +11,28 @@
 
 <RadzenCard>
     <div class="mb-3">
-        <RadzenText TextStyle="TextStyle.H5" class="d-inline"> Workouts </RadzenText>
+        <RadzenText TextStyle="TextStyle.DisplayH5" class="d-inline"> Upcoming workouts </RadzenText>
+        <RadzenRow>
+            @foreach(var item in WorkoutService.UpcomingWorkouts())
+            {
+                var nextDate = nextDateForDayOfWeek(item.DayOfWeek);
+                <RadzenColumn>
+                    <span class="d-inline workout-data-item p-2" @onclick=@(args => NavManager.NavigateTo($"workout/{item.Id}"))>
+                        <RadzenText class="d-inline">@item.Name</RadzenText>
+                    </span>
+                    -
+                    <RadzenText class="d-inline p-2">@nextDate</RadzenText>
+                    @if(nextDate.EndsWith("Today)")){
+                        <RadzenButton class="p-2" Variant="Radzen.Variant.Text" Click=@(args => StartWorkout(item)) Icon="play_circle_filled"
+                                      ButtonStyle="Radzen.ButtonStyle.Success" Text="Start" Size="Radzen.ButtonSize.Small" />
+                    }
+                </RadzenColumn>
+            }
+        </RadzenRow>
+    </div>
+
+    <div class="mb-3">
+        <RadzenText TextStyle="TextStyle.DisplayH5" class="d-inline"> Workouts </RadzenText>
         <RadzenButton Click=@(args => ShowForm(null)) Icon="add" Size="Radzen.ButtonSize.Medium"
                       ButtonStyle="Radzen.ButtonStyle.Primary" Class="rz-border-radius-10 rz-shadow-6" />
     </div>
@@ -35,6 +56,7 @@
 </RadzenCard>
 
 @code {
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -47,6 +69,7 @@
             exception.Redirect();
         }
     }
+
     private async Task ShowForm(int? id)
     {
         var title = id == null ? "Add Routine" : "Edit Routine";
@@ -59,6 +82,29 @@
                 CloseDialogOnOverlayClick = true
             }
         );
+    }
+
+    private string nextDateForDayOfWeek(string dayOfWeek)
+    {
+        var day = (DayOfWeek)Enum.Parse(typeof(DayOfWeek), dayOfWeek);
+        var today = DateTime.Today;
+        var daysToAdd = (day - today.DayOfWeek + 7) % 7;
+        var daysBetween = (today.AddDays(daysToAdd) - today).Days;
+        string daysUntil = string.Empty;
+        switch (daysBetween)
+        {
+            case 0:
+                daysUntil = "Today";
+                break;
+            case 1:
+                daysUntil = "Tomorrow";
+                break;
+            default:
+                daysUntil = $"in {daysBetween} days";
+                break;
+
+        }
+        return $"{today.AddDays(daysToAdd).ToString("dddd, dd MMM")} ({daysUntil})";
     }
 
     private async Task DeleteWorkout(int id)

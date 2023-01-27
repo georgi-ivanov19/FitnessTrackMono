@@ -63,9 +63,28 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
             if (fromForm)
             {
                 _navManager.NavigateTo("workouts");
-            } else { 
-                _navManager.NavigateTo($"workout/{workout.Id}"); 
+            } else {
+                _navManager.NavigateTo($"workout/{workout.Id}");
             }
+        }
+
+        public List<Workout> UpcomingWorkouts()
+        {
+            var listToReturn = new List<Workout>();
+            var current = DateTime.Today;
+            var end = DateTime.Today.AddDays(6);
+
+            while(current <= end)
+            {
+                if(listToReturn.Count >= 3)
+                    return listToReturn;
+                var workoutsForTheDay = this.Workouts.FindAll(w => w.DayOfWeek == current.DayOfWeek.ToString());
+                if (workoutsForTheDay.Count > 0)
+                    listToReturn.AddRange(workoutsForTheDay);
+                current = current.AddDays(1);
+            }
+
+            return listToReturn;
         }
 
     }
