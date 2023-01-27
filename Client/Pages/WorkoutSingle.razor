@@ -2,9 +2,11 @@
 
 @using FitnessTrackMono.Shared.Models;
 @using FitnessTrackMono.Client.Services.WorkoutService;
+@using FitnessTrackMono.Client.Services.TrackedWorkoutService;
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
 @inject IWorkoutService WorkoutService;
+@inject ITrackedWorkoutService TrackedWorkoutService;
 
 <PageTitle> @workout.Name </PageTitle>
 <RadzenCard>
@@ -31,6 +33,6 @@
 
     private void StartWorkout(Workout w)
     {
-        Console.WriteLine($"Workout {w.Name} started!");
+        TrackedWorkoutService.StartWorkout(w);
     }
 }

@@ -21,15 +21,15 @@ namespace FitnessTrackMono.Server.Data
             builder.Entity<ApplicationUser>().Navigation(e => e.Measurements).AutoInclude();
             builder.Entity<ApplicationUser>().Navigation(e => e.Meals).AutoInclude();
             builder.Entity<ApplicationUser>().Navigation(e => e.Workouts).AutoInclude();
-            builder.Entity<ApplicationUser>().Navigation(e => e.CompletedWorkouts).AutoInclude();
             builder.Entity<Workout>().Navigation(e => e.Exercises).AutoInclude();
+            builder.Entity<Workout>().Navigation(e => e.TrackedWorkouts).AutoInclude();
             builder.Entity<Exercise>().Navigation(e => e.ExerciseSets).AutoInclude();
         }
 
         public DbSet<Measurement> Measurements => Set<Measurement>();
         public DbSet<Meal> Meals => Set<Meal>();
         public DbSet<Workout> Workouts => Set<Workout>();
-        public DbSet<CompletedWorkout> CompletedWorkouts => Set<CompletedWorkout>();
+        public DbSet<TrackedWorkout> TrackedWorkouts => Set<TrackedWorkout>();
         public DbSet<Exercise> Exercises => Set<Exercise>();
         public DbSet<ExerciseSet> ExerciseSets => Set<ExerciseSet>();
     }

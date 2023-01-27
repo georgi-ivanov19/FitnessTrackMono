@@ -15,5 +15,6 @@ namespace FitnessTrackMono.Shared.Models
         public List<Exercise> Exercises { get; set; } = new List<Exercise>();
         public string Notes { get; set; } = string.Empty;
         public DateTime DateLastCompleted { get; set; }
+        public List<TrackedWorkout> TrackedWorkouts { get; set; } = new List<TrackedWorkout>();
     }
 }

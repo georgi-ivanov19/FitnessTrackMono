@@ -49,8 +49,7 @@ namespace FitnessTrackMono.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<Workout>> CreateWorkout(Workout workout)
         {
-            var user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            workout.ApplicationUserId = user.Id;
+       
             _context.Workouts.Add(workout);
             await _context.SaveChangesAsync();
 

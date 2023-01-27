@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitnessTrackMono.Server.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230126194114_AddCompletedWorkouts")]
-    partial class AddCompletedWorkouts
+    [Migration("20230127013155_ChangeTrackedWorkoutModel")]
+    partial class ChangeTrackedWorkoutModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -239,38 +239,6 @@ namespace FitnessTrackMono.Server.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessTrackMono.Shared.Models.CompletedWorkout", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ParentWorkoutId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("TotalVolume")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("ParentWorkoutId");
-
-                    b.ToTable("CompletedWorkouts");
-                });
-
             modelBuilder.Entity("FitnessTrackMono.Shared.Models.Exercise", b =>
                 {
                     b.Property<int>("Id")
@@ -311,14 +279,14 @@ namespace FitnessTrackMono.Server.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CompletedWorkoutId")
-                        .HasColumnType("int");
-
                     b.Property<int>("ExerciseId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsWarmup")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("TrackedWorkoutId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Unit")
                         .IsRequired()
@@ -329,9 +297,9 @@ namespace FitnessTrackMono.Server.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompletedWorkoutId");
-
                     b.HasIndex("ExerciseId");
+
+                    b.HasIndex("TrackedWorkoutId");
 
                     b.ToTable("ExerciseSets");
                 });
@@ -405,6 +373,39 @@ namespace FitnessTrackMono.Server.Data.Migrations
                     b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Measurements");
+                });
+
+            modelBuilder.Entity("FitnessTrackMono.Shared.Models.TrackedWorkout", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ParentWorkoutId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("TotalVolume")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("WorkoutId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WorkoutId");
+
+                    b.ToTable("TrackedWorkouts");
                 });
 
             modelBuilder.Entity("FitnessTrackMono.Shared.Models.Workout", b =>
@@ -578,21 +579,6 @@ namespace FitnessTrackMono.Server.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("FitnessTrackMono.Shared.Models.CompletedWorkout", b =>
-                {
-                    b.HasOne("FitnessTrackMono.Server.Models.ApplicationUser", null)
-                        .WithMany("CompletedWorkouts")
-                        .HasForeignKey("ApplicationUserId");
-
-                    b.HasOne("FitnessTrackMono.Shared.Models.Workout", "ParentWorkout")
-                        .WithMany()
-                        .HasForeignKey("ParentWorkoutId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ParentWorkout");
-                });
-
             modelBuilder.Entity("FitnessTrackMono.Shared.Models.Exercise", b =>
                 {
                     b.HasOne("FitnessTrackMono.Shared.Models.Workout", null)
@@ -604,15 +590,15 @@ namespace FitnessTrackMono.Server.Data.Migrations
 
             modelBuilder.Entity("FitnessTrackMono.Shared.Models.ExerciseSet", b =>
                 {
-                    b.HasOne("FitnessTrackMono.Shared.Models.CompletedWorkout", null)
-                        .WithMany("ExerciseSetsCompleted")
-                        .HasForeignKey("CompletedWorkoutId");
-
                     b.HasOne("FitnessTrackMono.Shared.Models.Exercise", null)
                         .WithMany("ExerciseSets")
                         .HasForeignKey("ExerciseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("FitnessTrackMono.Shared.Models.TrackedWorkout", null)
+                        .WithMany("ExerciseSetsCompleted")
+                        .HasForeignKey("TrackedWorkoutId");
                 });
 
             modelBuilder.Entity("FitnessTrackMono.Shared.Models.Meal", b =>
@@ -631,6 +617,13 @@ namespace FitnessTrackMono.Server.Data.Migrations
                         .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FitnessTrackMono.Shared.Models.TrackedWorkout", b =>
+                {
+                    b.HasOne("FitnessTrackMono.Shared.Models.Workout", null)
+                        .WithMany("TrackedWorkouts")
+                        .HasForeignKey("WorkoutId");
                 });
 
             modelBuilder.Entity("FitnessTrackMono.Shared.Models.Workout", b =>
@@ -695,8 +688,6 @@ namespace FitnessTrackMono.Server.Data.Migrations
 
             modelBuilder.Entity("FitnessTrackMono.Server.Models.ApplicationUser", b =>
                 {
-                    b.Navigation("CompletedWorkouts");
-
                     b.Navigation("Meals");
 
                     b.Navigation("Measurements");
@@ -704,19 +695,21 @@ namespace FitnessTrackMono.Server.Data.Migrations
                     b.Navigation("Workouts");
                 });
 
-            modelBuilder.Entity("FitnessTrackMono.Shared.Models.CompletedWorkout", b =>
-                {
-                    b.Navigation("ExerciseSetsCompleted");
-                });
-
             modelBuilder.Entity("FitnessTrackMono.Shared.Models.Exercise", b =>
                 {
                     b.Navigation("ExerciseSets");
                 });
 
+            modelBuilder.Entity("FitnessTrackMono.Shared.Models.TrackedWorkout", b =>
+                {
+                    b.Navigation("ExerciseSetsCompleted");
+                });
+
             modelBuilder.Entity("FitnessTrackMono.Shared.Models.Workout", b =>
                 {
                     b.Navigation("Exercises");
+
+                    b.Navigation("TrackedWorkouts");
                 });
 #pragma warning restore 612, 618
         }

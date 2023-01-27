@@ -14,7 +14,6 @@
 
     public void OnChange(string value)
     {
-        Console.WriteLine(value);
         workout.Notes = value;
         WorkoutService.UpdateWorkout(workout, false);
     }

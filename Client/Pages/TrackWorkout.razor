@@ -1,0 +1,38 @@
+﻿@page "/track/{id:int}"
+
+@using FitnessTrackMono.Shared.Models;
+@using FitnessTrackMono.Client.Services.TrackedWorkoutService;
+@using FitnessTrackMono.Client.Services.WorkoutService;
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+
+@inject ITrackedWorkoutService TrackedWorkoutService;
+@inject IWorkoutService WorkoutService;
+
+<PageTitle> Tracking @parentWorkout.Name </PageTitle>
+<RadzenCard>
+    <RadzenText TextStyle="TextStyle.H5" class="d-inline me-1"> Tracking: @parentWorkout.Name </RadzenText>
+    <RadzenButton Click=@(args => FinishWorkout(trackedWorkout)) Variant="Radzen.Variant.Text" Icon="sports_score"
+                          ButtonStyle="Radzen.ButtonStyle.Info" Text="Finish" Size="Radzen.ButtonSize.Medium" />
+</RadzenCard>
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+
+    TrackedWorkout trackedWorkout = new TrackedWorkout();
+    Workout parentWorkout = new Workout();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        trackedWorkout = await TrackedWorkoutService.GetSingleWorkout(Id);
+        parentWorkout = await WorkoutService.GetSingleWorkout(trackedWorkout.ParentWorkoutId);
+    }
+
+    private void FinishWorkout(TrackedWorkout w)
+    {
+        TrackedWorkoutService.FinishWorkout(w);
+        Console.WriteLine($"Workout {parentWorkout.Name} stopped!");
+    }
+}

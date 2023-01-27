@@ -4,6 +4,7 @@ using FitnessTrackMono.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitnessTrackMono.Server.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230127012747_RemoveUserFKEYfromTracked")]
+    partial class RemoveUserFKEYfromTracked
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -395,12 +398,9 @@ namespace FitnessTrackMono.Server.Data.Migrations
                     b.Property<double>("TotalVolume")
                         .HasColumnType("float");
 
-                    b.Property<int?>("WorkoutId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("WorkoutId");
+                    b.HasIndex("ParentWorkoutId");
 
                     b.ToTable("TrackedWorkouts");
                 });
@@ -618,9 +618,13 @@ namespace FitnessTrackMono.Server.Data.Migrations
 
             modelBuilder.Entity("FitnessTrackMono.Shared.Models.TrackedWorkout", b =>
                 {
-                    b.HasOne("FitnessTrackMono.Shared.Models.Workout", null)
+                    b.HasOne("FitnessTrackMono.Shared.Models.Workout", "ParentWorkout")
                         .WithMany("TrackedWorkouts")
-                        .HasForeignKey("WorkoutId");
+                        .HasForeignKey("ParentWorkoutId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ParentWorkout");
                 });
 
             modelBuilder.Entity("FitnessTrackMono.Shared.Models.Workout", b =>

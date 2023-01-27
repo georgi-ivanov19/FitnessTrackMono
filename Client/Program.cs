@@ -2,6 +2,7 @@ using FitnessTrackMono.Client;
 using FitnessTrackMono.Client.Services.MeasurementsService;
 using FitnessTrackMono.Client.Services.MealService;
 using FitnessTrackMono.Client.Services.WorkoutService;
+using FitnessTrackMono.Client.Services.TrackedWorkoutService;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -19,6 +20,7 @@ builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().Cre
 builder.Services.AddScoped<IMeasurementsService, MeasurementsService>();
 builder.Services.AddScoped<IMealService, MealService>();
 builder.Services.AddScoped<IWorkoutService, WorkoutService>();
+builder.Services.AddScoped<ITrackedWorkoutService, TrackedWorkoutService>();
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddApiAuthorization();
 

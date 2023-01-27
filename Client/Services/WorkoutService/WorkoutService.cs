@@ -67,5 +67,6 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
                 _navManager.NavigateTo($"workout/{workout.Id}"); 
             }
         }
+
     }
 }

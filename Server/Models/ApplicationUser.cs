@@ -10,6 +10,5 @@ namespace FitnessTrackMono.Server.Models
         public List<Measurement> Measurements { get; set; } = new List<Measurement>();
         public List<Meal> Meals { get; set; } = new List<Meal>();
         public List<Workout> Workouts { get; set; } = new List<Workout>();
-        public List<CompletedWorkout> CompletedWorkouts { get; set; } = new List<CompletedWorkout>();
     }
 }
