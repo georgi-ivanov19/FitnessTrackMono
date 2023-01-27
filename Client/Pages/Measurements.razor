@@ -52,7 +52,7 @@
                     TItem="Measurement">
                                                 <Template Context="measurement">
                                                     <RadzenIcon Icon="calendar_today" Style="font-size: 16px" />
-                                                        <b>@measurement.Date.ToShortDateString()</b> -
+                                                        <b>@measurement.Date.ToString("dd MMM yyyy")</b> -
                                                         <span><b> @measurement.Value</b>@measurement.Unit </span>
                                                         <RadzenButton Variant="Radzen.Variant.Text" Click=@(args => ShowForm(measurement.Id)) Icon="edit" ButtonS t yle="Radzen.ButtonStyle.Info" Text="Edit" Size="Radzen.ButtonSize.Small" class="mb-2" />
                                                         <RadzenButton Variant="Radzen.Variant.Text" Click=@(args => DeleteMeasurement(measurement.Id)) Icon="delete" ButtonStyle="Radzen.ButtonStyle.Danger" Text="Delete" Size="Radzen.ButtonSize.Small" class="mb-2" />

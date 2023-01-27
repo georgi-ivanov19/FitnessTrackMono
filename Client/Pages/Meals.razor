@@ -25,7 +25,6 @@
     </div>
 
     <div class="container-fluid bars">
-
         <RadzenText TextStyle="TextStyle.Overline">Calories </RadzenText>
         <RadzenProgressBar ProgressBarStyle="Radzen.ProgressBarStyle.Secondary" Value=@MealService.CalculateMacros(dayMeals).Calories Max=@targets.Calories ShowValue="true" Mode="Radzen.ProgressBarMode.Determinate" />
         <RadzenText TextStyle="TextStyle.Overline"> @MealService.CalculateMacros(dayMeals).Calories / @targets.Calories</RadzenText>
@@ -42,7 +41,6 @@
         <RadzenProgressBar ProgressBarStyle="Radzen.ProgressBarStyle.Warning" Value=@MealService.CalculateMacros(dayMeals).Fats Max=@targets.Fats ShowValue="true" Mode="Radzen.ProgressBarMode.Determinate" />
         <RadzenText TextStyle="TextStyle.Overline"> @MealService.CalculateMacros(dayMeals).Fats / @targets.Fats</RadzenText>
         <br />
-
     </div>
 
     @if (dayMeals.Count() != 0)
