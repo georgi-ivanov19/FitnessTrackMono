@@ -4,12 +4,18 @@
 
 <EditForm Model="e" OnSubmit="HandleSubmit">
     <div>
-        <label for="name"> Name </label>
-        <RadzenTextBox id="name" @bind-Value="e.Name" class="form-control"></RadzenTextBox>
-        <label for="target-muscle"> Target Muscle </label>
-        <RadzenTextBox id="target-muscle" @bind-Value="e.TargetMuscle" Disabled class="form-control"></RadzenTextBox>
-        <label for="sets-num"> Number of sets </label>
-        <RadzenNumeric id="sets-num" @bind-Value="e.DefaultNumberOfSets" class="form-control"></RadzenNumeric>
+        <div class="my-2">
+            <label for="name"> Name </label>
+            <RadzenTextBox id="name" @bind-Value="e.Name" class="form-control"></RadzenTextBox>
+        </div>
+        <div class="my-2">
+            <label for="target-muscle"> Target Muscle </label>
+            <RadzenTextBox id="target-muscle" @bind-Value="e.TargetMuscle" class="form-control"></RadzenTextBox>
+        </div>
+        <div class="my-2">
+            <label for="sets-num"> Number of sets </label>
+            <RadzenNumeric id="sets-num" @bind-Value="e.DefaultNumberOfSets" class="form-control ms-2" Style="width: 60px;"></RadzenNumeric>
+        </div>
     </div>
     <br />
     <button type="submit" class="btn btn-primary">@btnText</button>
@@ -28,7 +34,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        btnText = Id == null ? "Create" : "Confirm";
+        btnText = Id == null ? "Add" : "Confirm";
     }
 
     protected override async Task OnParametersSetAsync()
@@ -36,7 +42,6 @@
         if (Id == null)
         {
             // TODO:
-            e.TargetMuscle = "Bicep";
             e.WorkoutId = WorkoutId;
         }
         else
