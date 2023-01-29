@@ -16,11 +16,11 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
             _http = http;
             _navManager = navManager;
         }
-       
+
         public async Task GetMeasurements()
         {
             var result = await _http.GetFromJsonAsync<List<Measurement>>("api/measurement");
-            if(result != null)
+            if (result != null)
             {
                 this.Measurements = result;
             }

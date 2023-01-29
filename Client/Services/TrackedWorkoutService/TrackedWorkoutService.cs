@@ -50,7 +50,7 @@ namespace FitnessTrackMono.Client.Services.TrackedWorkoutService
             var response = await result.Content.ReadFromJsonAsync<TrackedWorkout>();
             int index = TrackedWorkouts.FindIndex(w => w.Id == workout.Id);
             if (index != -1)
-               TrackedWorkouts[index] = workout;
+                TrackedWorkouts[index] = workout;
             _navManager.NavigateTo($"workout/{response.ParentWorkoutId}");
         }
 

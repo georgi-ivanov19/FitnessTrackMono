@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @inject NavigationManager Navigation
 <AuthorizeView>
-    <Authorized> 
+    <Authorized>
         <a href="authentication/profile">Hello, @context.User.Identity?.Name!</a>
         @*<button class="nav-link btn btn-link" @onclick="BeginLogOut">Log out</button>*@
         @*<RadzenButton Click="BeginLogOut" Icon="logout" ButtonStyle="Radzen.ButtonStyle.Danger" Text="Log out" Size="" /> *@

@@ -13,7 +13,7 @@
     <div class="mb-3">
         <RadzenText TextStyle="TextStyle.DisplayH5" class="d-inline"> Upcoming workouts </RadzenText>
         <RadzenRow>
-            @foreach(var item in WorkoutService.UpcomingWorkouts())
+            @foreach (var item in WorkoutService.UpcomingWorkouts())
             {
                 var nextDate = nextDateForDayOfWeek(item.DayOfWeek);
                 <RadzenColumn>
@@ -22,9 +22,10 @@
                     </span>
                     -
                     <RadzenText class="d-inline p-2">@nextDate</RadzenText>
-                    @if(nextDate.EndsWith("Today)")){
+                    @if (nextDate.EndsWith("Today)"))
+                    {
                         <RadzenButton class="p-2" Variant="Radzen.Variant.Text" Click=@(args => StartWorkout(item)) Icon="play_circle_filled"
-                                      ButtonStyle="Radzen.ButtonStyle.Success" Text="Start" Size="Radzen.ButtonSize.Small" />
+                              ButtonStyle="Radzen.ButtonStyle.Success" Text="Start" Size="Radzen.ButtonSize.Small" />
                     }
                 </RadzenColumn>
             }

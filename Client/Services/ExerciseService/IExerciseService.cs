@@ -9,7 +9,6 @@ namespace FitnessTrackMono.Client.Services.ExerciseService
         Task GetExercises(int workoutId);
         Task<Exercise> GetSingleExercise(int id);
         Task CreateExercise(Exercise ex);
-
         Task UpdateExercise(Exercise ex);
         Task DeleteExercise(int id);
 
