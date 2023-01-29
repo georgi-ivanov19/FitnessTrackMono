@@ -10,9 +10,10 @@ namespace FitnessTrackMono.Shared.Models
     {
         public int Id { get; set; }
         public int ExerciseId { get; set; }
-        public string Unit { get; set; } = string.Empty;
-        public int Value { get; set; }
+        public int? Reps { get; set; }
+        public double? Weight { get; set; }
         public bool IsWarmup { get; set; }
-
+        public bool IsComplete { get; set; }
+        public int TrackedWorkoutId { get; set; }
     }
 }
