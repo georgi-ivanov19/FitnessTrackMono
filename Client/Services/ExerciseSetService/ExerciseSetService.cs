@@ -59,8 +59,7 @@ namespace FitnessTrackMono.Client.Services.ExerciseSetService
             // TODO: null check
             int index = ExerciseSets.FindIndex(e => e.Id == es.Id);
             if (index != -1)
-                ExerciseSets[index] = es;
-            _navManager.NavigateTo($"track/{es.TrackedWorkoutId}");
+                ExerciseSets[index] = es;           
         }
 
         public async Task CreateExerciseSetRange(Workout w, TrackedWorkout tw)

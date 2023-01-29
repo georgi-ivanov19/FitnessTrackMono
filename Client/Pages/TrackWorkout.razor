@@ -17,6 +17,7 @@
     <RadzenButton Click=@(args => FinishWorkout(trackedWorkout)) Variant="Radzen.Variant.Text" Icon="sports_score"
                   ButtonStyle="Radzen.ButtonStyle.Info" Text="Finish" Size="Radzen.ButtonSize.Large" style="vertical-align: top;" />
 
+    <RadzenProgressBar Value="setsCompleted" Max="totalSets" class="my-4"/>
     @if (latestCompleted != null)
     {
         @foreach (var item in parentWorkout.Exercises)
@@ -92,6 +93,8 @@
     List<ExerciseSet>? currentSets;
     Workout parentWorkout = new Workout();
     List<Tuple<ExerciseSet>> zipped = new List<Tuple<ExerciseSet>>();
+    int setsCompleted = 0;
+    int totalSets = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -99,11 +102,13 @@
         latestCompleted = await TrackedWorkoutService.GetLatestCompleted(trackedWorkout.ParentWorkoutId);
         parentWorkout = await WorkoutService.GetSingleWorkout(trackedWorkout.ParentWorkoutId);
         currentSets = await ExerciseSetService.GetExerciseSets(trackedWorkout.Id);
+        setsCompleted = currentSets.Where(s => s.IsComplete == true).Count();
+        totalSets = currentSets.Count;
     }
 
     private void SetCompleted(bool value, ExerciseSet set)
     {
-        Console.WriteLine($"{set.Weight}x{set.Reps}, ID={set.Id}, TWID={set.TrackedWorkoutId} set iscomplete={set.IsComplete}, checkbox={value}");
+        setsCompleted = value ? setsCompleted += 1 : setsCompleted -= 1;
         ExerciseSetService.UpdateExerciseSet(set);
     }
 
