@@ -3,12 +3,14 @@
 @using FitnessTrackMono.Shared.Models;
 @using FitnessTrackMono.Client.Services.WorkoutService;
 @using FitnessTrackMono.Client.Services.ExerciseService;
+@using FitnessTrackMono.Client.Services.ExerciseSetService;
 @using FitnessTrackMono.Client.Services.TrackedWorkoutService;
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
 @inject Radzen.DialogService DialogService;
 @inject IWorkoutService WorkoutService;
 @inject IExerciseService ExerciseService;
+@inject IExerciseSetService ExerciseSetService;
 @inject ITrackedWorkoutService TrackedWorkoutService;
 
 <PageTitle> @workout.Name </PageTitle>
@@ -50,9 +52,10 @@
         await ExerciseService.GetExercises(Id);
     }
 
-    private void StartWorkout(Workout w)
+    private async void StartWorkout(Workout w)
     {
-        TrackedWorkoutService.StartWorkout(w);
+        var tw = await TrackedWorkoutService.StartWorkout(w);
+        await ExerciseSetService.CreateExerciseSetRange(w, tw);
     }
 
     private async Task ShowForm(int? id)

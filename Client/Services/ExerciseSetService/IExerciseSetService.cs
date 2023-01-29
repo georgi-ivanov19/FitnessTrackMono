@@ -6,9 +6,10 @@ namespace FitnessTrackMono.Client.Services.ExerciseSetService
     {
         List<ExerciseSet> ExerciseSets { get; set; }
 
-        Task GetExerciseSets(int exId);
+        Task<List<ExerciseSet>> GetExerciseSets(int twId);
         Task<Exercise> GetSingleExerciseSet(int id);
         Task CreateExerciseSet(ExerciseSet es);
+        Task CreateExerciseSetRange(Workout w, TrackedWorkout tw);
         Task UpdateExerciseSet(ExerciseSet es);
         Task DeleteExerciseSet(int id);
     }

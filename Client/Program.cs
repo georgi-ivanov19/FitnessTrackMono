@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Radzen;
+using FitnessTrackMono.Client.Services.ExerciseSetService;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -23,6 +24,7 @@ builder.Services.AddScoped<IMealService, MealService>();
 builder.Services.AddScoped<IWorkoutService, WorkoutService>();
 builder.Services.AddScoped<ITrackedWorkoutService, TrackedWorkoutService>();
 builder.Services.AddScoped<IExerciseService, ExerciseService>();
+builder.Services.AddScoped<IExerciseSetService, ExerciseSetService>();
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddApiAuthorization();
 

@@ -1,38 +1,129 @@
 ﻿@page "/track/{id:int}"
 
+@using FitnessTrackMono.Client.Services.ExerciseSetService;
 @using FitnessTrackMono.Shared.Models;
 @using FitnessTrackMono.Client.Services.TrackedWorkoutService;
 @using FitnessTrackMono.Client.Services.WorkoutService;
+
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 
 @inject ITrackedWorkoutService TrackedWorkoutService;
 @inject IWorkoutService WorkoutService;
+@inject IExerciseSetService ExerciseSetService;
 
 <PageTitle> Tracking @parentWorkout.Name </PageTitle>
 <RadzenCard>
-    <RadzenText TextStyle="TextStyle.H5" class="d-inline me-1"> Tracking: @parentWorkout.Name </RadzenText>
+    <RadzenText TextStyle="TextStyle.H4" class="d-inline me-1"> Tracking: @parentWorkout.Name </RadzenText>
     <RadzenButton Click=@(args => FinishWorkout(trackedWorkout)) Variant="Radzen.Variant.Text" Icon="sports_score"
-                          ButtonStyle="Radzen.ButtonStyle.Info" Text="Finish" Size="Radzen.ButtonSize.Medium" />
+                  ButtonStyle="Radzen.ButtonStyle.Info" Text="Finish" Size="Radzen.ButtonSize.Large" style="vertical-align: top;" />
+
+    @if (latestCompleted != null)
+    {
+        @foreach (var item in parentWorkout.Exercises)
+        {
+            <RadzenText TextStyle="TextStyle.H5"> @item.Name </RadzenText>
+            <RadzenRow>
+                <RadzenColumn Size="4">
+                    <RadzenText TextStyle="TextStyle.Subtitle1"> Previous sets </RadzenText>
+                </RadzenColumn>
+                <RadzenColumn Size="4">
+                    <RadzenText TextStyle="TextStyle.Subtitle1"> Current sets </RadzenText>
+                </RadzenColumn>
+            </RadzenRow>
+            <RadzenRow>
+                <RadzenColumn Size="1">
+                    <RadzenText TextStyle="TextStyle.Subtitle2"> Weight </RadzenText>
+                </RadzenColumn>
+                <RadzenColumn Size="1">
+                    <RadzenText TextStyle="TextStyle.Subtitle2"> Reps </RadzenText>
+                </RadzenColumn>
+                <RadzenColumn Size="2" />
+                <RadzenColumn Size="1">
+                    <RadzenText TextStyle="TextStyle.Subtitle2"> Weight </RadzenText>
+                </RadzenColumn>
+                <RadzenColumn Size="1">
+                    <RadzenText TextStyle="TextStyle.Subtitle2"> Reps </RadzenText>
+                </RadzenColumn>
+                <RadzenColumn Size="1">
+                </RadzenColumn>
+            </RadzenRow>
+            foreach (var zipped in zippedSetsForExercise(currentSets, item.Id))
+            {
+                <RadzenRow>
+                    <RadzenColumn Size="1">
+                        <RadzenText TextStyle="TextStyle.Button"> @zipped.Item1.Weight</RadzenText>
+                    </RadzenColumn>
+                    <RadzenColumn Size="1">
+                        <RadzenText TextStyle="TextStyle.Button"> @zipped.Item1.Reps</RadzenText>
+                    </RadzenColumn>
+                    <RadzenColumn Size="2" />
+
+
+                    <RadzenColumn Size="1">
+                        <RadzenNumeric TValue="double?" @bind-Value=@zipped.Item2.Weight Disabled="@zipped.Item2.IsComplete" ShowUpDown="false" class="my-1" Style="width: 100px;"></RadzenNumeric>
+                    </RadzenColumn>
+                    <RadzenColumn Size="1">
+                        <RadzenNumeric TValue="int?" @bind-Value=@zipped.Item2.Reps Disabled="@zipped.Item2.IsComplete" ShowUpDown="false" class="my-1" Style="width: 64px;"></RadzenNumeric>
+                    </RadzenColumn>
+                    <RadzenColumn Size="1">
+                        <RadzenCheckBox TValue="bool" Disabled="zipped.Item2.Weight == null || zipped.Item2.Reps == null"
+                            Change="@(args => SetCompleted(args, zipped.Item2))" @bind-Value=@zipped.Item2.IsComplete style="vertical-align: unset;"></RadzenCheckBox>
+                    </RadzenColumn>
+                </RadzenRow>
+
+
+            }
+            <hr class="my-3 w-100" />
+        }
+        <div style="text-align: right;">
+            <RadzenButton Click=@(args => FinishWorkout(trackedWorkout)) Variant="Radzen.Variant.Text" Icon="sports_score"
+                      ButtonStyle="Radzen.ButtonStyle.Info" Text="Finish" Size="Radzen.ButtonSize.Large" class="me-auto" />
+        </div>
+    }
+
 </RadzenCard>
 
 @code {
-
     [Parameter]
     public int Id { get; set; }
 
     TrackedWorkout trackedWorkout = new TrackedWorkout();
+    TrackedWorkout? latestCompleted = null;
+    List<ExerciseSet>? currentSets;
     Workout parentWorkout = new Workout();
-
+    List<Tuple<ExerciseSet>> zipped = new List<Tuple<ExerciseSet>>();
 
     protected override async Task OnInitializedAsync()
     {
         trackedWorkout = await TrackedWorkoutService.GetSingleWorkout(Id);
+        latestCompleted = await TrackedWorkoutService.GetLatestCompleted(trackedWorkout.ParentWorkoutId);
         parentWorkout = await WorkoutService.GetSingleWorkout(trackedWorkout.ParentWorkoutId);
+        currentSets = await ExerciseSetService.GetExerciseSets(trackedWorkout.Id);
+    }
+
+    private void SetCompleted(bool value, ExerciseSet set)
+    {
+        Console.WriteLine($"{set.Weight}x{set.Reps}, ID={set.Id}, TWID={set.TrackedWorkoutId} set iscomplete={set.IsComplete}, checkbox={value}");
+        ExerciseSetService.UpdateExerciseSet(set);
     }
 
     private void FinishWorkout(TrackedWorkout w)
     {
         TrackedWorkoutService.FinishWorkout(w);
-        Console.WriteLine($"Workout {parentWorkout.Name} stopped!");
+    }
+
+    private List<ExerciseSet> latestSetsForExercise(int exId)
+    {
+        return latestCompleted.ExerciseSetsCompleted.Where(set => set.ExerciseId == exId).ToList();
+    }
+
+    private List<ExerciseSet> currentSetsForExercise(List<ExerciseSet> es, int exId)
+    {
+        return es.Where(e => e.ExerciseId == exId).ToList();
+    }
+
+    private List<Tuple<ExerciseSet, ExerciseSet>> zippedSetsForExercise(List<ExerciseSet> es, int exId)
+    {
+        return latestSetsForExercise(exId).Zip(currentSetsForExercise(currentSets, exId), (first, second) => Tuple.Create<ExerciseSet, ExerciseSet>(first, second)).ToList();
     }
 }

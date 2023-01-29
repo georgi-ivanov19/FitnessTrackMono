@@ -32,13 +32,14 @@ namespace FitnessTrackMono.Client.Services.ExerciseSetService
             _navManager.NavigateTo("workouts");
         }
 
-        public async Task GetExerciseSets(int exId)
+        public async Task<List<ExerciseSet>> GetExerciseSets(int twId)
         {
-            var result = await _http.GetFromJsonAsync<List<ExerciseSet>>($"api/ExerciseSets/GetExerciseSets/{exId}");
+            var result = await _http.GetFromJsonAsync<List<ExerciseSet>>($"api/ExerciseSets/GetExerciseSets/{twId}");
             if (result != null)
             {
-                this.ExerciseSets = result;
+                return result;
             }
+            return null;
         }
 
         public async Task<Exercise> GetSingleExerciseSet(int id)
@@ -59,7 +60,28 @@ namespace FitnessTrackMono.Client.Services.ExerciseSetService
             int index = ExerciseSets.FindIndex(e => e.Id == es.Id);
             if (index != -1)
                 ExerciseSets[index] = es;
-            _navManager.NavigateTo("workouts");
+            _navManager.NavigateTo($"track/{es.TrackedWorkoutId}");
+        }
+
+        public async Task CreateExerciseSetRange(Workout w, TrackedWorkout tw)
+        {
+            List<ExerciseSet> list = new List<ExerciseSet>();
+            foreach (var item in w.Exercises)
+            {
+                for (int i = 0; i < item.DefaultNumberOfSets; i++)
+                {
+                    list.Add(new ExerciseSet
+                    {
+                        Weight = null,
+                        Reps = null,
+                        ExerciseId = item.Id,
+                        TrackedWorkoutId = tw.Id,
+                    });
+                }
+            }
+            var result = await _http.PostAsJsonAsync($"api/ExerciseSets/range", list);
+            var response = await result.Content.ReadFromJsonAsync<List<ExerciseSet>>();
+            ExerciseSets = response;
         }
     }
 }
