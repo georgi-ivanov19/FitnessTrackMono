@@ -4,6 +4,7 @@ using FitnessTrackMono.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitnessTrackMono.Server.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230128165009_AddWeightToSets")]
+    partial class AddWeightToSets
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -276,20 +279,21 @@ namespace FitnessTrackMono.Server.Data.Migrations
                     b.Property<int>("ExerciseId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsComplete")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsWarmup")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("Reps")
+                    b.Property<int?>("TrackedWorkoutId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TrackedWorkoutId")
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Value")
                         .HasColumnType("int");
 
-                    b.Property<double?>("Weight")
-                        .HasColumnType("float");
+                    b.Property<int?>("Weight")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -594,9 +598,7 @@ namespace FitnessTrackMono.Server.Data.Migrations
 
                     b.HasOne("FitnessTrackMono.Shared.Models.TrackedWorkout", null)
                         .WithMany("ExerciseSetsCompleted")
-                        .HasForeignKey("TrackedWorkoutId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TrackedWorkoutId");
                 });
 
             modelBuilder.Entity("FitnessTrackMono.Shared.Models.Meal", b =>
