@@ -3,9 +3,12 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 @using FitnessTrackMono.Client.Services.WorkoutService;
 @using FitnessTrackMono.Client.Services.TrackedWorkoutService;
+@using FitnessTrackMono.Client.Services.ExerciseSetService
 @inject HttpClient Http;
+@inject NavigationManager NavManager
 @inject IWorkoutService WorkoutService;
 @inject ITrackedWorkoutService TrackedWorkoutService;
+@inject IExerciseSetService ExerciseSetService;
 @inject NavigationManager NavManager;
 @inject Radzen.DialogService DialogService;
 
@@ -113,8 +116,10 @@
         await WorkoutService.DeleteWorkout(id);
     }
 
-    private void StartWorkout(Workout w)
+    private async void StartWorkout(Workout w)
     {
-        TrackedWorkoutService.StartWorkout(w);
+        var tw = await TrackedWorkoutService.StartWorkout(w);
+        await ExerciseSetService.CreateExerciseSetRange(w, tw);
+        NavManager.NavigateTo($"track/{tw.Id}");
     }
 }

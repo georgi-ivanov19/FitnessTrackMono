@@ -28,7 +28,6 @@ namespace FitnessTrackMono.Client.Services.TrackedWorkoutService
             var response = await result.Content.ReadFromJsonAsync<TrackedWorkout>();
             // TODO: null check
             TrackedWorkouts.Add(response);
-            _navManager.NavigateTo($"track/{response.Id}");
             return response;
         }
 

@@ -12,6 +12,7 @@
 @inject IExerciseService ExerciseService;
 @inject IExerciseSetService ExerciseSetService;
 @inject ITrackedWorkoutService TrackedWorkoutService;
+@inject NavigationManager NavManager;
 
 <PageTitle> @workout.Name </PageTitle>
 <RadzenCard>
@@ -56,6 +57,7 @@
     {
         var tw = await TrackedWorkoutService.StartWorkout(w);
         await ExerciseSetService.CreateExerciseSetRange(w, tw);
+        NavManager.NavigateTo($"track/{tw.Id}");
     }
 
     private async Task ShowForm(int? id)
