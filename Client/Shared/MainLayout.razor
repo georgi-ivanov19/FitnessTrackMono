@@ -1,11 +1,10 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@inject NavigationManager Navigation
+@inherits LayoutComponentBase
 
 <div>
     <RadzenDialog />
-
-    @* <div class="col-md-3">
-    <NavMenu />
-    </div> *@
     <RadzenLayout>
         <RadzenHeader>
             <div class="d-flex align-items-center">
@@ -18,10 +17,24 @@
         </RadzenHeader>
         <RadzenSidebar @bind-Expanded="@sidebar1Expanded">
             <RadzenPanelMenu>
-                <RadzenPanelMenuItem Text="Dashboard" Icon="dashboard" Path="/" Class="m-2" />
-                <RadzenPanelMenuItem Text="Measurements" Icon="query_stats" Path="measurements" Class="m-2" />
-                <RadzenPanelMenuItem Text="Meals" Icon="restaurant" Path="meals" Class="m-2" />
-                <RadzenPanelMenuItem Text="Workouts" Icon="fitness_center" Path="workouts" Class="m-2" />
+                <RadzenPanelMenuItem Text="Dashboard" Icon="dashboard" Path="/" Class="my-2" />
+                <RadzenPanelMenuItem Text="Measurements" Icon="query_stats" Path="measurements" Class="my-2" />
+                <RadzenPanelMenuItem Text="Meals" Icon="restaurant" Path="meals" Class="my-2" />
+                <RadzenPanelMenuItem Text="Workouts" Icon="fitness_center" Path="workouts" Class="my-2" />
+                <span style="position: fixed; bottom: 0; display: flex;">
+                    <AuthorizeView>
+                        <Authorized>
+                            <RadzenPanelMenuItem Text="Log out" Icon="logout" @onmouseup="@(() => BeginSignOut())" Class="my-2 d-inline">
+                            </RadzenPanelMenuItem>
+                            <RadzenPanelMenuItem Text="Profile" Icon="person" Path="authentication/profile" Class="my-2 ps-5 d-inline">
+                            </RadzenPanelMenuItem>            
+                        </Authorized>
+                        <NotAuthorized>
+                            <RadzenPanelMenuItem Text="Register" Icon="assignment_ind" Path="authentication/register" Class="my-2 d-inline" />
+                            <RadzenPanelMenuItem Text="Log In" Icon="login" Path="authentication/login" Class="my-2 ps-5 d-inline" />
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </span>
             </RadzenPanelMenu>
         </RadzenSidebar>
         <RadzenBody>
@@ -32,4 +45,10 @@
 </div>
 @code {
     bool sidebar1Expanded = true;
+
+    protected async Task BeginSignOut()
+    {
+        // await SignOutManager.SetSignOutState();
+        Navigation.NavigateToLogout("authentication/logout");
+    }
 }
