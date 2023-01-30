@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Radzen;
 using FitnessTrackMono.Client.Services.ExerciseSetService;
+using Blazored.LocalStorage;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -26,6 +27,7 @@ builder.Services.AddScoped<ITrackedWorkoutService, TrackedWorkoutService>();
 builder.Services.AddScoped<IExerciseService, ExerciseService>();
 builder.Services.AddScoped<IExerciseSetService, ExerciseSetService>();
 builder.Services.AddScoped<DialogService>();
+builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddApiAuthorization();
 
 await builder.Build().RunAsync();

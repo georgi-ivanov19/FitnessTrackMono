@@ -42,18 +42,6 @@ namespace FitnessTrackMono.Client.Services.TrackedWorkoutService
             throw new Exception("Workout not found");
         }
 
-        public async Task FinishWorkout(TrackedWorkout workout)
-        {
-            workout.IsCompleted = true;
-            workout.EndTime = DateTime.Now;
-            var result = await _http.PutAsJsonAsync($"api/trackedworkouts/{workout.Id}", workout);
-            var response = await result.Content.ReadFromJsonAsync<TrackedWorkout>();
-            int index = TrackedWorkouts.FindIndex(w => w.Id == workout.Id);
-            if (index != -1)
-                TrackedWorkouts[index] = workout;
-            _navManager.NavigateTo($"workout/{response.ParentWorkoutId}");
-        }
-
         public async Task<TrackedWorkout?> GetLatestCompleted(int id)
         {
             var result = await _http.GetFromJsonAsync<TrackedWorkout>($"api/trackedworkouts/GetLatestCompleted/{id}");
