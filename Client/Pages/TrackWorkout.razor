@@ -17,7 +17,12 @@
     <RadzenButton Click=@(args => FinishWorkout(trackedWorkout)) Variant="Radzen.Variant.Text" Icon="sports_score"
                   ButtonStyle="Radzen.ButtonStyle.Info" Text="Finish" Size="Radzen.ButtonSize.Large" style="vertical-align: top;" />
 
-    <RadzenProgressBar Value="setsCompleted" Max="totalSets" class="my-4"/>
+    <div class="top-bar">
+        <RadzenText TextStyle="TextStyle.Overline"> Progress </RadzenText>
+        <RadzenProgressBar ProgressBarStyle="Radzen.ProgressBarStyle.Success" Value="setsCompleted" Max="totalSets" class="my-2" />
+        <RadzenText TextStyle="TextStyle.Overline"> @($"Sets Completed: {setsCompleted}/{totalSets}") </RadzenText>
+        <RadzenText Class="ms-5" TextStyle="TextStyle.Overline"> Total Volume <b>@trackedWorkout.TotalVolume</b> (kg) </RadzenText>
+    </div>
     @if (latestCompleted != null)
     {
         @foreach (var item in parentWorkout.Exercises)
@@ -104,12 +109,23 @@
         currentSets = await ExerciseSetService.GetExerciseSets(trackedWorkout.Id);
         setsCompleted = currentSets.Where(s => s.IsComplete == true).Count();
         totalSets = currentSets.Count;
+
     }
 
     private void SetCompleted(bool value, ExerciseSet set)
     {
-        setsCompleted = value ? setsCompleted += 1 : setsCompleted -= 1;
+        if (value)
+        {
+            trackedWorkout.TotalVolume += (double)set.Weight! * (double)set.Reps!;
+            setsCompleted = setsCompleted += 1;
+        }
+        else
+        {
+            trackedWorkout.TotalVolume -= (double)set.Weight! * (double)set.Reps!;
+            setsCompleted = setsCompleted -= 1;
+        }
         ExerciseSetService.UpdateExerciseSet(set);
+        TrackedWorkoutService.UpdateTrackedWorkout(trackedWorkout);
     }
 
     private void FinishWorkout(TrackedWorkout w)

@@ -63,5 +63,14 @@ namespace FitnessTrackMono.Client.Services.TrackedWorkoutService
             }
             return null;
         }
+
+        public async Task UpdateTrackedWorkout(TrackedWorkout workout)
+        {
+            var result = await _http.PutAsJsonAsync($"api/trackedworkouts/{workout.Id}", workout);
+            var response = await result.Content.ReadFromJsonAsync<TrackedWorkout>();
+            int index = TrackedWorkouts.FindIndex(w => w.Id == workout.Id);
+            if (index != -1)
+                TrackedWorkouts[index] = workout;
+        }
     }
 }
