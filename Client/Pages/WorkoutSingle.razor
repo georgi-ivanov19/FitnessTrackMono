@@ -37,10 +37,12 @@
             </RadzenLineSeries>
         </RadzenChart>
     }
-
-    <div class="notes mt-2">
-        <WorkoutNotes Workout="@workout" />
-    </div>
+    @if (latestCompleted != null)
+    {
+        <div class="summary m-2">
+            <WorkoutSummary workout="@latestCompleted" parentWorkout="@workout" />
+        </div>
+    }
     <div class="exercises mt-2">
         <RadzenText TextStyle="TextStyle.H5" class="d-inline me-1"> Exercises </RadzenText>
         <RadzenButton Click=@(args => ShowForm(null)) Icon="add" Size="Radzen.ButtonSize.Medium" ButtonStyle="Radzen.ButtonStyle.Primary" Class="rz-border-radius-10 rz-shadow-6" />
@@ -66,12 +68,21 @@
 
     Workout workout = new Workout();
     List<TrackedWorkout> trackedWorkouts = new List<TrackedWorkout>();
+    TrackedWorkout? latestCompleted;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        workout = await WorkoutService.GetSingleWorkout(Id);
-        trackedWorkouts = workout.TrackedWorkouts.Where(tw => tw.IsCompleted == true).ToList();
-        await ExerciseService.GetExercises(Id);
+        try
+        {
+            workout = await WorkoutService.GetSingleWorkout(Id);
+            trackedWorkouts = workout.TrackedWorkouts.Where(tw => tw.IsCompleted == true).ToList();
+            latestCompleted = trackedWorkouts.OrderByDescending(w => w.EndTime).First();
+            await ExerciseService.GetExercises(Id);
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
     }
 
     private async void StartWorkout(Workout w)
