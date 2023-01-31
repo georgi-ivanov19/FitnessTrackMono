@@ -1,4 +1,5 @@
-﻿using FitnessTrackMono.Client.Pages;
+﻿using Blazored.LocalStorage;
+using FitnessTrackMono.Client.Pages;
 using FitnessTrackMono.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
@@ -9,12 +10,14 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
     {
         private readonly HttpClient _http;
         private readonly NavigationManager _navManager;
+        private ILocalStorageService _localStorage;
         public List<Workout> Workouts { get; set; } = new List<Workout>();
 
-        public WorkoutService(HttpClient http, NavigationManager navManager)
+        public WorkoutService(HttpClient http, NavigationManager navManager, ILocalStorageService localStorage)
         {
             _http = http;
             _navManager = navManager;
+            _localStorage = localStorage;
         }
         public async Task CreateWorkout(Workout workout)
         {
@@ -22,6 +25,7 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
             var response = await result.Content.ReadFromJsonAsync<Workout>();
             // TODO: null check
             Workouts.Add(response);
+            await _localStorage.SetItemAsync("Workouts", Workouts);
             _navManager.NavigateTo($"workout/{response.Id}");
         }
 
@@ -29,12 +33,23 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
         {
             await _http.DeleteAsync($"api/workouts/{id}");
             Workouts.RemoveAt(Workouts.FindIndex(r => r.Id == id));
-            _navManager.NavigateTo("workouts");
+            await _localStorage.SetItemAsync("Workouts", Workouts);
         }
 
         public async Task<Workout> GetSingleWorkout(int id)
         {
-            var result = await _http.GetFromJsonAsync<Workout>($"api/workouts/GetWorkout/{id}");
+            var workoutsInLocalStorage = await _localStorage.ContainKeyAsync("Workouts");
+            Workout? result;
+            if (workoutsInLocalStorage)
+            {
+                var workouts = await _localStorage.GetItemAsync<List<Workout>>("Workouts");
+                result = workouts.First(w => w.Id == id);
+            }
+            else
+            {
+                result = await _http.GetFromJsonAsync<Workout>($"api/workouts/GetWorkout/{id}");
+            }
+
             if (result != null)
             {
                 return result;
@@ -44,7 +59,17 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
 
         public async Task GetWorkouts()
         {
-            var result = await _http.GetFromJsonAsync<List<Workout>>($"api/workouts");
+            List<Workout>? result;
+            var workoutsInLocalStorage = await _localStorage.ContainKeyAsync("Workouts");
+            if (workoutsInLocalStorage)
+            {
+                result = await _localStorage.GetItemAsync<List<Workout>>("Workouts");
+            } else
+            {
+                result = await _http.GetFromJsonAsync<List<Workout>>($"api/workouts");
+                await _localStorage.SetItemAsync<List<Workout>>("Workouts", result);
+            }
+
             if (result != null)
             {
                 this.Workouts = result;
@@ -58,7 +83,10 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
             // TODO: null check
             int index = Workouts.FindIndex(w => w.Id == workout.Id);
             if (index != -1)
+            {
                 Workouts[index] = workout;
+                await _localStorage.SetItemAsync("Workouts", Workouts);
+            }
 
             if (fromForm)
             {

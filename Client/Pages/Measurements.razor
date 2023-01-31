@@ -31,7 +31,7 @@
                                 No entries for this measurement type
                             </RadzenText>
                             <RadzenButton Click=@(args => ShowForm(null, type)) Icon="add" Size="Radzen.ButtonSize.Medium"
-                                  ButtonStyle="Radzen.ButtonStyle.Primary" Class="rz-border-radius-10 rz-shadow-6" />
+                                        ButtonStyle="Radzen.ButtonStyle.Primary" Class="rz-border-radius-10 rz-shadow-6" />
                         </RadzenChart>
                     }
                     else
@@ -39,7 +39,7 @@
                         <RadzenChart class="mb-5">
                             <RadzenLegend Visible="false" />
                             <RadzenLineSeries Smooth="false" Data="measurementsByType(type)" CategoryProperty="Date" Title=@type
-                                      ValueProperty="Value">
+                                            ValueProperty="Value">
                                 <ChildContent>
                                     <RadzenMarkers MarkerType="MarkerType.Circle" Fill="#874EFE" StrokeWidth="1" Size="6" />
                                     <RadzenSeriesDataLabels />

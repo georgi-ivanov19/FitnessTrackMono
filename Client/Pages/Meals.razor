@@ -117,7 +117,7 @@
                                     @($"Calories: {meal.TotalCalories}kcals | Protein: {meal.Protein}g | Carbohydrates: {meal.Carbohydrates}g | Fats: {meal.Fats}g")
 
                                 </RadzenText>
-                                <RadzenButton Variant="Radzen.Variant.Text" Click=@(args => ShowForm(meal.Id)) Icon="edit" ButtonStyle="Radzen.ButtonStyle.Info" Text="Edit" Size="Radzen.ButtonSize.Small" class="mb-2" />
+                                <RadzenButton Variant="Radzen.Variant.Text" Click=@(args => ShowForm(meal.Id, meal.Date)) Icon="edit" ButtonStyle="Radzen.ButtonStyle.Info" Text="Edit" Size="Radzen.ButtonSize.Small" class="mb-2" />
                                 <RadzenButton Variant="Radzen.Variant.Text" Click=@(args => DeleteMeal(meal.Id)) Icon="delete" ButtonStyle="Radzen.ButtonStyle.Danger" Text="Delete" Size="Radzen.ButtonSize.Small" class="mb-2" />
                             </Template>
                         </RadzenTreeItem>
@@ -141,7 +141,7 @@
                                         $"Calories: {meal.TotalCalories}kcals | Protein: {meal.Protein}g | Carbohydrates: {meal.Carbohydrates}g | Fats: {meal.Fats}g"
                                         )
                                 </RadzenText>
-                                <RadzenButton Variant="Radzen.Variant.Text" Click=@(args => ShowForm(meal.Id)) Icon="edit" ButtonStyle="Radzen.ButtonStyle.Info" Text="Edit" Size="Radzen.ButtonSize.Small" class="mb-2" />
+                                <RadzenButton Variant="Radzen.Variant.Text" Click=@(args => ShowForm(meal.Id, meal.Date)) Icon="edit" ButtonStyle="Radzen.ButtonStyle.Info" Text="Edit" Size="Radzen.ButtonSize.Small" class="mb-2" />
                                 <RadzenButton Variant="Radzen.Variant.Text" Click=@(args => DeleteMeal(meal.Id)) Icon="delete" ButtonStyle="Radzen.ButtonStyle.Danger" Text="Delete" Size="Radzen.ButtonSize.Small" class="mb-2" />
                             </Template>
                         </RadzenTreeItem>
@@ -168,7 +168,7 @@
                                         $"Calories: {meal.TotalCalories}kcals | Protein: {meal.Protein}g | Carbohydrates: {meal.Carbohydrates}g | Fats: {meal.Fats}g"
                                         )
                                 </RadzenText>
-                                <RadzenButton Variant="Radzen.Variant.Text" Click=@(args => ShowForm(meal.Id)) Icon="edit" ButtonStyle="Radzen.ButtonStyle.Info" Text="Edit" Size="Radzen.ButtonSize.Small" class="mb-2" />
+                                <RadzenButton Variant="Radzen.Variant.Text" Click=@(args => ShowForm(meal.Id, meal.Date)) Icon="edit" ButtonStyle="Radzen.ButtonStyle.Info" Text="Edit" Size="Radzen.ButtonSize.Small" class="mb-2" />
                                 <RadzenButton Variant="Radzen.Variant.Text" Click=@(args => DeleteMeal(meal.Id)) Icon="delete" ButtonStyle="Radzen.ButtonStyle.Danger" Text="Delete" Size="Radzen.ButtonSize.Small" class="mb-2" />
                             </Template>
                         </RadzenTreeItem>
@@ -192,7 +192,7 @@
                                         $"Calories: {meal.TotalCalories}kcals | Protein: {meal.Protein}g | Carbohydrates: {meal.Carbohydrates}g | Fats: {meal.Fats}g"
                                         )
                                 </RadzenText>
-                                <RadzenButton Variant="Radzen.Variant.Text" Click=@(args => ShowForm(meal.Id)) Icon="edit" ButtonStyle="Radzen.ButtonStyle.Info" Text="Edit" Size="Radzen.ButtonSize.Small" class="mb-2" />
+                                <RadzenButton Variant="Radzen.Variant.Text" Click=@(args => ShowForm(meal.Id, meal.Date)) Icon="edit" ButtonStyle="Radzen.ButtonStyle.Info" Text="Edit" Size="Radzen.ButtonSize.Small" class="mb-2" />
                                 <RadzenButton Variant="Radzen.Variant.Text" Click=@(args => DeleteMeal(meal.Id)) Icon="delete" ButtonStyle="Radzen.ButtonStyle.Danger" Text="Delete" Size="Radzen.ButtonSize.Small" class="mb-2" />
                             </Template>
                         </RadzenTreeItem>
@@ -216,7 +216,7 @@
         try
         {
             await MealService.GetMeals();
-            dayMeals = MealService.GetMealsByDate(DateTime.Today.Date);
+            dayMeals = MealService.Meals.Where(m => m.Date.Date == date.Date).ToList();
             date = DateTime.Today;
         }
         catch (AccessTokenNotAvailableException exception)
@@ -226,7 +226,7 @@
 
     }
 
-    private async Task ShowForm(int? id, DateTime? date = null)
+    private async Task ShowForm(int? id, DateTime date)
     {
         var title = id == null ? "Add Meal" : "Edit Meal";
         await DialogService.OpenAsync<MealForm>(title,
@@ -239,15 +239,18 @@
                 CloseDialogOnOverlayClick = true
             }
         );
+        dayMeals = MealService.Meals.Where(m => m.Date == date.Date).ToList();
     }
+
     private async Task DeleteMeal(int id)
     {
         await MealService.DeleteMeal(id);
+        dayMeals = MealService.Meals.Where(m => m.Date.Date == date.Date).ToList();
     }
 
     private void DateChanged(string p1)
     {
         date = p1 == "next" ? date.AddDays(1) : date.AddDays(-1);
-        dayMeals = MealService.GetMealsByDate(date);
+        dayMeals = MealService.Meals.Where(m => m.Date.Date == date.Date).ToList();
     }
 }

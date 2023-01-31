@@ -1,4 +1,6 @@
-﻿using FitnessTrackMono.Shared.Models;
+﻿using Blazored.LocalStorage;
+using FitnessTrackMono.Client.Pages;
+using FitnessTrackMono.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using System.Diagnostics.Metrics;
 using System.Net.Http.Json;
@@ -9,17 +11,30 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
     {
         private readonly HttpClient _http;
         private readonly NavigationManager _navManager;
+        private ILocalStorageService _localStorage;
 
         public List<Measurement> Measurements { get; set; } = new List<Measurement>();
-        public MeasurementsService(HttpClient http, NavigationManager navManager)
+        public MeasurementsService(HttpClient http, NavigationManager navManager, ILocalStorageService localStorage)
         {
             _http = http;
             _navManager = navManager;
+            _localStorage = localStorage;
         }
 
         public async Task GetMeasurements()
         {
-            var result = await _http.GetFromJsonAsync<List<Measurement>>("api/measurement");
+            List<Measurement>? result;
+            var measurementsInLocalStorage = await _localStorage.ContainKeyAsync("Measurements");
+            if (measurementsInLocalStorage)
+            {
+                result = await _localStorage.GetItemAsync<List<Measurement>>("Measurements");
+            }
+            else
+            {
+                result = await _http.GetFromJsonAsync<List<Measurement>>("api/measurement");
+                await _localStorage.SetItemAsync<List<Measurement>>("Measurements", result);
+            }
+
             if (result != null)
             {
                 this.Measurements = result;
@@ -33,7 +48,17 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
 
         public async Task<Measurement> GetSingleMeasurement(int id)
         {
-            var result = await _http.GetFromJsonAsync<Measurement>($"api/measurement/{id}");
+            Measurement? result;
+            var measurementsInLocalStorage = await _localStorage.ContainKeyAsync("Measurements");
+            if(measurementsInLocalStorage)
+            {
+                var measurements = await _localStorage.GetItemAsync<List<Measurement>>("Measurements");
+                result = measurements.First(m => m.Id == id);
+            } else
+            {
+                result = await _http.GetFromJsonAsync<Measurement>($"api/measurement/{id}");
+            }
+
             if (result != null)
             {
                 return result;
@@ -47,6 +72,7 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
             var response = await result.Content.ReadFromJsonAsync<Measurement>();
             // TODO: null check
             Measurements.Add(response);
+            await _localStorage.SetItemAsync("Measurements", Measurements);
             _navManager.NavigateTo("measurements");
         }
 
@@ -57,7 +83,10 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
             // TODO: null check
             int index = Measurements.FindIndex(m => m.Id == measurement.Id);
             if (index != -1)
+            {
                 Measurements[index] = measurement;
+                await _localStorage.SetItemAsync("Measurements", Measurements);
+            }              
             _navManager.NavigateTo("measurements");
         }
 
@@ -65,7 +94,7 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
         {
             await _http.DeleteAsync($"api/measurement/{id}");
             Measurements.RemoveAt(Measurements.FindIndex(m => m.Id == id));
-            _navManager.NavigateTo("measurements");
+            await _localStorage.SetItemAsync("Measurements", Measurements);
         }
     }
 }

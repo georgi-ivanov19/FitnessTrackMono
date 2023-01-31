@@ -10,6 +10,6 @@ namespace FitnessTrackMono.Client.Services.TrackedWorkoutService
         Task<TrackedWorkout> StartWorkout(Workout workout);
         Task<TrackedWorkout> GetSingleWorkout(int id);
         Task<TrackedWorkout> GetLatestCompleted(int parentWorkoutId);
-        Task UpdateTrackedWorkout(TrackedWorkout workout);
+        Task UpdateTrackedWorkout(TrackedWorkout workout, bool finish = false);
     }
 }
