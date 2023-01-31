@@ -15,5 +15,6 @@ namespace FitnessTrackMono.Shared.Models
         public bool IsCompleted { get; set; }
         public List<ExerciseSet> ExerciseSetsCompleted { get; set; } = new List<ExerciseSet>();
         public int WorkoutId { get; set; }
+        public string Notes { get; set; } = string.Empty;
     }
 }

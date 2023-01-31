@@ -1,20 +1,36 @@
-﻿@using FitnessTrackMono.Client.Services.WorkoutService;
-@inject IWorkoutService WorkoutService;
-
-<RadzenIcon Icon="edit_note" class="d-inline" Style="vertical-align: sub;"></RadzenIcon>
-<RadzenText TextStyle="TextStyle.Subtitle1" class="d-inline"> Latest Notes (@workout.DateLastCompleted.ToString("MMM d, yyyy"))</RadzenText>
+﻿@using FitnessTrackMono.Client.Services.TrackedWorkoutService;
+@inject ITrackedWorkoutService TrackedWorkoutService;
+@if (tracking)
+{
+    <RadzenIcon Icon="edit_note" class="d-inline" Style="vertical-align: sub;"></RadzenIcon>
+    <RadzenText TextStyle="TextStyle.Subtitle1" class="d-inline"> Workout Notes</RadzenText>
+}
+else
+{
+    <RadzenIcon Icon="edit_note" class="d-inline" Style="vertical-align: sub;"></RadzenIcon>
+    <RadzenText TextStyle="TextStyle.Subtitle1" class="d-inline"> Latest Notes (@FormatDate(workout.EndTime))</RadzenText>
+}
 
 <div class="w-50">
-    <RadzenTextArea Rows="5" Placeholder="Enter notes here..." Value="@workout.Notes" Change=@(args => OnChange(args)) Class="w-100" Style="resize: none;" />
+    <RadzenTextArea Rows="5" Disabled="@disabled" Value="@workout.Notes" Change=@(args => OnChange(args)) Class="w-100" Style="resize: none;" />
 </div>
 
 @code {
     [Parameter]
-    public Workout workout { get; set; } = new Workout();
+    public TrackedWorkout workout { get; set; } = new TrackedWorkout();
+    [Parameter]
+    public bool disabled { get; set; } = true; 
+    [Parameter]
+    public bool tracking { get; set; } = true;
 
     public void OnChange(string value)
     {
         workout.Notes = value;
-        WorkoutService.UpdateWorkout(workout, false);
+        TrackedWorkoutService.UpdateTrackedWorkout(workout);
+    }
+
+    private static string FormatDate(DateTime? dt)
+    {
+        return dt == null ? "No Date" : ((DateTime)dt).ToString("MMM d, yyyy");
     }
 }
