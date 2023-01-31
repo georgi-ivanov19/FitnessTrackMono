@@ -71,7 +71,6 @@ namespace FitnessTrackMono.Server.Controllers
             }
             dbWorkout.Name = workout.Name;
             dbWorkout.DayOfWeek = workout.DayOfWeek;
-            dbWorkout.Notes = workout.Notes;
             dbWorkout.DateLastCompleted = workout.DateLastCompleted;
             await _context.SaveChangesAsync();
 

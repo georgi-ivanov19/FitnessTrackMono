@@ -1,7 +1,6 @@
 ﻿using FitnessTrackMono.Server.Data;
 using FitnessTrackMono.Server.Models;
 using FitnessTrackMono.Shared.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -85,6 +84,7 @@ namespace FitnessTrackMono.Server.Controllers
             dbWorkout.WorkoutId = workout.WorkoutId;
             dbWorkout.ExerciseSetsCompleted = workout.ExerciseSetsCompleted;
             dbWorkout.EndTime = workout.EndTime;
+            dbWorkout.Notes = workout.Notes;
             await _context.SaveChangesAsync();
 
             return Ok(dbWorkout);
