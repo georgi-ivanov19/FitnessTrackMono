@@ -12,12 +12,6 @@
 <RadzenCard>
     <RadzenText TextStyle="TextStyle.H5" class="d-inline"> Meals </RadzenText>
     <RadzenButton Click=@(args => ShowForm(null, date)) Icon="add" Size="Radzen.ButtonSize.Medium" ButtonStyle="Radzen.ButtonStyle.Primary" Class="rz-border-radius-10 rz-shadow-6" />
-    @*@if (loading)
-    {
-    <h3>Loading...</h3>
-    }
-    else
-    {*@
     <div class="container-fluid date-select text-center align-text-bottom mb-2 ">
         <RadzenButton Click=@(args => DateChanged("prev")) Icon="arrow_back_ios" Size="Radzen.ButtonSize.Small" ButtonStyle="Radzen.ButtonStyle.Light" Class="rz-border-radius-10 rz-shadow-6 m-1" />
         <RadzenText TextStyle="TextStyle.H5" class="d-inline"><RadzenIcon Icon="calendar_today" Style="font-size: 16px;" /> @date.ToString("ddd, dd MMM yyyy") </RadzenText>
