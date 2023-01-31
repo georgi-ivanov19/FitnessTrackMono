@@ -25,7 +25,9 @@
         <RadzenText TextStyle="TextStyle.Overline"> @($"Sets Completed: {setsCompleted}/{totalSets}") </RadzenText>
         <RadzenText Class="ms-5" TextStyle="TextStyle.Overline"> Total Volume <b>@trackedWorkout.TotalVolume</b> (kg) </RadzenText>
     </div>
-
+    <div class="my-2">
+        <WorkoutNotes workout="trackedWorkout" disabled=false tracking=true></WorkoutNotes>
+    </div>
     @foreach (var item in parentWorkout.Exercises)
     {
         <RadzenText TextStyle="TextStyle.H5"> @item.Name </RadzenText>
@@ -59,29 +61,29 @@
             <RadzenRow>
                 <RadzenColumn Size="1">
                     <RadzenText TextStyle="TextStyle.Button"> @zipped.Item1.Weight </RadzenText>
-                    </RadzenColumn>
-                    <RadzenColumn Size="1">
-                        <RadzenText TextStyle="TextStyle.Button"> @zipped.Item1.Reps </RadzenText>
-                    </RadzenColumn>
-                    <RadzenColumn Size="2" />
-                    <RadzenColumn Size="1">
-                        <RadzenNumeric TValue="double?" @bind-Value=@zipped.Item2.Weight Disabled="@zipped.Item2.IsComplete" ShowUpDown="false" class="my-1" Style="width: 100px;"></RadzenNumeric>
-                    </RadzenColumn>
-                    <RadzenColumn Size="1">
-                        <RadzenNumeric TValue="int?" @bind-Value=@zipped.Item2.Reps Disabled="@zipped.Item2.IsComplete" ShowUpDown="false" class="my-1" Style="width: 64px;"></RadzenNumeric>
-                    </RadzenColumn>
-                    <RadzenColumn Size="1">
-                        <RadzenCheckBox TValue="bool" Disabled="zipped.Item2.Weight == null || zipped.Item2.Reps == null"
+                </RadzenColumn>
+                <RadzenColumn Size="1">
+                    <RadzenText TextStyle="TextStyle.Button"> @zipped.Item1.Reps </RadzenText>
+                </RadzenColumn>
+                <RadzenColumn Size="2" />
+                <RadzenColumn Size="1">
+                    <RadzenNumeric TValue="double?" @bind-Value=@zipped.Item2.Weight Disabled="@zipped.Item2.IsComplete" ShowUpDown="false" class="my-1" Style="width: 100px;"></RadzenNumeric>
+                </RadzenColumn>
+                <RadzenColumn Size="1">
+                    <RadzenNumeric TValue="int?" @bind-Value=@zipped.Item2.Reps Disabled="@zipped.Item2.IsComplete" ShowUpDown="false" class="my-1" Style="width: 64px;"></RadzenNumeric>
+                </RadzenColumn>
+                <RadzenColumn Size="1">
+                    <RadzenCheckBox TValue="bool" Disabled="zipped.Item2.Weight == null || zipped.Item2.Reps == null"
                             Change="@(args => SetCompleted(args, zipped.Item2))" @bind-Value=@zipped.Item2.IsComplete style="vertical-align: unset;"></RadzenCheckBox>
-                    </RadzenColumn>
-                </RadzenRow>
+                </RadzenColumn>
+            </RadzenRow>
         }
     }
     <hr class="my-3 w-100" />
 
     <div style="text-align: right;">
         <RadzenButton Click=@(args => FinishWorkout(trackedWorkout)) Variant="Radzen.Variant.Text" Icon="sports_score"
-                    ButtonStyle="Radzen.ButtonStyle.Info" Text="Finish" Size="Radzen.ButtonSize.Large" class="me-auto" />
+                      ButtonStyle="Radzen.ButtonStyle.Info" Text="Finish" Size="Radzen.ButtonSize.Large" class="me-auto" />
     </div>
 
 </RadzenCard>
@@ -141,7 +143,7 @@
         w.IsCompleted = true;
         w.EndTime = DateTime.Now;
 
-        await TrackedWorkoutService.UpdateTrackedWorkout(w);
+        await TrackedWorkoutService.UpdateTrackedWorkout(w, true);
         await localStorage.RemoveItemAsync($"TrackedWorkout{w.Id}");
         NavManager.NavigateTo($"workout/{w.WorkoutId}");
     }
