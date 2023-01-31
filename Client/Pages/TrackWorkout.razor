@@ -54,8 +54,6 @@
             <RadzenColumn Size="1">
             </RadzenColumn>
         </RadzenRow>
-        @*@if (latestCompleted != null)
-    {*@
         foreach (var zipped in zippedSetsForExercise(trackedWorkout.ExerciseSetsCompleted, item.Id))
         {
             <RadzenRow>
@@ -83,7 +81,7 @@
 
     <div style="text-align: right;">
         <RadzenButton Click=@(args => FinishWorkout(trackedWorkout)) Variant="Radzen.Variant.Text" Icon="sports_score"
-                      ButtonStyle="Radzen.ButtonStyle.Info" Text="Finish" Size="Radzen.ButtonSize.Large" class="me-auto" />
+                    ButtonStyle="Radzen.ButtonStyle.Info" Text="Finish" Size="Radzen.ButtonSize.Large" class="me-auto" />
     </div>
 
 </RadzenCard>
