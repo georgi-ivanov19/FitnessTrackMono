@@ -21,7 +21,7 @@ namespace FitnessTrackMono.Client.Services.TrackedWorkoutService
         public async Task<TrackedWorkout> StartWorkout(Workout workout)
         {
             TrackedWorkout workoutToStart = new TrackedWorkout();
-            workoutToStart.ParentWorkoutId = workout.Id;
+            workoutToStart.WorkoutId = workout.Id;
             workoutToStart.TotalVolume = 0;
             workoutToStart.StartTime = DateTime.Now;
             var result = await _http.PostAsJsonAsync($"api/trackedworkouts", workoutToStart);
@@ -58,6 +58,19 @@ namespace FitnessTrackMono.Client.Services.TrackedWorkoutService
             int index = TrackedWorkouts.FindIndex(w => w.Id == workout.Id);
             if (index != -1)
                 TrackedWorkouts[index] = workout;
+        }
+
+        public async Task<List<TrackedWorkout>> GetCompletedTrackedWorkouts(int parentWorkoutId)
+        {
+            var result = await _http.GetFromJsonAsync<List<TrackedWorkout>>($"api/trackedworkouts/{parentWorkoutId}");
+            result = result.Where(tw => tw.IsCompleted == true).ToList();
+            if(result != null)
+            {
+                return result;
+            } else
+            {
+                return new List<TrackedWorkout>();
+            }
         }
     }
 }

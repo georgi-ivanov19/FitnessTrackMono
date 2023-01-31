@@ -63,7 +63,7 @@ namespace FitnessTrackMono.Server.Controllers
         [HttpGet("GetLatestCompleted/{id}")]
         public async Task<ActionResult<TrackedWorkout>> GetLatestCompleted(int id)
         {
-            var workout = await _context.TrackedWorkouts.Where(w => w.ParentWorkoutId == id && w.IsCompleted).OrderByDescending(w => w.EndTime).FirstOrDefaultAsync(w => w.ParentWorkoutId == id);
+            var workout = await _context.TrackedWorkouts.Where(w => w.WorkoutId == id && w.IsCompleted).OrderByDescending(w => w.EndTime).FirstOrDefaultAsync(w => w.WorkoutId == id);
             if (workout == null)
             {
                 return NotFound("Workout not found");
@@ -82,7 +82,7 @@ namespace FitnessTrackMono.Server.Controllers
             dbWorkout.TotalVolume = workout.TotalVolume;
             dbWorkout.IsCompleted = workout.IsCompleted;
             dbWorkout.StartTime = workout.StartTime;
-            dbWorkout.ParentWorkoutId = workout.ParentWorkoutId;
+            dbWorkout.WorkoutId = workout.WorkoutId;
             dbWorkout.ExerciseSetsCompleted = workout.ExerciseSetsCompleted;
             dbWorkout.EndTime = workout.EndTime;
             await _context.SaveChangesAsync();

@@ -115,7 +115,7 @@
 
         try
         {
-            latestCompleted = await TrackedWorkoutService.GetLatestCompleted(trackedWorkout.ParentWorkoutId);
+            latestCompleted = await TrackedWorkoutService.GetLatestCompleted(trackedWorkout.WorkoutId);
         }
         catch (HttpRequestException e)
         {
@@ -124,10 +124,9 @@
                 latestCompleted = null;
             }
         }
-        parentWorkout = await WorkoutService.GetSingleWorkout(trackedWorkout.ParentWorkoutId);
+        parentWorkout = await WorkoutService.GetSingleWorkout(trackedWorkout.WorkoutId);
         setsCompleted = trackedWorkout.ExerciseSetsCompleted.Count(s => s.IsComplete == true);
         totalSets = trackedWorkout.ExerciseSetsCompleted.Count;
-
     }
 
     private async void SetCompleted(bool value, ExerciseSet set)
@@ -146,7 +145,7 @@
 
         await TrackedWorkoutService.UpdateTrackedWorkout(w);
         await localStorage.RemoveItemAsync($"TrackedWorkout{w.Id}");
-        NavManager.NavigateTo($"workout/{w.ParentWorkoutId}");
+        NavManager.NavigateTo($"workout/{w.WorkoutId}");
     }
 
     private List<ExerciseSet> latestSetsForExercise(int exId)

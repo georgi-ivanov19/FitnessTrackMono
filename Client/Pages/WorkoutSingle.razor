@@ -18,6 +18,26 @@
 <RadzenCard>
     <RadzenText TextStyle="TextStyle.H5" class="d-inline me-1"> @workout.Name </RadzenText>
     <RadzenButton Click=@(args => StartWorkout(workout)) Icon="play_arrow" Size="Radzen.ButtonSize.Medium" ButtonStyle="Radzen.ButtonStyle.Success" Class="rz-border-radius-10 rz-shadow-6" />
+    @if (trackedWorkouts.Count == 0)
+    {
+        <RadzenText TextStyle="TextStyle.H5" class="my-3">
+            No competed @workout.Name workouts yet.
+        </RadzenText>
+    }
+    else
+    {
+        <RadzenChart class="mb-5">
+            <RadzenLegend Visible="false" />
+            <RadzenLineSeries Smooth="false" Data="trackedWorkouts" CategoryProperty="EndTime" Title="TotalVolume"
+                          ValueProperty="TotalVolume">
+                <ChildContent>
+                    <RadzenMarkers MarkerType="MarkerType.Circle" Fill="#874EFE" StrokeWidth="1" Size="6" />
+                    <RadzenSeriesDataLabels />
+                </ChildContent>
+            </RadzenLineSeries>
+        </RadzenChart>
+    }
+
     <div class="notes mt-2">
         <WorkoutNotes Workout="@workout" />
     </div>
@@ -45,11 +65,12 @@
     public int Id { get; set; }
 
     Workout workout = new Workout();
-
+    List<TrackedWorkout> trackedWorkouts = new List<TrackedWorkout>();
 
     protected override async Task OnInitializedAsync()
     {
         workout = await WorkoutService.GetSingleWorkout(Id);
+        trackedWorkouts = workout.TrackedWorkouts.Where(tw => tw.IsCompleted == true).ToList();
         await ExerciseService.GetExercises(Id);
     }
 
