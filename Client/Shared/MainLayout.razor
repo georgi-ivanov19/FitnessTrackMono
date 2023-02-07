@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
 @inherits LayoutComponentBase
 
 <div>
@@ -48,6 +49,7 @@
 
     protected async Task BeginSignOut()
     {
+        await JSRuntime.InvokeAsync<object>("localStorage.clear");
         // await SignOutManager.SetSignOutState();
         Navigation.NavigateToLogout("authentication/logout");
     }
