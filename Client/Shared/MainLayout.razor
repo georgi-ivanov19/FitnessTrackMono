@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @inject NavigationManager Navigation
-@inject IJSRuntime JSRuntime
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inherits LayoutComponentBase
 
 <div>
@@ -11,9 +11,6 @@
             <div class="d-flex align-items-center">
                 <RadzenSidebarToggle Click="@(() => sidebar1Expanded = !sidebar1Expanded)" />
                 <RadzenLabel Text="FitnessTrackMono" />
-                <span class='ms-auto d-flex align-items-center'>
-                    <LoginDisplay />
-                </span>
             </div>
         </RadzenHeader>
         <RadzenSidebar @bind-Expanded="@sidebar1Expanded">
@@ -49,8 +46,7 @@
 
     protected async Task BeginSignOut()
     {
-        await JSRuntime.InvokeAsync<object>("localStorage.clear");
-        // await SignOutManager.SetSignOutState();
+        await localStorage.ClearAsync();
         Navigation.NavigateToLogout("authentication/logout");
     }
 }
