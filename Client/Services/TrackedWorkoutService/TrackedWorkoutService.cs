@@ -1,9 +1,6 @@
 ﻿using Blazored.LocalStorage;
-using FitnessTrackMono.Client.Pages;
 using FitnessTrackMono.Shared.Models;
-using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
-using static System.Net.WebRequestMethods;
 
 namespace FitnessTrackMono.Client.Services.TrackedWorkoutService
 {

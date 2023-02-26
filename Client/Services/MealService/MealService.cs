@@ -1,8 +1,5 @@
-﻿using System.Diagnostics.Metrics;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using Blazored.LocalStorage;
-using Blazored.LocalStorage.StorageOptions;
-using FitnessTrackMono.Client.Pages;
 using FitnessTrackMono.Shared.Models;
 using Microsoft.AspNetCore.Components;
 

@@ -1,5 +1,4 @@
-﻿using FitnessTrackMono.Client.Pages;
-using FitnessTrackMono.Shared.Models;
+﻿using FitnessTrackMono.Shared.Models;
 
 namespace FitnessTrackMono.Client.Services.TrackedWorkoutService
 {
