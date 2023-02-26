@@ -1,4 +1,5 @@
-﻿using FitnessTrackMono.Client.Pages;
+﻿using Blazored.LocalStorage;
+using FitnessTrackMono.Client.Pages;
 using FitnessTrackMono.Shared.Models;
 using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
@@ -9,12 +10,14 @@ namespace FitnessTrackMono.Client.Services.ExerciseService
     {
         private readonly HttpClient _http;
         private readonly NavigationManager _navManager;
+        private ILocalStorageService _localStorage;
         public List<Exercise> Exercises { get; set; } = new List<Exercise>();
 
-        public ExerciseService(HttpClient http, NavigationManager navManager)
+        public ExerciseService(HttpClient http, NavigationManager navManager, ILocalStorageService localStorage)
         {
             _http = http;
             _navManager = navManager;
+            _localStorage = localStorage;
         }
 
         public async Task CreateExercise(Exercise ex)
@@ -23,6 +26,17 @@ namespace FitnessTrackMono.Client.Services.ExerciseService
             var response = await result.Content.ReadFromJsonAsync<Exercise>();
             // TODO: null check
             Exercises.Add(response);
+            var workoutsInLocalStorage = await _localStorage.ContainKeyAsync("Workouts");
+            if (workoutsInLocalStorage)
+            {
+                var workouts = await _localStorage.GetItemAsync<List<Workout>>("Workouts");
+                var index = workouts.FindIndex(w => w.Id == response.WorkoutId);
+                if (index != -1)
+                {
+                    workouts[index].Exercises.Add(response);
+                    await _localStorage.SetItemAsync("Workouts", workouts);
+                }
+            }
             _navManager.NavigateTo($"workout/{response.WorkoutId}");
         }
 
@@ -30,6 +44,7 @@ namespace FitnessTrackMono.Client.Services.ExerciseService
         {
             await _http.DeleteAsync($"api/Exercises/{id}");
             Exercises.RemoveAt(Exercises.FindIndex(r => r.Id == id));
+            await _localStorage.RemoveItemAsync("Workouts");
         }
 
         public async Task GetExercises(int workoutId)
