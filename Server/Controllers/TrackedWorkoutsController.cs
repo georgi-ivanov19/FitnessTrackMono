@@ -13,24 +13,22 @@ namespace FitnessTrackMono.Server.Controllers
     public class TrackedWorkoutsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
 
         public TrackedWorkoutsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
-            _userManager = userManager;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<TrackedWorkout>>> GetTrackedWorkouts(int id)
         {
-            var user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await _context.Users.Include(u => u.Workouts).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
             if (user == null)
             {
                 return NotFound("User not found");
             }
 
-            var workout = _context.Workouts.Find(id);
+            var workout = user.Workouts.Find(w => w.Id == id);
             if (workout == null)
             {
                 return NotFound("Workout not found");
@@ -62,7 +60,9 @@ namespace FitnessTrackMono.Server.Controllers
         [HttpGet("GetLatestCompleted/{id}")]
         public async Task<ActionResult<TrackedWorkout>> GetLatestCompleted(int id)
         {
-            var workout = await _context.TrackedWorkouts.Where(w => w.WorkoutId == id && w.IsCompleted).OrderByDescending(w => w.EndTime).FirstOrDefaultAsync(w => w.WorkoutId == id);
+            var user = await _context.Users.Include(u => u.Workouts).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var workout = user.Workouts.Find(w => w.Id == id);
+            var latestCompleted = workout.TrackedWorkouts.Where(w => w.IsCompleted).OrderByDescending(w => w.EndTime).First();
             if (workout == null)
             {
                 return NotFound("Workout not found");

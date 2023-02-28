@@ -18,9 +18,9 @@ namespace FitnessTrackMono.Server.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<ApplicationUser>().Navigation(e => e.Measurements).AutoInclude();
-            builder.Entity<ApplicationUser>().Navigation(e => e.Meals).AutoInclude();
-            builder.Entity<ApplicationUser>().Navigation(e => e.Workouts).AutoInclude();
+            builder.Entity<ApplicationUser>().Navigation(e => e.Measurements);
+            builder.Entity<ApplicationUser>().Navigation(e => e.Meals);
+            builder.Entity<ApplicationUser>().Navigation(e => e.Workouts);
             builder.Entity<Workout>().Navigation(e => e.Exercises).AutoInclude();
             builder.Entity<Workout>().Navigation(e => e.TrackedWorkouts).AutoInclude();
             builder.Entity<Exercise>().Navigation(e => e.ExerciseSets);

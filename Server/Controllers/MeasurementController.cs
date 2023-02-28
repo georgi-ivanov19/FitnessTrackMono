@@ -25,7 +25,7 @@ namespace FitnessTrackMono.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Measurement>>> GetMeasurements()
         {
-            var user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await _context.Users.Include(u => u.Measurements).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
             if (user == null)
             {
                 return NotFound();
@@ -36,7 +36,7 @@ namespace FitnessTrackMono.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Measurement>> GetSingleMeasurement(int id)
         {
-            var user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await _context.Users.Include(u => u.Measurements).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
             if (user == null)
             {
                 return NotFound();
@@ -47,7 +47,7 @@ namespace FitnessTrackMono.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<Measurement>> CreateMeasurement(Measurement measurement)
         {
-            var user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
             measurement.ApplicationUserId = user.Id;
             _context.Measurements.Add(measurement);
             await _context.SaveChangesAsync();
@@ -86,6 +86,25 @@ namespace FitnessTrackMono.Server.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
+        }
+
+        [HttpGet("GetAverages")]
+        public async Task<ActionResult<AverageResults>> GetLatestCompleted([FromQuery] DateTime date, [FromQuery] string type)
+        {
+            // 7 days moving average from date
+            var user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            
+            if (user == null)
+            {
+                return NotFound();
+            }
+            var measurements = _context.Measurements.Where(m => m.ApplicationUserId == user.Id && m.Date >= date.AddDays(-14) && m.Date <= date && m.Type == type).ToList();
+            var currentMeasurements = measurements.Where(m => m.Date >= date.AddDays(-7)).ToList();
+            var previousMeasurements = measurements.Where(m => m.Date < date.AddDays(-7)).ToList();
+            var currentAverage = currentMeasurements.Average(m => m.Value);
+            var previousAverage = previousMeasurements.Average(m => m.Value);
+            var currentCount = currentMeasurements.Count();
+            return new AverageResults(currentAverage, currentCount, previousAverage);
         }
     }
 }

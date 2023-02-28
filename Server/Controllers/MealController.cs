@@ -25,7 +25,7 @@ namespace FitnessTrackMono.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Meal>>> GetMeals()
         {
-            var user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await _context.Users.Include(u => u.Meals).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
             if (user == null)
             {
                 return NotFound();
@@ -36,7 +36,7 @@ namespace FitnessTrackMono.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Meal>> GetSingleMeal(int id)
         {
-            var user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await _context.Users.Include(u => u.Meals).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
             if (user == null)
             {
                 return NotFound();
@@ -47,7 +47,8 @@ namespace FitnessTrackMono.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<Meal>> CreateMeal(Meal meal)
         {
-            var user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            // TODO:
             meal.ApplicationUserId = user.Id;
             _context.Meals.Add(meal);
             await _context.SaveChangesAsync();

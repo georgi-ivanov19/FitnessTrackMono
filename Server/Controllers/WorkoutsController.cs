@@ -15,24 +15,21 @@ namespace FitnessTrackMono.Server.Controllers
     {
 
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
 
         public WorkoutsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
-            _userManager = userManager;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Workout>>> GetWorkouts()
         {
-            var user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await _context.Users.Include(u => u.Workouts).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
             if (user == null)
             {
                 return NotFound("User not found");
             }
-            var userWorkouts = _context.Workouts.Where(w => w.ApplicationUserId == user.Id).ToList();
-            return Ok(userWorkouts);
+            return Ok(user.Workouts);
         }
 
         [HttpGet("GetWorkout/{id}")]
@@ -49,7 +46,7 @@ namespace FitnessTrackMono.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<Workout>> CreateWorkout(Workout workout)
         {
-            var user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
             if (user == null)
             {
                 return NotFound("User not found");
