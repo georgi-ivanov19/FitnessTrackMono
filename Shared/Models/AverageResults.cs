@@ -8,20 +8,32 @@ namespace FitnessTrackMono.Shared.Models
 {
     public class AverageResults
     {
-        public double CurrentAverage { get; set; }
+        public double? CurrentAverage { get; set; }
         public int CurrentCount { get; set; }
-        public double PreviousAverage { get; set; }
+        public double? PreviousAverage { get; set; }
         public int PreviousCount { get; set; }
-        public double Difference { get; set; }
-        public bool ChangeDirection { get; set; }
+        public double? Difference { get; set; }
+        public string ChangeDirection { get; set; }
 
-        public AverageResults(double currentAverage, int currentCount, double previousAverage)
+        public AverageResults(double? currentAverage, int currentCount, double? previousAverage)
         {
-            CurrentAverage = Math.Round(currentAverage, 2);
+            CurrentAverage = currentAverage != null ? Math.Round((double)currentAverage, 2) : null;
             CurrentCount = currentCount;
-            PreviousAverage = Math.Round(previousAverage, 2);
-            Difference = Math.Round(Math.Abs(CurrentAverage - PreviousAverage),2);
-            ChangeDirection = CurrentAverage > PreviousAverage;
+            PreviousAverage = previousAverage != null ? Math.Round((double)previousAverage, 2) : null;
+            Difference = CurrentAverage != null && PreviousAverage != null ? Math.Round(Math.Abs((double)CurrentAverage - (double)PreviousAverage), 2) : 0;
+            if(CurrentAverage > PreviousAverage)
+            {
+                ChangeDirection = "up";
+            } else if (CurrentAverage < PreviousAverage)
+            {
+                ChangeDirection = "down";
+            } else if (CurrentAverage == PreviousAverage)
+            {
+                ChangeDirection = "none";
+            } else
+            {
+                ChangeDirection = "non-deterministic";
+            }
         }
     }
 

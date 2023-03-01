@@ -92,7 +92,7 @@ namespace FitnessTrackMono.Server.Controllers
         [HttpGet("GetAverages")]
         public async Task<ActionResult<List<AverageResults>>> GetLatestCompleted([FromQuery] DateTime date)
         {
-            // 7 days moving average from date
+            // 7 days moving average from date for each measurement
             var user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
             
             if (user == null)
@@ -128,11 +128,20 @@ namespace FitnessTrackMono.Server.Controllers
 
         private AverageResults CalculateAverages(DateTime date, List<Measurement> measurements)
         {
-            var currentMeasurements = measurements.Where(m => m.Date >= date.AddDays(-7)).ToList();
-            var previousMeasurements = measurements.Where(m => m.Date < date.AddDays(-7)).ToList();
-            var currentAverage = currentMeasurements.Average(m => m.Value);
-            var previousAverage = previousMeasurements.Average(m => m.Value);
-            var currentCount = currentMeasurements.Count();
+            var currentMeasurements = measurements.Where(m => m.Date >= date.AddDays(-7));
+            var previousMeasurements = measurements.Where(m => m.Date < date.AddDays(-7));
+            double? currentAverage = null;
+            double? previousAverage = null;
+            int currentCount = 0;
+            if(currentMeasurements.Any())
+            {
+                currentAverage = currentMeasurements.Average(m => m.Value);
+                currentCount = currentMeasurements.Count();
+            }
+            if(previousMeasurements.Any())
+            {
+                previousAverage = previousMeasurements.Average(m => m.Value);
+            }
             return new AverageResults(currentAverage, currentCount, previousAverage);
         }
     }

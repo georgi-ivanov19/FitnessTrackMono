@@ -21,21 +21,41 @@
                             <RadzenText class="d-inline" TextStyle="TextStyle.Subtitle1"> Weight </RadzenText>
                             <span>
                                 <RadzenIcon title=@($"{weightAverages.CurrentCount} entries in the past 7 days") Icon="info"
-                                IconStyle="Radzen.IconStyle.Info" style="font-size: large; vertical-align: sub;">
+                                        IconStyle="Radzen.IconStyle.Info" style="font-size: large; vertical-align: sub;">
                                 </RadzenIcon>
                             </span>
                         </div>
                         <div>
-                            <span class="h1 mb-3 me-2 d-inline">@string.Format("{0:0.00}",
-                            weightAverages.CurrentAverage)</span>
+
+                            @if (weightAverages.CurrentAverage != null)
+                            {
+                                <span class="h1 mb-3 me-2 d-inline">
+                                    @string.Format("{0:0.00}", weightAverages.CurrentAverage)
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="h1 mb-3 me-2 d-inline">
+                                    N/A
+                                </span>
+                            }
+
                             <span class="me-auto">
-                                @if (weightAverages.ChangeDirection)
+                                @if (weightAverages.ChangeDirection == "up")
                                 {
                                     <RadzenIcon title="@weightIconTitle()" Icon="trending_up"></RadzenIcon>
                                 }
-                                else
+                                else if (weightAverages.ChangeDirection == "down")
                                 {
                                     <RadzenIcon title="@weightIconTitle()" Icon="trending_down"></RadzenIcon>
+                                }
+                                else if (weightAverages.ChangeDirection == "none")
+                                {
+                                    <RadzenIcon title="@bfIconTitle()" Icon="trending_flat"></RadzenIcon>
+                                }
+                                else
+                                {
+                                    <span></span>
                                 }
                             </span>
                         </div>
@@ -48,21 +68,40 @@
                             <RadzenText class="d-inline" TextStyle="TextStyle.Subtitle1"> Waist </RadzenText>
                             <span>
                                 <RadzenIcon title=@($"{waistAverages.CurrentCount} entries in the past 7 days") Icon="info"
-                                IconStyle="Radzen.IconStyle.Info" style="font-size: large; vertical-align: sub;">
+                                        IconStyle="Radzen.IconStyle.Info" style="font-size: large; vertical-align: sub;">
                                 </RadzenIcon>
                             </span>
                         </div>
                         <div>
-                            <span class="h1 mb-3 me-2 d-inline">@string.Format("{0:0.00}",
-                            waistAverages.CurrentAverage)</span>
+                            @if (waistAverages.CurrentAverage != null)
+                            {
+                                <span class="h1 mb-3 me-2 d-inline">
+                                    @string.Format("{0:0.00}", waistAverages.CurrentAverage)
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="h1 mb-3 me-2 d-inline">
+                                    N/A
+                                </span>
+                            }
+
                             <span class="me-auto">
-                                @if (waistAverages.ChangeDirection)
+                                @if (waistAverages.ChangeDirection == "up")
                                 {
                                     <RadzenIcon title="@waistIconTitle()" Icon="trending_up"></RadzenIcon>
                                 }
-                                else
+                                else if (waistAverages.ChangeDirection == "down")
                                 {
                                     <RadzenIcon title="@waistIconTitle()" Icon="trending_down"></RadzenIcon>
+                                }
+                                else if (waistAverages.ChangeDirection == "none")
+                                {
+                                    <RadzenIcon title="@bfIconTitle()" Icon="trending_flat"></RadzenIcon>
+                                }
+                                else
+                                {
+                                    <span></span>
                                 }
                             </span>
                         </div>
@@ -75,21 +114,39 @@
                             <RadzenText class="d-inline" TextStyle="TextStyle.Subtitle1"> Body fat </RadzenText>
                             <span>
                                 <RadzenIcon title=@($"{bfAverages.CurrentCount} entries in the past 7 days") Icon="info"
-                                IconStyle="Radzen.IconStyle.Info" style="font-size: large; vertical-align: sub;">
+                                        IconStyle="Radzen.IconStyle.Info" style="font-size: large; vertical-align: sub;">
                                 </RadzenIcon>
                             </span>
                         </div>
                         <div>
-                            <span class="h1 mb-3 me-2">@string.Format("{0:0.00}",
-                            bfAverages.CurrentAverage)</span>
+                            @if (bfAverages.CurrentAverage != null)
+                            {
+                                <span class="h1 mb-3 me-2">
+                                    @string.Format("{0:0.00}", bfAverages.CurrentAverage)
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="h1 mb-3 me-2">
+                                    N/A
+                                </span>
+                            }
                             <span>
-                                @if (bfAverages.ChangeDirection)
+                                @if (bfAverages.ChangeDirection == "up")
                                 {
                                     <RadzenIcon title="@bfIconTitle()" Icon="trending_up"></RadzenIcon>
                                 }
-                                else
+                                else if (bfAverages.ChangeDirection == "down")
                                 {
                                     <RadzenIcon title="@bfIconTitle()" Icon="trending_down"></RadzenIcon>
+                                }
+                                else if (bfAverages.ChangeDirection == "none")
+                                {
+                                    <RadzenIcon title="@bfIconTitle()" Icon="trending_flat"></RadzenIcon>
+                                }
+                                else
+                                {
+                                    <span></span>
                                 }
                             </span>
                         </div>
@@ -160,41 +217,64 @@
     AverageResults? bfAverages = null;
     protected string weightIconTitle()
     {
+        string result = string.Empty;
         if (weightAverages != null)
         {
-            return weightAverages.ChangeDirection ? $"{weightAverages.Difference}kg up from previous average" :
-            $"{weightAverages.Difference}kg down from previous average";
+            if (weightAverages.ChangeDirection == "up")
+            {
+                result = $"{weightAverages.Difference}kg up from previous average";
+            }
+            else if (weightAverages.ChangeDirection == "down")
+            {
+                result = $"{weightAverages.Difference}kg down from previous average";
+            }
+            else
+            {
+                result = "No change from previous average";
+            }
         }
-        else
-        {
-            return "";
-        }
-
+        return result;
     }
     protected string waistIconTitle()
     {
+        string result = string.Empty;
         if (waistAverages != null)
         {
-            return waistAverages.ChangeDirection ? $"{waistAverages.Difference}cm up from previous average" :
-            $"{waistAverages.Difference}cm down from previous average";
+            if (waistAverages.ChangeDirection == "up")
+            {
+                result = $"{waistAverages.Difference}cm up from previous average";
+            }
+            else if (waistAverages.ChangeDirection == "down")
+            {
+                result = $"{waistAverages.Difference}cm down from previous average";
+            }
+            else
+            {
+                result = "No change from previous average";
+            }
         }
-        else
-        {
-            return "";
-        }
+        return result;
     }
 
     protected string bfIconTitle()
     {
+        string result = string.Empty;
         if (bfAverages != null)
         {
-            return bfAverages.ChangeDirection ? $"{bfAverages.Difference}% up from previous average" :
-            $"{bfAverages.Difference}% down from previous average";
+            if (bfAverages.ChangeDirection == "up")
+            {
+                result = $"{bfAverages.Difference}% up from previous average";
+            }
+            else if (bfAverages.ChangeDirection == "down")
+            {
+                result = $"{bfAverages.Difference}% down from previous average";
+            }
+            else
+            {
+                result = "No change from previous average";
+            }
         }
-        else
-        {
-            return "";
-        }
+        return result;
     }
 
     protected override async Task OnInitializedAsync()
