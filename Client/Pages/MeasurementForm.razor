@@ -9,7 +9,7 @@
         <label for="value"> Value </label>
         <InputNumber id="value" @bind-Value="m.Value" class="form-control"></InputNumber>
         <label for="unit"> Unit </label>
-        <InputText id="unit" @bind-Value="m.Unit" class="form-control"></InputText>
+        <RadzenDropDown Placeholder="Unit" id="unit" Data=@measurementUnits @bind-Value="m.Unit" class="form-control"></RadzenDropDown>
         <label for="date"> Date </label>
         <InputDate id="date" @bind-Value="m.Date" class="form-control"></InputDate>
     </div>
@@ -27,7 +27,7 @@
     private string btnText = string.Empty;
     private Measurement m = new Measurement();
     private string[] measurementTypes = { "Weight", "Waist", "Body fat" };
-
+    private string[] measurementUnits = new string[1];
     protected override async Task OnInitializedAsync()
     {
         btnText = Id == null ? "Create" : "Confirm";
@@ -39,12 +39,23 @@
         {
             if (DefaultType != null)
                 m.Type = DefaultType;
-
             m.Date = DateTime.Today;
         }
         else
         {
             m = await MeasurementsService.GetSingleMeasurement((int)Id);
+        }
+        switch (m.Type)
+        {
+            case "Weight":
+                measurementUnits = new string[1] { "kg" };
+                break;
+            case "Waist":
+                measurementUnits = new string[1] { "cm" };
+                break;
+            case "Body fat":
+                measurementUnits = new string[1] { "%" };
+                break;
         }
 
     }
