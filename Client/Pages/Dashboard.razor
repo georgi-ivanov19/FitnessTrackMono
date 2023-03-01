@@ -19,7 +19,7 @@
                     {
                         <div>
                             <RadzenText class="d-inline" TextStyle="TextStyle.Subtitle1"> Weight </RadzenText>
-                            <span>
+                            <span class="cursor-pointer">
                                 <RadzenIcon title=@($"{weightAverages.CurrentCount} entries in the past 7 days") Icon="info"
                                         IconStyle="Radzen.IconStyle.Info" style="font-size: large; vertical-align: sub;">
                                 </RadzenIcon>
@@ -40,7 +40,7 @@
                                 </span>
                             }
 
-                            <span class="me-auto">
+                            <span class="cursor-pointer">
                                 @if (weightAverages.ChangeDirection == "up")
                                 {
                                     <RadzenIcon title="@weightIconTitle()" Icon="trending_up"></RadzenIcon>
@@ -66,7 +66,7 @@
                     {
                         <div>
                             <RadzenText class="d-inline" TextStyle="TextStyle.Subtitle1"> Waist </RadzenText>
-                            <span>
+                            <span class="cursor-pointer">
                                 <RadzenIcon title=@($"{waistAverages.CurrentCount} entries in the past 7 days") Icon="info"
                                         IconStyle="Radzen.IconStyle.Info" style="font-size: large; vertical-align: sub;">
                                 </RadzenIcon>
@@ -86,7 +86,7 @@
                                 </span>
                             }
 
-                            <span class="me-auto">
+                            <span class="cursor-pointer">
                                 @if (waistAverages.ChangeDirection == "up")
                                 {
                                     <RadzenIcon title="@waistIconTitle()" Icon="trending_up"></RadzenIcon>
@@ -112,7 +112,7 @@
                     {
                         <div>
                             <RadzenText class="d-inline" TextStyle="TextStyle.Subtitle1"> Body fat </RadzenText>
-                            <span>
+                            <span class="cursor-pointer">
                                 <RadzenIcon title=@($"{bfAverages.CurrentCount} entries in the past 7 days") Icon="info"
                                         IconStyle="Radzen.IconStyle.Info" style="font-size: large; vertical-align: sub;">
                                 </RadzenIcon>
@@ -131,7 +131,7 @@
                                     N/A
                                 </span>
                             }
-                            <span>
+                            <span class="cursor-pointer">
                                 @if (bfAverages.ChangeDirection == "up")
                                 {
                                     <RadzenIcon title="@bfIconTitle()" Icon="trending_up"></RadzenIcon>
@@ -164,7 +164,7 @@
                     <RadzenText class="d-inline" TextStyle="TextStyle.Subtitle1"> Calories </RadzenText>
                     <div>
                         <span class="h1 mb-3 me-2 d-inline">2,986</span>
-                        <span class="me-auto">
+                        <span class="cursor-pointer" >
                             <RadzenIcon title="@weightIconTitle()" Icon="trending_up"></RadzenIcon>
                         </span>
                     </div>
@@ -173,7 +173,7 @@
                     <RadzenText class="d-inline" TextStyle="TextStyle.Subtitle1"> Protein </RadzenText>
                     <div>
                         <span class="h1 mb-3 me-2 d-inline">2,986</span>
-                        <span class="me-auto">
+                        <span class="cursor-pointer">
                             <RadzenIcon title="@waistIconTitle()" Icon="trending_up"></RadzenIcon>
                         </span>
                     </div>
@@ -182,7 +182,7 @@
                     <RadzenText class="d-inline" TextStyle="TextStyle.Subtitle1"> Carbohydrates </RadzenText>
                     <div>
                         <span class="h1 mb-3 me-2">2,986</span>
-                        <span>
+                        <span class="cursor-pointer">
                             <RadzenIcon title="@bfIconTitle()" Icon="trending_up"></RadzenIcon>
                         </span>
                     </div>
@@ -191,7 +191,7 @@
                     <RadzenText class="d-inline" TextStyle="TextStyle.Subtitle1"> Fats </RadzenText>
                     <div>
                         <span class="h1 mb-3 me-2">2,986</span>
-                        <span>
+                        <span class="cursor-pointer">
                             <RadzenIcon title="@bfIconTitle()" Icon="trending_up"></RadzenIcon>
                         </span>
                     </div>
