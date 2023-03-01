@@ -1,9 +1,11 @@
 ﻿@page "/"
 @using FitnessTrackMono.Shared.Models;
 @using FitnessTrackMono.Client.Services.MeasurementsService;
+@using FitnessTrackMono.Client.Services.MealService;
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 @inject HttpClient Http
 @inject IMeasurementsService MeasurementService;
+@inject IMealService MealService;
 
 <PageTitle>Dashboard</PageTitle>
 <RadzenCard>
@@ -17,139 +19,19 @@
                 <RadzenColumn>
                     @if (weightAverages != null)
                     {
-                        <div>
-                            <RadzenText class="d-inline" TextStyle="TextStyle.Subtitle1"> Weight </RadzenText>
-                            <span class="cursor-pointer">
-                                <RadzenIcon title=@($"{weightAverages.CurrentCount} entries in the past 7 days") Icon="info"
-                                        IconStyle="Radzen.IconStyle.Info" style="font-size: large; vertical-align: sub;">
-                                </RadzenIcon>
-                            </span>
-                        </div>
-                        <div>
-
-                            @if (weightAverages.CurrentAverage != null)
-                            {
-                                <span class="h1 mb-3 me-2 d-inline">
-                                    @string.Format("{0:0.00}", weightAverages.CurrentAverage)
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="h1 mb-3 me-2 d-inline">
-                                    N/A
-                                </span>
-                            }
-
-                            <span class="cursor-pointer">
-                                @if (weightAverages.ChangeDirection == "up")
-                                {
-                                    <RadzenIcon title="@weightIconTitle()" Icon="trending_up"></RadzenIcon>
-                                }
-                                else if (weightAverages.ChangeDirection == "down")
-                                {
-                                    <RadzenIcon title="@weightIconTitle()" Icon="trending_down"></RadzenIcon>
-                                }
-                                else if (weightAverages.ChangeDirection == "none")
-                                {
-                                    <RadzenIcon title="@bfIconTitle()" Icon="trending_flat"></RadzenIcon>
-                                }
-                                else
-                                {
-                                    <span></span>
-                                }
-                            </span>
-                        </div>
+                        <DashboardStatistic Title="Weight" Averages="@weightAverages" HasInfoIcon=true TrendIconTitle="@weightIconTitle()"></DashboardStatistic>
                     }
                 </RadzenColumn>
                 <RadzenColumn>
                     @if (waistAverages != null)
                     {
-                        <div>
-                            <RadzenText class="d-inline" TextStyle="TextStyle.Subtitle1"> Waist </RadzenText>
-                            <span class="cursor-pointer">
-                                <RadzenIcon title=@($"{waistAverages.CurrentCount} entries in the past 7 days") Icon="info"
-                                        IconStyle="Radzen.IconStyle.Info" style="font-size: large; vertical-align: sub;">
-                                </RadzenIcon>
-                            </span>
-                        </div>
-                        <div>
-                            @if (waistAverages.CurrentAverage != null)
-                            {
-                                <span class="h1 mb-3 me-2 d-inline">
-                                    @string.Format("{0:0.00}", waistAverages.CurrentAverage)
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="h1 mb-3 me-2 d-inline">
-                                    N/A
-                                </span>
-                            }
-
-                            <span class="cursor-pointer">
-                                @if (waistAverages.ChangeDirection == "up")
-                                {
-                                    <RadzenIcon title="@waistIconTitle()" Icon="trending_up"></RadzenIcon>
-                                }
-                                else if (waistAverages.ChangeDirection == "down")
-                                {
-                                    <RadzenIcon title="@waistIconTitle()" Icon="trending_down"></RadzenIcon>
-                                }
-                                else if (waistAverages.ChangeDirection == "none")
-                                {
-                                    <RadzenIcon title="@bfIconTitle()" Icon="trending_flat"></RadzenIcon>
-                                }
-                                else
-                                {
-                                    <span></span>
-                                }
-                            </span>
-                        </div>
+                        <DashboardStatistic Title="Waist" Averages="@waistAverages" HasInfoIcon=true TrendIconTitle="@waistIconTitle()"></DashboardStatistic>
                     }
                 </RadzenColumn>
                 <RadzenColumn>
                     @if (bfAverages != null)
                     {
-                        <div>
-                            <RadzenText class="d-inline" TextStyle="TextStyle.Subtitle1"> Body fat </RadzenText>
-                            <span class="cursor-pointer">
-                                <RadzenIcon title=@($"{bfAverages.CurrentCount} entries in the past 7 days") Icon="info"
-                                        IconStyle="Radzen.IconStyle.Info" style="font-size: large; vertical-align: sub;">
-                                </RadzenIcon>
-                            </span>
-                        </div>
-                        <div>
-                            @if (bfAverages.CurrentAverage != null)
-                            {
-                                <span class="h1 mb-3 me-2">
-                                    @string.Format("{0:0.00}", bfAverages.CurrentAverage)
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="h1 mb-3 me-2">
-                                    N/A
-                                </span>
-                            }
-                            <span class="cursor-pointer">
-                                @if (bfAverages.ChangeDirection == "up")
-                                {
-                                    <RadzenIcon title="@bfIconTitle()" Icon="trending_up"></RadzenIcon>
-                                }
-                                else if (bfAverages.ChangeDirection == "down")
-                                {
-                                    <RadzenIcon title="@bfIconTitle()" Icon="trending_down"></RadzenIcon>
-                                }
-                                else if (bfAverages.ChangeDirection == "none")
-                                {
-                                    <RadzenIcon title="@bfIconTitle()" Icon="trending_flat"></RadzenIcon>
-                                }
-                                else
-                                {
-                                    <span></span>
-                                }
-                            </span>
-                        </div>
+                        <DashboardStatistic Title="Body fat" Averages="@bfAverages" HasInfoIcon=true TrendIconTitle="@bfIconTitle()"></DashboardStatistic>
                     }
                 </RadzenColumn>
             </RadzenRow>
@@ -159,43 +41,23 @@
         <RadzenCard>
             <RadzenText TextStyle="TextStyle.H6" class="d-inline"> Meals </RadzenText>
             <RadzenText TextStyle="TextStyle.Overline" class="d-inline"> (7-day moving average) </RadzenText>
+            @* loading indicator *@
             <RadzenRow class="mt-2">
-                <RadzenColumn>
-                    <RadzenText class="d-inline" TextStyle="TextStyle.Subtitle1"> Calories </RadzenText>
-                    <div>
-                        <span class="h1 mb-3 me-2 d-inline">2,986</span>
-                        <span class="cursor-pointer" >
-                            <RadzenIcon title="@weightIconTitle()" Icon="trending_up"></RadzenIcon>
-                        </span>
-                    </div>
-                </RadzenColumn>
-                <RadzenColumn>
-                    <RadzenText class="d-inline" TextStyle="TextStyle.Subtitle1"> Protein </RadzenText>
-                    <div>
-                        <span class="h1 mb-3 me-2 d-inline">2,986</span>
-                        <span class="cursor-pointer">
-                            <RadzenIcon title="@waistIconTitle()" Icon="trending_up"></RadzenIcon>
-                        </span>
-                    </div>
-                </RadzenColumn>
-                <RadzenColumn>
-                    <RadzenText class="d-inline" TextStyle="TextStyle.Subtitle1"> Carbohydrates </RadzenText>
-                    <div>
-                        <span class="h1 mb-3 me-2">2,986</span>
-                        <span class="cursor-pointer">
-                            <RadzenIcon title="@bfIconTitle()" Icon="trending_up"></RadzenIcon>
-                        </span>
-                    </div>
-                </RadzenColumn>
-                <RadzenColumn>
-                    <RadzenText class="d-inline" TextStyle="TextStyle.Subtitle1"> Fats </RadzenText>
-                    <div>
-                        <span class="h1 mb-3 me-2">2,986</span>
-                        <span class="cursor-pointer">
-                            <RadzenIcon title="@bfIconTitle()" Icon="trending_up"></RadzenIcon>
-                        </span>
-                    </div>
-                </RadzenColumn>
+                @if (mealsAverages != null)
+                {
+                    <RadzenColumn>
+                        <DashboardStatistic Title="Calories" Averages=@mealsAverages[0] HasInfoIcon=false TrendIconTitle=@caloriesIconTitle()></DashboardStatistic>
+                    </RadzenColumn>
+                    <RadzenColumn>
+                        <DashboardStatistic Title="Protein" Averages=@mealsAverages[1] HasInfoIcon=false TrendIconTitle=@macroIconTitle(1)></DashboardStatistic>
+                    </RadzenColumn>
+                    <RadzenColumn>
+                        <DashboardStatistic Title="Carbohydrates" Averages=@mealsAverages[2] HasInfoIcon=false TrendIconTitle=@macroIconTitle(2)></DashboardStatistic>
+                    </RadzenColumn>
+                    <RadzenColumn>
+                        <DashboardStatistic Title="Fats" Averages=@mealsAverages[3] HasInfoIcon=false TrendIconTitle=@macroIconTitle(3)></DashboardStatistic>
+                    </RadzenColumn>
+                }
             </RadzenRow>
         </RadzenCard>
     </div>
@@ -211,10 +73,29 @@
     ElementReference weightIcon;
     ElementReference waistIcon;
     ElementReference bfIcon;
-    List<AverageResults>? averages = null;
+    List<AverageResults>? measurementsAverages = null;
     AverageResults? weightAverages = null;
     AverageResults? waistAverages = null;
     AverageResults? bfAverages = null;
+    List<AverageResults>? mealsAverages = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            measurementsAverages = await MeasurementService.GetAverages(DateTime.Today);
+            mealsAverages = await MealService.GetAverages(DateTime.Today);
+
+            weightAverages = measurementsAverages[0];
+            waistAverages = measurementsAverages[1];
+            bfAverages = measurementsAverages[2];
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
     protected string weightIconTitle()
     {
         string result = string.Empty;
@@ -235,6 +116,7 @@
         }
         return result;
     }
+
     protected string waistIconTitle()
     {
         string result = string.Empty;
@@ -277,19 +159,45 @@
         return result;
     }
 
-    protected override async Task OnInitializedAsync()
+    protected string caloriesIconTitle()
     {
-        try
+        string result = string.Empty;
+        if (mealsAverages[0] != null)
         {
-            averages = await MeasurementService.GetAverages(DateTime.Today);
+            if (mealsAverages[0].ChangeDirection == "up")
+            {
+                result = $"{mealsAverages[0].Difference}kcals up from previous average";
+            }
+            else if (mealsAverages[0].ChangeDirection == "down")
+            {
+                result = $"{mealsAverages[0].Difference}kcals down from previous average";
+            }
+            else
+            {
+                result = "No change from previous average";
+            }
+        }
+        return result;
+    }
 
-            weightAverages = averages[0];
-            waistAverages = averages[1];
-            bfAverages = averages[2];
-        }
-        catch (AccessTokenNotAvailableException exception)
+    protected string macroIconTitle(int index)
+    {
+        string result = string.Empty;
+        if (mealsAverages != null)
         {
-            exception.Redirect();
+            if (mealsAverages[index].ChangeDirection == "up")
+            {
+                result = $"{mealsAverages[index].Difference}g up from previous average";
+            }
+            else if (mealsAverages[index].ChangeDirection == "down")
+            {
+                result = $"{mealsAverages[index].Difference}g down from previous average";
+            }
+            else
+            {
+                result = "No change from previous average";
+            }
         }
+        return result;
     }
 }
