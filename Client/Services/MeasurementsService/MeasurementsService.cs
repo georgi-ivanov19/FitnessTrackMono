@@ -96,9 +96,9 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
             await _localStorage.SetItemAsync("Measurements", Measurements);
         }
 
-        public async Task<AverageResults> GetAverages(DateTime date, string type)
+        public async Task<List<AverageResults>> GetAverages(DateTime date)
         {
-            var result = await _http.GetFromJsonAsync<AverageResults>($"api/measurement/GetAverages?Date={date}&Type={type}");
+            var result = await _http.GetFromJsonAsync<List<AverageResults>>($"api/measurement/GetAverages?Date={date}");
             if (result == null)
                 throw new Exception("No results found");
             return result;

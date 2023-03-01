@@ -154,6 +154,7 @@
     ElementReference weightIcon;
     ElementReference waistIcon;
     ElementReference bfIcon;
+    List<AverageResults>? averages = null;
     AverageResults? weightAverages = null;
     AverageResults? waistAverages = null;
     AverageResults? bfAverages = null;
@@ -200,9 +201,11 @@
     {
         try
         {
-            weightAverages = await MeasurementService.GetAverages(DateTime.Today, "Weight");
-            waistAverages = await MeasurementService.GetAverages(DateTime.Today, "Waist");
-            bfAverages = await MeasurementService.GetAverages(DateTime.Today, "Body fat");
+            averages = await MeasurementService.GetAverages(DateTime.Today);
+
+            weightAverages = averages[0];
+            waistAverages = averages[1];
+            bfAverages = averages[2];
         }
         catch (AccessTokenNotAvailableException exception)
         {

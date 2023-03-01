@@ -12,6 +12,6 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
         Task UpdateMeasurement(Measurement measurement);
         Task DeleteMeasurement(int id);
         IEnumerable<Measurement> GetMeasurementsByType(string type);
-        Task<AverageResults> GetAverages(DateTime date, string type);
+        Task<List<AverageResults>> GetAverages(DateTime date);
     }
 }

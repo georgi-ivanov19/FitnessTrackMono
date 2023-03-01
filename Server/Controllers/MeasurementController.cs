@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FitnessTrackMono.Server.Controllers
 {
@@ -89,7 +90,7 @@ namespace FitnessTrackMono.Server.Controllers
         }
 
         [HttpGet("GetAverages")]
-        public async Task<ActionResult<AverageResults>> GetLatestCompleted([FromQuery] DateTime date, [FromQuery] string type)
+        public async Task<ActionResult<List<AverageResults>>> GetLatestCompleted([FromQuery] DateTime date)
         {
             // 7 days moving average from date
             var user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -98,7 +99,35 @@ namespace FitnessTrackMono.Server.Controllers
             {
                 return NotFound();
             }
-            var measurements = _context.Measurements.Where(m => m.ApplicationUserId == user.Id && m.Date >= date.AddDays(-14) && m.Date <= date && m.Type == type).ToList();
+            var measurements = _context.Measurements.Where(m => m.ApplicationUserId == user.Id && m.Date >= date.AddDays(-14) && m.Date <= date).ToList();
+            var weightMeasurements = new List<Measurement>();
+            var waistMeasurements = new List<Measurement>();
+            var bfMeasurements = new List<Measurement>();
+            foreach (var measurement in measurements)
+            {
+                switch (measurement.Type)
+                {
+                    case "Weight":
+                        weightMeasurements.Add(measurement);
+                        break;
+                    case "Waist":
+                        waistMeasurements.Add(measurement);
+                        break;
+                    case "Body fat": 
+                        bfMeasurements.Add(measurement);
+                        break;
+                }
+            }
+            return new List<AverageResults>
+            {
+                CalculateAverages(date, weightMeasurements),
+                CalculateAverages(date, waistMeasurements),
+                CalculateAverages(date, bfMeasurements)
+            };
+        }
+
+        private AverageResults CalculateAverages(DateTime date, List<Measurement> measurements)
+        {
             var currentMeasurements = measurements.Where(m => m.Date >= date.AddDays(-7)).ToList();
             var previousMeasurements = measurements.Where(m => m.Date < date.AddDays(-7)).ToList();
             var currentAverage = currentMeasurements.Average(m => m.Value);
