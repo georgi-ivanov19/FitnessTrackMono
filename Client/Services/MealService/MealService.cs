@@ -113,5 +113,12 @@ namespace FitnessTrackMono.Client.Services.MealService
 
             return new MealMacros(totalCalories, totalProtein, totalCarbohydrates, totalFats);
         }
+        public async Task<List<AverageResults>> GetAverages(DateTime date)
+        {
+            var result = await _http.GetFromJsonAsync<List<AverageResults>>($"api/meal/GetAverages?Date={date}");
+            if (result == null)
+                throw new Exception("No results found");
+            return result;
+        }
     }
 }
