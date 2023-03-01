@@ -48,11 +48,12 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
         {
             Measurement? result;
             var measurementsInLocalStorage = await _localStorage.ContainKeyAsync("Measurements");
-            if(measurementsInLocalStorage)
+            if (measurementsInLocalStorage)
             {
                 var measurements = await _localStorage.GetItemAsync<List<Measurement>>("Measurements");
                 result = measurements.First(m => m.Id == id);
-            } else
+            }
+            else
             {
                 result = await _http.GetFromJsonAsync<Measurement>($"api/measurement/{id}");
             }
@@ -84,7 +85,7 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
             {
                 Measurements[index] = measurement;
                 await _localStorage.SetItemAsync("Measurements", Measurements);
-            }              
+            }
             _navManager.NavigateTo("measurements");
         }
 
@@ -93,6 +94,14 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
             await _http.DeleteAsync($"api/measurement/{id}");
             Measurements.RemoveAt(Measurements.FindIndex(m => m.Id == id));
             await _localStorage.SetItemAsync("Measurements", Measurements);
+        }
+
+        public async Task<AverageResults> GetAverages(DateTime date, string type)
+        {
+            var result = await _http.GetFromJsonAsync<AverageResults>($"api/measurement/GetAverages?Date={date}&Type={type}");
+            if (result == null)
+                throw new Exception("No results found");
+            return result;
         }
     }
 }
