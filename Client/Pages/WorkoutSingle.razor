@@ -13,6 +13,8 @@
 @inject IExerciseSetService ExerciseSetService;
 @inject ITrackedWorkoutService TrackedWorkoutService;
 @inject NavigationManager NavManager;
+@inject IJSRuntime JsRuntime
+
 
 <PageTitle> @workout.Name </PageTitle>
 <RadzenCard>
@@ -78,7 +80,6 @@
             trackedWorkouts = workout.TrackedWorkouts.Where(tw => tw.IsCompleted == true).ToList();
             if(trackedWorkouts.Count > 0)
                 latestCompleted = trackedWorkouts.OrderByDescending(w => w.EndTime).First();
-            Console.WriteLine(latestCompleted.Id);
             await ExerciseService.GetExercises(Id);
         }
         catch (AccessTokenNotAvailableException exception)
@@ -89,9 +90,16 @@
 
     private async void StartWorkout(Workout w)
     {
-        var tw = await TrackedWorkoutService.StartWorkout(w);
-        await ExerciseSetService.CreateExerciseSetRange(w, tw);
-        NavManager.NavigateTo($"track/{tw.Id}");
+        if (w.Exercises.Any())
+        {
+            var tw = await TrackedWorkoutService.StartWorkout(w);
+            await ExerciseSetService.CreateExerciseSetRange(w, tw);
+            NavManager.NavigateTo($"track/{tw.Id}");
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Cannot start a workout with no exercises"); // Alert
+        }
     }
 
     private async Task ShowForm(int? id)

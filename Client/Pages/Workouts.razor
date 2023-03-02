@@ -11,6 +11,7 @@
 @inject IExerciseSetService ExerciseSetService;
 @inject NavigationManager NavManager;
 @inject Radzen.DialogService DialogService;
+@inject IJSRuntime JsRuntime
 
 <RadzenCard>
     <div class="mb-3">
@@ -116,10 +117,16 @@
         await WorkoutService.DeleteWorkout(id);
     }
 
-    private async void StartWorkout(Workout w)
+    private async Task StartWorkout(Workout w)
     {
-        var tw = await TrackedWorkoutService.StartWorkout(w);
-        await ExerciseSetService.CreateExerciseSetRange(w, tw);
-        NavManager.NavigateTo($"track/{tw.Id}");
+        if (w.Exercises.Any())
+        {
+            var tw = await TrackedWorkoutService.StartWorkout(w);
+            await ExerciseSetService.CreateExerciseSetRange(w, tw);
+            NavManager.NavigateTo($"track/{tw.Id}");
+        } else
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Cannot start a workout with no exercises"); // Alert
+        }
     }
 }
