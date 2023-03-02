@@ -27,7 +27,7 @@ namespace FitnessTrackMono.Shared.Models
             } else if (CurrentAverage < PreviousAverage)
             {
                 ChangeDirection = "down";
-            } else if (CurrentAverage == PreviousAverage)
+            } else if (CurrentAverage == PreviousAverage && CurrentAverage != null && PreviousAverage != null)
             {
                 ChangeDirection = "none";
             } else
