@@ -95,7 +95,6 @@
     TrackedWorkout trackedWorkout = new TrackedWorkout();
     TrackedWorkout? latestCompleted = null;
     Workout parentWorkout = new Workout();
-    List<Tuple<ExerciseSet>> zipped = new List<Tuple<ExerciseSet>>();
     int setsCompleted = 0;
     int totalSets = 0;
 
@@ -111,7 +110,6 @@
             trackedWorkout = await TrackedWorkoutService.GetSingleWorkout(Id);
             await localStorage.SetItemAsync<TrackedWorkout>("TrackedWorkout" + trackedWorkout.Id, trackedWorkout);
         }
-
 
         try
         {
@@ -129,7 +127,7 @@
         totalSets = trackedWorkout.ExerciseSetsCompleted.Count;
     }
 
-    private async void SetCompleted(bool value, ExerciseSet set)
+    private async Task SetCompleted(bool value, ExerciseSet set)
     {
         trackedWorkout.TotalVolume += (double)set.Weight! * (double)set.Reps!;
         var setIndex = trackedWorkout.ExerciseSetsCompleted.FindIndex(s => s.Id == set.Id);
@@ -138,7 +136,7 @@
         await localStorage.SetItemAsync<TrackedWorkout>("TrackedWorkout" + trackedWorkout.Id, trackedWorkout);
     }
 
-    private async void FinishWorkout(TrackedWorkout w)
+    private async Task FinishWorkout(TrackedWorkout w)
     {
         w.IsCompleted = true;
         w.EndTime = DateTime.Now;
@@ -150,7 +148,15 @@
 
     private List<ExerciseSet> latestSetsForExercise(int exId)
     {
-        if (latestCompleted == null)
+        bool anyNewExercises = false;
+        foreach(var item in parentWorkout.Exercises)
+        {
+            if(latestCompleted != null && latestCompleted.ExerciseSetsCompleted.Where(e => e.ExerciseId == item.Id).Count() == 0)
+            {
+                anyNewExercises = true;
+            }
+        }
+        if (latestCompleted == null || anyNewExercises)
         {
             latestCompleted = new TrackedWorkout();
             foreach (var item in parentWorkout.Exercises)

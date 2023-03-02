@@ -4,6 +4,7 @@ using FitnessTrackMono.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FitnessTrackMono.Server.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230301235755_MakeFKEYExSet_ExIdNullable")]
+    partial class MakeFKEYExSet_ExIdNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -589,8 +592,7 @@ namespace FitnessTrackMono.Server.Data.Migrations
                 {
                     b.HasOne("FitnessTrackMono.Shared.Models.Exercise", null)
                         .WithMany("ExerciseSets")
-                        .HasForeignKey("ExerciseId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("ExerciseId");
 
                     b.HasOne("FitnessTrackMono.Shared.Models.TrackedWorkout", null)
                         .WithMany("ExerciseSetsCompleted")

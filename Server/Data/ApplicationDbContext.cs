@@ -18,13 +18,23 @@ namespace FitnessTrackMono.Server.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<ApplicationUser>().Navigation(e => e.Measurements);
+            builder.Entity<ApplicationUser>().HasMany(m => m.Measurements);
+            builder.Entity<ApplicationUser>().Navigation(m => m.Measurements);
+            builder.Entity<ApplicationUser>().HasMany(m => m.Meals);
             builder.Entity<ApplicationUser>().Navigation(e => e.Meals);
+            builder.Entity<ApplicationUser>().HasMany(m => m.Workouts);
             builder.Entity<ApplicationUser>().Navigation(e => e.Workouts);
+
+            builder.Entity<Workout>().HasMany(m => m.Exercises).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Workout>().HasMany(m => m.TrackedWorkouts).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<Workout>().Navigation(e => e.Exercises).AutoInclude();
             builder.Entity<Workout>().Navigation(e => e.TrackedWorkouts).AutoInclude();
+
+            builder.Entity<Exercise>().HasMany(m => m.ExerciseSets).WithOne().OnDelete(DeleteBehavior.SetNull);
             builder.Entity<Exercise>().Navigation(e => e.ExerciseSets);
-            builder.Entity<TrackedWorkout>().Navigation(e => e.ExerciseSetsCompleted).AutoInclude();
+
+            builder.Entity<TrackedWorkout>().HasMany(e => e.ExerciseSetsCompleted).WithOne().OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<TrackedWorkout>().Navigation(e => e.ExerciseSetsCompleted).AutoInclude();          
         }
 
         public DbSet<Measurement> Measurements => Set<Measurement>();

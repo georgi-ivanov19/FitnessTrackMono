@@ -74,6 +74,7 @@ namespace FitnessTrackMono.Client.Services.ExerciseService
             int index = Exercises.FindIndex(e => e.Id == ex.Id);
             if (index != -1)
                 Exercises[index] = ex;
+            await _localStorage.RemoveItemAsync("Workouts");
             _navManager.NavigateTo($"workout/{response.WorkoutId}");
         }
     }

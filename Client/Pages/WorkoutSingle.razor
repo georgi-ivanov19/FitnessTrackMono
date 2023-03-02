@@ -40,7 +40,7 @@
     @if (latestCompleted != null)
     {
         <div class="summary m-2">
-            <WorkoutSummary workout="@latestCompleted" parentWorkout="@workout" />
+            <WorkoutSummary workout="@latestCompleted" ParentWorkoutName="@workout.Name" />
         </div>
     }
     <div class="exercises mt-2">
@@ -78,6 +78,7 @@
             trackedWorkouts = workout.TrackedWorkouts.Where(tw => tw.IsCompleted == true).ToList();
             if(trackedWorkouts.Count > 0)
                 latestCompleted = trackedWorkouts.OrderByDescending(w => w.EndTime).First();
+            Console.WriteLine(latestCompleted.Id);
             await ExerciseService.GetExercises(Id);
         }
         catch (AccessTokenNotAvailableException exception)
@@ -105,10 +106,12 @@
                 CloseDialogOnOverlayClick = true
             }
         );
+        workout = await WorkoutService.GetSingleWorkout(Id);
     }
 
     private async Task DeleteExercise(int id)
     {
         await ExerciseService.DeleteExercise(id);
+        workout = await WorkoutService.GetSingleWorkout(Id);
     }
 }
