@@ -15,12 +15,10 @@ namespace FitnessTrackMono.Server.Controllers
     public class MeasurementController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public MeasurementController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public MeasurementController(ApplicationDbContext context)
         {
             _context = context;
-            _userManager = userManager;
         }
 
         [HttpGet]
@@ -93,13 +91,13 @@ namespace FitnessTrackMono.Server.Controllers
         public async Task<ActionResult<List<AverageResults>>> GetLatestCompleted([FromQuery] DateTime date)
         {
             // 7 days moving average from date for each measurement
-            var user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            
+            var user = await _context.Users.Include(u => u.Measurements).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+                     
             if (user == null)
             {
                 return NotFound();
             }
-            var measurements = _context.Measurements.Where(m => m.ApplicationUserId == user.Id && m.Date >= date.AddDays(-14) && m.Date <= date).ToList();
+            var measurements = user.Measurements.Where(m => m.Date >= date.AddDays(-14) && m.Date <= date).ToList();
             var weightMeasurements = new List<Measurement>();
             var waistMeasurements = new List<Measurement>();
             var bfMeasurements = new List<Measurement>();

@@ -14,18 +14,17 @@ namespace FitnessTrackMono.Server.Controllers
     public class ExerciseSetsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ExerciseSetsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public ExerciseSetsController(ApplicationDbContext context)
         {
             _context = context;
-            _userManager = userManager;
         }
 
         [HttpGet("GetExerciseSets/{id}")]
         public async Task<ActionResult<List<ExerciseSet>>> GetExerciseSetsForExercise(int id)
         {
-            var user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+
             if (user == null)
             {
                 return NotFound("User not found");

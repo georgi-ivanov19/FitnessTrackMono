@@ -14,12 +14,10 @@ namespace FitnessTrackMono.Server.Controllers
     public class MealController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _userManager;
 
         public MealController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
-            _userManager = userManager;
         }
 
         [HttpGet]
@@ -94,14 +92,15 @@ namespace FitnessTrackMono.Server.Controllers
         [HttpGet("GetAverages")]
         public async Task<ActionResult<List<AverageResults>>> GetAverages([FromQuery] DateTime date)
         {
-            var user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = await _context.Users.Include(u => u.Meals).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            var meals = _context.Meals.Where(m => m.ApplicationUserId == user.Id && m.Date >= date.AddDays(-14) && m.Date <= date).ToList();
+            var meals = user.Meals.Where(m => m.Date >= date.AddDays(-14) && m.Date <= date).ToList();
 
 
             return CalculateAverages(date, meals);
