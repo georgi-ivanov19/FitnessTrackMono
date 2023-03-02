@@ -29,6 +29,7 @@ namespace FitnessTrackMono.Client.Services.ExerciseSetService
                         Weight = null,
                         Reps = null,
                         ExerciseId = item.Id,
+                        ExerciseName = item.Name,
                         TrackedWorkoutId = tw.Id,
                     });
                 }

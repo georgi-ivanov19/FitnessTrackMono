@@ -80,6 +80,7 @@ namespace FitnessTrackMono.Server.Controllers
             dbExerciseSet.Weight = exerciseSet.Weight;
             dbExerciseSet.IsWarmup = exerciseSet.IsWarmup;
             dbExerciseSet.ExerciseId = exerciseSet.ExerciseId;
+            dbExerciseSet.ExerciseName = exerciseSet.ExerciseName;
             dbExerciseSet.IsComplete = exerciseSet.IsComplete;
             await _context.SaveChangesAsync();
 
