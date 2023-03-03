@@ -86,7 +86,7 @@
 
     private async Task ShowForm(int? id)
     {
-        var title = id == null ? "Add Routine" : "Edit Routine";
+        var title = id == null ? "Add Workout" : "Edit Workout";
         await DialogService.OpenAsync<WorkoutsForm>(title,
         new Dictionary<string, object>() { { "Id", id } },
         new Radzen.DialogOptions()

@@ -11,10 +11,10 @@ namespace FitnessTrackMono.Shared.Models
         public int Id { get; set; }
         public string ApplicationUserId { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
-        public double TotalCalories { get; set; }
-        public double Protein { get; set; }
-        public double Fats { get; set; }
-        public double Carbohydrates { get; set; }
+        public double? TotalCalories { get; set; }
+        public double? Protein { get; set; }
+        public double? Fats { get; set; }
+        public double? Carbohydrates { get; set; }
         public DateTime Date { get; set; }
     }
 }
