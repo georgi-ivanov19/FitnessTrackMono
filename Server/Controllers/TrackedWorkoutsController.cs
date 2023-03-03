@@ -89,5 +89,69 @@ namespace FitnessTrackMono.Server.Controllers
 
             return Ok(dbWorkout);
         }
+
+        [HttpGet("GetAverages")]
+        public async Task<ActionResult<Dictionary<int, List<AverageResults>>>> GetAverages([FromQuery] DateTime date)
+        {
+            var user = await _context.Users.Include(u => u.Workouts).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            var result = new Dictionary<int, List<AverageResults>>();
+            foreach (var workout in user.Workouts)
+            {
+                // all complete tracked workouts for the past 30 days
+                var trackedWorkouts = _context.TrackedWorkouts.Where(w => w.WorkoutId == workout.Id && w.IsCompleted && w.EndTime >= date.AddDays(-30) && w.EndTime <= date).ToList();
+                result.Add(workout.Id, CalculateAverages(date, trackedWorkouts));
+            }
+
+            return result;
+        }
+
+        private List<AverageResults> CalculateAverages(DateTime date, List<TrackedWorkout> trackedWorkouts)
+        {
+            var currentWorkouts = trackedWorkouts.Where(m => m.EndTime >= date.AddDays(-15)).ToList();
+            var previousWorkouts = trackedWorkouts.Where(m => m.EndTime < date.AddDays(-15)).ToList();
+
+
+            double? averageCurrentVolume = null;
+            double? averageCurrentDuration = null;
+
+            double? averagePrevVolume = null;
+            double? averagePrevDuration = null;
+
+            if (currentWorkouts.Any())
+            {
+                averageCurrentVolume = currentWorkouts.Sum(w => w.TotalVolume) / currentWorkouts.Count;
+                TimeSpan totalTimeSpan = TimeSpan.Zero;
+                foreach (var w in currentWorkouts)
+                {
+                    var duration = w.EndTime - w.StartTime;
+                    totalTimeSpan += (TimeSpan)duration;
+                }
+                averageCurrentDuration = currentWorkouts.Count != 0 ? totalTimeSpan.TotalMicroseconds / currentWorkouts.Count : null;
+            }
+
+            if (previousWorkouts.Any())
+            {
+                averagePrevVolume = previousWorkouts.Sum(w => w.TotalVolume) / previousWorkouts.Count;
+                TimeSpan totalTimeSpan = TimeSpan.Zero;
+                foreach (var w in previousWorkouts)
+                {
+                    var duration = w.EndTime - w.StartTime;
+                    totalTimeSpan += (TimeSpan)duration;
+                }
+               
+                averagePrevDuration = previousWorkouts.Count != 0 ? totalTimeSpan.TotalMicroseconds / previousWorkouts.Count : null; 
+            }
+            
+            return new List<AverageResults> {
+                new AverageResults(averageCurrentVolume, currentWorkouts.Count, averagePrevVolume),
+                new AverageResults(averageCurrentDuration, currentWorkouts.Count, averagePrevDuration),
+            };
+        }
     }
 }
