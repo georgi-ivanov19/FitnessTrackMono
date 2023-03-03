@@ -137,7 +137,7 @@ namespace FitnessTrackMono.Server.Controllers
                 previousWeekMeals.Sum(m => m.TotalCalories),
                 previousWeekMeals.Sum(m => m.Protein),
                 previousWeekMeals.Sum(m => m.Carbohydrates),
-                 previousWeekMeals.Sum(m => m.Fats));
+                previousWeekMeals.Sum(m => m.Fats));
 
                 averageCals[1] = previousTotals.Calories / 7;
                 averageProtein[1] = previousTotals.Protein / 7;
