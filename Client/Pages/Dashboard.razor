@@ -99,14 +99,14 @@
     {
         try
         {
-            measurementsAverages = await MeasurementService.GetAverages(DateTime.Today);
+            measurementsAverages = await MeasurementService.GetAverages(DateTime.Now);
 
-            mealsAverages = await MealService.GetAverages(DateTime.Today);
+            mealsAverages = await MealService.GetAverages(DateTime.Now);
             weightAverages = measurementsAverages[0];
             waistAverages = measurementsAverages[1];
             bfAverages = measurementsAverages[2];
 
-            workoutsAverages = await TrackedWorkoutService.GetAverages(DateTime.Today);
+            workoutsAverages = await TrackedWorkoutService.GetAverages(DateTime.Now);
             loading = false;
         }
         catch (AccessTokenNotAvailableException exception)
