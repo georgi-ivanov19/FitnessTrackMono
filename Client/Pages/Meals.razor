@@ -10,7 +10,13 @@
 
 <PageTitle> Meals </PageTitle>
 <RadzenCard>
-    <RadzenText TextStyle="TextStyle.H5" class="d-inline"> Meals </RadzenText>
+        @if (loading)
+    {
+        <RadzenProgressBar Value="100" ShowValue="false" Mode="Radzen.ProgressBarMode.Indeterminate" />
+    }
+    else
+    {
+    <RadzenText TextStyle="TextStyle.H4" class="d-inline"> Meals </RadzenText>
     <RadzenButton Click=@(args => ShowForm(null, date)) Icon="add" Size="Radzen.ButtonSize.Medium" ButtonStyle="Radzen.ButtonStyle.Primary" Class="rz-border-radius-10 rz-shadow-6" />
     <div class="container-fluid date-select text-center align-text-bottom mb-2 ">
         <RadzenButton Click=@(args => DateChanged("prev")) Icon="arrow_back_ios" Size="Radzen.ButtonSize.Small" ButtonStyle="Radzen.ButtonStyle.Light" Class="rz-border-radius-10 rz-shadow-6 m-1" />
@@ -196,6 +202,7 @@
             </RadzenTreeItem>
         }
     </RadzenTree>
+    }
 </RadzenCard>
 
 @code {
@@ -212,6 +219,7 @@
             await MealService.GetMeals();
             dayMeals = MealService.Meals.Where(m => m.Date.Date == date.Date).ToList();
             date = DateTime.Today;
+            loading = false;
         }
         catch (AccessTokenNotAvailableException exception)
         {

@@ -11,82 +11,89 @@
 
 <PageTitle>Dashboard</PageTitle>
 <RadzenCard>
-    <RadzenText TextStyle="TextStyle.H5" class="d-inline"> Dashboard </RadzenText>
-    <div class="container-fluid mt-3">
-        <RadzenCard>
-            <RadzenText TextStyle="TextStyle.H6" class="d-inline"> Measurements </RadzenText>
-            <RadzenText TextStyle="TextStyle.Overline" class="d-inline"> (7-day moving average) </RadzenText>
-            @* loading indicator *@
-            <RadzenRow class="mt-2">
-                <RadzenColumn>
-                    @if (weightAverages != null)
+    @if (loading)
+    {
+        <RadzenProgressBar Value="100" ShowValue="false" Mode="Radzen.ProgressBarMode.Indeterminate" />
+    }
+    else
+    {
+        <RadzenText TextStyle="TextStyle.H4" class="d-inline"> Dashboard </RadzenText>
+        <div class="container-fluid mt-3">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.H6" class="d-inline"> Measurements </RadzenText>
+                <RadzenText TextStyle="TextStyle.Overline" class="d-inline"> (7-day moving average) </RadzenText>
+                @* loading indicator *@
+                <RadzenRow class="mt-2">
+                    <RadzenColumn>
+                        @if (weightAverages != null)
+                        {
+                            <DashboardStatistic NumberOfDays=7 Title="Weight" Averages="@weightAverages" HasInfoIcon=true TrendIconTitle="@weightIconTitle()"></DashboardStatistic>
+                        }
+                    </RadzenColumn>
+                    <RadzenColumn>
+                        @if (waistAverages != null)
+                        {
+                            <DashboardStatistic NumberOfDays=7 Title="Waist" Averages="@waistAverages" HasInfoIcon=true TrendIconTitle="@waistIconTitle()"></DashboardStatistic>
+                        }
+                    </RadzenColumn>
+                    <RadzenColumn>
+                        @if (bfAverages != null)
+                        {
+                            <DashboardStatistic NumberOfDays=7 Title="Body fat" Averages="@bfAverages" HasInfoIcon=true TrendIconTitle="@bfIconTitle()"></DashboardStatistic>
+                        }
+                    </RadzenColumn>
+                </RadzenRow>
+            </RadzenCard>
+        </div>
+        <div class="container-fluid mt-3">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.H6" class="d-inline"> Meals </RadzenText>
+                <RadzenText TextStyle="TextStyle.Overline" class="d-inline"> (7-day moving average) </RadzenText>
+                @* loading indicator *@
+                <RadzenRow class="mt-2">
+                    @if (mealsAverages != null)
                     {
-                        <DashboardStatistic NumberOfDays=7 Title="Weight" Averages="@weightAverages" HasInfoIcon=true TrendIconTitle="@weightIconTitle()"></DashboardStatistic>
+                        <RadzenColumn>
+                            <DashboardStatistic NumberOfDays=7 Title="Calories" Averages=@mealsAverages[0] HasInfoIcon=false TrendIconTitle=@caloriesIconTitle()></DashboardStatistic>
+                        </RadzenColumn>
+                        <RadzenColumn>
+                            <DashboardStatistic NumberOfDays=7 Title="Protein" Averages=@mealsAverages[1] HasInfoIcon=false TrendIconTitle=@macroIconTitle(1)></DashboardStatistic>
+                        </RadzenColumn>
+                        <RadzenColumn>
+                            <DashboardStatistic NumberOfDays=7 Title="Carbohydrates" Averages=@mealsAverages[2] HasInfoIcon=false TrendIconTitle=@macroIconTitle(2)></DashboardStatistic>
+                        </RadzenColumn>
+                        <RadzenColumn>
+                            <DashboardStatistic NumberOfDays=7 Title="Fats" Averages=@mealsAverages[3] HasInfoIcon=false TrendIconTitle=@macroIconTitle(3)></DashboardStatistic>
+                        </RadzenColumn>
                     }
-                </RadzenColumn>
-                <RadzenColumn>
-                    @if (waistAverages != null)
-                    {
-                        <DashboardStatistic NumberOfDays=7 Title="Waist" Averages="@waistAverages" HasInfoIcon=true TrendIconTitle="@waistIconTitle()"></DashboardStatistic>
-                    }
-                </RadzenColumn>
-                <RadzenColumn>
-                    @if (bfAverages != null)
-                    {
-                        <DashboardStatistic NumberOfDays=7 Title="Body fat" Averages="@bfAverages" HasInfoIcon=true TrendIconTitle="@bfIconTitle()"></DashboardStatistic>
-                    }
-                </RadzenColumn>
-            </RadzenRow>
-        </RadzenCard>
-    </div>
-    <div class="container-fluid mt-3">
-        <RadzenCard>
-            <RadzenText TextStyle="TextStyle.H6" class="d-inline"> Meals </RadzenText>
-            <RadzenText TextStyle="TextStyle.Overline" class="d-inline"> (7-day moving average) </RadzenText>
-            @* loading indicator *@
-            <RadzenRow class="mt-2">
-                @if (mealsAverages != null)
-                {
-                    <RadzenColumn>
-                        <DashboardStatistic NumberOfDays=7 Title="Calories" Averages=@mealsAverages[0] HasInfoIcon=false TrendIconTitle=@caloriesIconTitle()></DashboardStatistic>
-                    </RadzenColumn>
-                    <RadzenColumn>
-                        <DashboardStatistic NumberOfDays=7 Title="Protein" Averages=@mealsAverages[1] HasInfoIcon=false TrendIconTitle=@macroIconTitle(1)></DashboardStatistic>
-                    </RadzenColumn>
-                    <RadzenColumn>
-                        <DashboardStatistic NumberOfDays=7 Title="Carbohydrates" Averages=@mealsAverages[2] HasInfoIcon=false TrendIconTitle=@macroIconTitle(2)></DashboardStatistic>
-                    </RadzenColumn>
-                    <RadzenColumn>
-                        <DashboardStatistic NumberOfDays=7  Title="Fats" Averages=@mealsAverages[3] HasInfoIcon=false TrendIconTitle=@macroIconTitle(3)></DashboardStatistic>
-                    </RadzenColumn>
-                }
-            </RadzenRow>
-        </RadzenCard>
-    </div>
+                </RadzenRow>
+            </RadzenCard>
+        </div>
 
-    <div class="container-fluid mt-3">
-        <RadzenCard>
-            <RadzenText TextStyle="TextStyle.H6" class="d-inline"> Workouts </RadzenText>
-            <RadzenText TextStyle="TextStyle.Overline" class="d-inline"> (30-day moving average) </RadzenText>
-            <RadzenDataList WrapItems="false" AllowPaging="false" Data="workoutsAverages"
+        <div class="container-fluid mt-3">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.H6" class="d-inline"> Workouts </RadzenText>
+                <RadzenText TextStyle="TextStyle.Overline" class="d-inline"> (30-day moving average) </RadzenText>
+                <RadzenDataList WrapItems="false" AllowPaging="false" Data="workoutsAverages"
                             TItem="KeyValuePair<int, List<AverageResults>>">
-                <Template Context="workoutAverageKV">
-                    <DashboardWorkout WorkoutId="@workoutAverageKV.Key" Averages="@workoutAverageKV.Value"></DashboardWorkout>
-                </Template>
-            </RadzenDataList>
-        </RadzenCard>
-    </div>
+                    <Template Context="workoutAverageKV">
+                        <DashboardWorkout WorkoutId="@workoutAverageKV.Key" Averages="@workoutAverageKV.Value"></DashboardWorkout>
+                    </Template>
+                </RadzenDataList>
+            </RadzenCard>
+        </div>
+    }
 </RadzenCard>
 @code {
-    ElementReference weightIcon;
-    ElementReference waistIcon;
-    ElementReference bfIcon;
+    bool loading = true;
+
     List<AverageResults>? measurementsAverages = null;
     AverageResults? weightAverages = null;
     AverageResults? waistAverages = null;
     AverageResults? bfAverages = null;
     List<AverageResults>? mealsAverages = null;
     Dictionary<int, List<AverageResults>>? workoutsAverages = null;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -100,6 +107,7 @@
             bfAverages = measurementsAverages[2];
 
             workoutsAverages = await TrackedWorkoutService.GetAverages(DateTime.Today);
+            loading = false;
         }
         catch (AccessTokenNotAvailableException exception)
         {
