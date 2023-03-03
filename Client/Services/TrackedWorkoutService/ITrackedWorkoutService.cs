@@ -10,5 +10,6 @@ namespace FitnessTrackMono.Client.Services.TrackedWorkoutService
         Task<TrackedWorkout> GetSingleWorkout(int id);
         Task<TrackedWorkout> GetLatestCompleted(int parentWorkoutId);
         Task UpdateTrackedWorkout(TrackedWorkout workout, bool finish = false);
+        Task<Dictionary<int, List<AverageResults>>> GetAverages(DateTime date);
     }
 }

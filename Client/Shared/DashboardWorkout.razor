@@ -1,0 +1,44 @@
+﻿@using FitnessTrackMono.Client.Services.WorkoutService;
+@inject IWorkoutService WorkoutService;
+
+@if (workout != null)
+{
+    <RadzenRow>
+        <RadzenColumn Style="display: flex; flex-direction: column; justify-content: center;">
+            <RadzenText TextStyle="TextStyle.H5" class="d-inline"> @workout.Name </RadzenText>
+        </RadzenColumn>
+        <RadzenColumn>
+            <DashboardStatistic Averages="@Averages[0]" NumberOfDays=30 Title="Volume (kg)" TrendIconTitle="TBD"></DashboardStatistic>
+        </RadzenColumn>
+        <RadzenColumn>
+            <DashboardStatistic Averages="@Averages[1]" NumberOfDays=30 Title="Duration (h:mm)" IsDuration=true TrendIconTitle="TBD"></DashboardStatistic>
+        </RadzenColumn>
+        <RadzenColumn>
+            <div>
+                <RadzenText class="d-inline" TextStyle="TextStyle.Subtitle1"> Workouts </RadzenText>
+            </div>
+            <div>
+
+                <span class="h1 mb-3 me-2">
+                    @Averages[0].CurrentCount
+                </span>
+            </div>
+        </RadzenColumn>
+
+    </RadzenRow>
+}
+
+
+@code {
+    [Parameter]
+    public int WorkoutId { get; set; }
+    [Parameter]
+    public List<AverageResults> Averages { get; set; }
+
+    protected Workout? workout = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        workout = await WorkoutService.GetSingleWorkout(WorkoutId);
+    }
+}

@@ -124,5 +124,13 @@ namespace FitnessTrackMono.Client.Services.TrackedWorkoutService
                 return new List<TrackedWorkout>();
             }
         }
+
+        public async Task<Dictionary<int, List<AverageResults>>> GetAverages(DateTime date)
+        {
+            var result = await _http.GetFromJsonAsync<Dictionary<int, List<AverageResults>>>($"api/trackedworkouts/GetAverages?Date={date}");
+            if (result == null)
+                throw new Exception("No results found");
+            return result;
+        }
     }
 }

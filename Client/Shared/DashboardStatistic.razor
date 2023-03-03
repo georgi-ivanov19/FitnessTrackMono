@@ -3,7 +3,7 @@
     @if (HasInfoIcon)
     {
         <span class="cursor-pointer">
-            <RadzenIcon title=@($"{Averages.CurrentCount} entries in the past 7 days") Icon="info"
+            <RadzenIcon title=@($"{Averages.CurrentCount} entries in the past {NumberOfDays} days") Icon="info"
                     IconStyle="Radzen.IconStyle.Info" style="font-size: large; vertical-align: sub;">
         </RadzenIcon>
     </span>
@@ -13,7 +13,15 @@
     @if (Averages.CurrentAverage != null)
     {
         <span class="h1 mb-3 me-2">
-            @string.Format("{0:0.00}", Averages.CurrentAverage)
+            @if (IsDuration)
+            {
+                @durationString(Averages.CurrentAverage);
+            }
+            else
+            {
+                @string.Format("{0:0.00}", Averages.CurrentAverage)
+            }
+           
         </span>
     }
     else
@@ -44,12 +52,28 @@
 
 @code {
     [Parameter]
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
     [Parameter]
     public AverageResults Averages { get; set; }
     [Parameter]
+    public int NumberOfDays { get; set; }
+    [Parameter]
     public bool HasInfoIcon { get; set; }
     [Parameter]
-    public string TrendIconTitle { get; set; }
+    public string TrendIconTitle { get; set; } = string.Empty;
+    [Parameter]
+    public bool IsDuration { get; set; } = false;
 
+
+    private string durationString(double? ms)
+    {
+        if (ms != null)
+        {
+            return TimeSpan.FromMicroseconds((double)ms).ToString(@"h\:mm");
+        } else
+        {
+            return string.Empty;
+        }
+        
+    }
 }
