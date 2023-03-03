@@ -41,7 +41,7 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
 
         public IEnumerable<Measurement> GetMeasurementsByType(string type)
         {
-            return Measurements.Where(x => x.Type == type).OrderByDescending(x => x.Date);
+            return Measurements.Where(x => x.Type == type && x.Date > DateTime.Today.AddDays(-30)).OrderByDescending(x => x.Date);
         }
 
         public async Task<Measurement> GetSingleMeasurement(int id)
