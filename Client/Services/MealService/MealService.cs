@@ -105,10 +105,10 @@ namespace FitnessTrackMono.Client.Services.MealService
             double totalFats = 0;
             foreach (var meal in meals)
             {
-                totalCalories += meal.TotalCalories;
-                totalProtein += meal.Protein;
-                totalCarbohydrates += meal.Carbohydrates;
-                totalFats += meal.Fats;
+                totalCalories += (double)meal.TotalCalories;
+                totalProtein += (double)meal.Protein;
+                totalCarbohydrates += (double)meal.Carbohydrates;
+                totalFats += (double)meal.Fats;
             }
 
             return new MealMacros(totalCalories, totalProtein, totalCarbohydrates, totalFats);

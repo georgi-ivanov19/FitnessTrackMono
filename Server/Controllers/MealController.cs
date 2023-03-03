@@ -120,10 +120,10 @@ namespace FitnessTrackMono.Server.Controllers
             if (currentWeekMeals.Any())
             {
                 var currentTotals = new MealMacros(
-                    currentWeekMeals.Sum(m => m.TotalCalories),
-                    currentWeekMeals.Sum(m => m.Protein),
-                    currentWeekMeals.Sum(m => m.Carbohydrates),
-                    currentWeekMeals.Sum(m => m.Fats));
+                    currentWeekMeals.Sum(m => (double)m.TotalCalories),
+                    currentWeekMeals.Sum(m => (double)m.Protein),
+                    currentWeekMeals.Sum(m => (double)m.Carbohydrates),
+                    currentWeekMeals.Sum(m => (double)m.Fats));
 
                 averageCals[0] = currentTotals.Calories / 7;
                 averageProtein[0] = currentTotals.Protein / 7;
@@ -134,10 +134,10 @@ namespace FitnessTrackMono.Server.Controllers
             if (previousWeekMeals.Any())
             {
                 var previousTotals = new MealMacros(
-                previousWeekMeals.Sum(m => m.TotalCalories),
-                previousWeekMeals.Sum(m => m.Protein),
-                previousWeekMeals.Sum(m => m.Carbohydrates),
-                previousWeekMeals.Sum(m => m.Fats));
+                previousWeekMeals.Sum(m => (double)m.TotalCalories),
+                previousWeekMeals.Sum(m => (double)m.Protein),
+                previousWeekMeals.Sum(m => (double)m.Carbohydrates),
+                previousWeekMeals.Sum(m => (double)m.Fats));
 
                 averageCals[1] = previousTotals.Calories / 7;
                 averageProtein[1] = previousTotals.Protein / 7;
