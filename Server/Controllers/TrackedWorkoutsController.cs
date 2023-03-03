@@ -104,7 +104,7 @@ namespace FitnessTrackMono.Server.Controllers
             foreach (var workout in user.Workouts)
             {
                 // all complete tracked workouts for the past 30 days
-                var trackedWorkouts = _context.TrackedWorkouts.Where(w => w.WorkoutId == workout.Id && w.IsCompleted && w.EndTime >= date.AddDays(-30) && w.EndTime <= date).ToList();
+                var trackedWorkouts = _context.TrackedWorkouts.Where(w => w.WorkoutId == workout.Id && w.IsCompleted && w.EndTime >= date.AddDays(-60) && w.EndTime <= date).ToList();
                 result.Add(workout.Id, CalculateAverages(date, trackedWorkouts));
             }
 
@@ -113,8 +113,8 @@ namespace FitnessTrackMono.Server.Controllers
 
         private List<AverageResults> CalculateAverages(DateTime date, List<TrackedWorkout> trackedWorkouts)
         {
-            var currentWorkouts = trackedWorkouts.Where(m => m.EndTime >= date.AddDays(-15)).ToList();
-            var previousWorkouts = trackedWorkouts.Where(m => m.EndTime < date.AddDays(-15)).ToList();
+            var currentWorkouts = trackedWorkouts.Where(m => m.EndTime >= date.AddDays(-30)).ToList();
+            var previousWorkouts = trackedWorkouts.Where(m => m.EndTime < date.AddDays(-30)).ToList();
 
 
             double? averageCurrentVolume = null;
