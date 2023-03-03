@@ -22,7 +22,7 @@
 
         <div class="m-2">
             <label for="date"> Date </label>
-            <RadzenDatePicker TValue="DateTime" Name="mDate" id="date" @bind-Value="m.Date" class="w-100"></RadzenDatePicker>
+            <RadzenDatePicker TValue="DateTime" DateFormat="dd MMM yyyy" Name="mDate" id="date" @bind-Value="m.Date" class="w-100"></RadzenDatePicker>
             <RadzenRequiredValidator Component="mDate" Text="Measurement date is required" Style="position: relative" />
         </div>
     </div>
