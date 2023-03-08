@@ -70,8 +70,7 @@ namespace FitnessTrackMono.Server.Controllers
             dbExercise.WorkoutId = exercise.WorkoutId;
             dbExercise.DefaultNumberOfSets = exercise.DefaultNumberOfSets;
             dbExercise.Name = exercise.Name;
-            dbExercise.TargetMuscle = exercise.TargetMuscle;
-            dbExercise.ExerciseSets = new List<ExerciseSet>();
+            dbExercise.TargetMuscle = exercise.TargetMuscle;           
             await _context.SaveChangesAsync();
 
             return Ok(dbExercise);

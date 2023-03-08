@@ -30,8 +30,6 @@ namespace FitnessTrackMono.Server.Data
             builder.Entity<Workout>().Navigation(e => e.Exercises).AutoInclude();
             builder.Entity<Workout>().Navigation(e => e.TrackedWorkouts).AutoInclude();
 
-            builder.Entity<Exercise>().HasMany(m => m.ExerciseSets).WithOne().OnDelete(DeleteBehavior.SetNull);
-            builder.Entity<Exercise>().Navigation(e => e.ExerciseSets);
 
             builder.Entity<TrackedWorkout>().HasMany(e => e.ExerciseSetsCompleted).WithOne().OnDelete(DeleteBehavior.Cascade);
             builder.Entity<TrackedWorkout>().Navigation(e => e.ExerciseSetsCompleted).AutoInclude();          

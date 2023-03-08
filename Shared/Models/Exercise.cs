@@ -13,6 +13,5 @@ namespace FitnessTrackMono.Shared.Models
         public int WorkoutId { get; set; }
         public int? DefaultNumberOfSets { get; set; }
         public string TargetMuscle { get; set; } = string.Empty;
-        public List<ExerciseSet> ExerciseSets { get; set; } = new List<ExerciseSet>();
     }
 }
