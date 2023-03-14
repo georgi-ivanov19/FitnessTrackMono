@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using FitnessTrackMono.Client.Services.DashboardService;
 @using FitnessTrackMono.Shared.Models;
 @using FitnessTrackMono.Client.Services.MeasurementsService;
 @using FitnessTrackMono.Client.Services.MealService;
@@ -8,6 +9,7 @@
 @inject IMeasurementsService MeasurementService;
 @inject IMealService MealService;
 @inject ITrackedWorkoutService TrackedWorkoutService;
+@inject IDashboardService DashboardService;
 
 <PageTitle>Dashboard</PageTitle>
 <RadzenCard>
@@ -93,20 +95,22 @@
     AverageResults? bfAverages = null;
     List<AverageResults>? mealsAverages = null;
     Dictionary<int, List<AverageResults>>? workoutsAverages = null;
-
+    DashboardResults? dashboardData;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            measurementsAverages = await MeasurementService.GetAverages(DateTime.Now);
+            dashboardData = await DashboardService.GetDashboardData(DateTime.Now);
+            measurementsAverages = dashboardData.MeasurementAverages;
 
-            mealsAverages = await MealService.GetAverages(DateTime.Now);
             weightAverages = measurementsAverages[0];
             waistAverages = measurementsAverages[1];
             bfAverages = measurementsAverages[2];
 
-            workoutsAverages = await TrackedWorkoutService.GetAverages(DateTime.Now);
+            mealsAverages = dashboardData.MealsAverages;
+
+            workoutsAverages = dashboardData.WorkoutsAverages;
             loading = false;
         }
         catch (AccessTokenNotAvailableException exception)

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Radzen;
 using FitnessTrackMono.Client.Services.ExerciseSetService;
 using Blazored.LocalStorage;
+using FitnessTrackMono.Client.Services.DashboardService;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -21,6 +22,7 @@ builder.Services.AddHttpClient("FitnessTrackMono.ServerAPI", client => client.Ba
 // Supply HttpClient instances that include access tokens when making requests to the server project
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("FitnessTrackMono.ServerAPI"));
 builder.Services.AddScoped<IMeasurementsService, MeasurementsService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IMealService, MealService>();
 builder.Services.AddScoped<IWorkoutService, WorkoutService>();
 builder.Services.AddScoped<ITrackedWorkoutService, TrackedWorkoutService>();
