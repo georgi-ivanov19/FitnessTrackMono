@@ -77,9 +77,11 @@
         try
         {
             workout = await WorkoutService.GetSingleWorkout(Id);
-            trackedWorkouts = workout.TrackedWorkouts.Where(tw => tw.IsCompleted == true).ToList();
-            if(trackedWorkouts.Count > 0)
+            if (workout.TrackedWorkouts.Any())
+            {
+                trackedWorkouts = workout.TrackedWorkouts.Where(tw => tw.IsCompleted == true).ToList();
                 latestCompleted = trackedWorkouts.OrderByDescending(w => w.EndTime).First();
+            }
             await ExerciseService.GetExercises(Id);
         }
         catch (AccessTokenNotAvailableException exception)
