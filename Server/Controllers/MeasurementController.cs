@@ -88,7 +88,7 @@ namespace FitnessTrackMono.Server.Controllers
         }
 
         [HttpGet("GetAverages")]
-        public async Task<ActionResult<List<AverageResults>>> GetLatestCompleted([FromQuery] DateTime date)
+        public async Task<ActionResult<List<AverageResults>>> GetAverages([FromQuery] DateTime date)
         {
             // 7 days moving average from date for each measurement
             var user = await _context.Users.Include(u => u.Measurements).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));

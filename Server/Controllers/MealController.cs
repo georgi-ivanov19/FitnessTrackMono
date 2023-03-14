@@ -80,7 +80,7 @@ namespace FitnessTrackMono.Server.Controllers
             var dbMeal = await _context.Meals.FirstOrDefaultAsync(m => m.Id == id);
             if (dbMeal == null)
             {
-                return NotFound("Measurement Not Found");
+                return NotFound("Meal Not Found");
             }
 
             _context.Meals.Remove(dbMeal);
