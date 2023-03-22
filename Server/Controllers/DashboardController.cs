@@ -22,32 +22,35 @@ namespace FitnessTrackMono.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<DashboardResults>> GetAverages([FromQuery] DateTime date)
+        public async Task<ActionResult<DashboardResults>> GetAverages([FromQuery] string userId, [FromQuery] DateTime date)
         {
-            var workoutsResponse = await GetWorkoutsAverages(date);
+            var workoutsResponse = await GetWorkoutsAverages(userId, date);
             var workoutsAverages = workoutsResponse.Value;
 
-            var measurementsResponse = await GetMeasurementsAverages(date);
+            var measurementsResponse = await GetMeasurementsAverages(userId, date);
             var measurementsAverages = measurementsResponse.Value;
 
-            var mealsResponse = await GetMealsAverages(date);
+            var mealsResponse = await GetMealsAverages(userId, date);
             var mealsAverages = mealsResponse.Value;
 
             return new DashboardResults(measurementsAverages, mealsAverages, workoutsAverages);
         }
 
-        [HttpGet("GetWorkoutsverages")]
-        public async Task<ActionResult<Dictionary<int, List<AverageResults>>>> GetWorkoutsAverages([FromQuery] DateTime date)
+        [HttpGet("GetWorkoutsAverages")]
+        public async Task<ActionResult<Dictionary<int, List<AverageResults>>>> GetWorkoutsAverages([FromQuery] string userId, [FromQuery] DateTime date)
         {
-            var user = await _context.Users.Include(u => u.Workouts).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            if (user == null)
+           // var user = await _context.Users.Include(u => u.Workouts).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userWorkouts = await _context.Workouts.Where(w => w.ApplicationUserId == userId).ToListAsync();
+            //if (user == null)
+            //{
+                //return NotFound("User not found");
+            //}
+            if (userWorkouts == null || userWorkouts.Count == 0)
             {
-                return NotFound("User not found");
+                return NotFound("User has no workouts");
             }
-
             var result = new Dictionary<int, List<AverageResults>>();
-            foreach (var workout in user.Workouts)
+            foreach (var workout in userWorkouts)
             {
                 // all complete tracked workouts for the past 30 days
                 var trackedWorkouts = _context.TrackedWorkouts.Where(w => w.WorkoutId == workout.Id && w.IsCompleted && w.EndTime >= date.AddDays(-60) && w.EndTime <= date).ToList();
@@ -100,20 +103,25 @@ namespace FitnessTrackMono.Server.Controllers
             };
         }
         [HttpGet("GetMeasurementsAverages")]
-        public async Task<ActionResult<List<AverageResults>>> GetMeasurementsAverages([FromQuery] DateTime date)
+        public async Task<ActionResult<List<AverageResults>>> GetMeasurementsAverages([FromQuery] string userId, [FromQuery] DateTime date)
         {
             // 7 days moving average from date for each measurement
-            var user = await _context.Users.Include(u => u.Measurements).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            //var user = await _context.Users.Include(u => u.Measurements).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userMeasurements = await _context.Measurements.Where(m => m.ApplicationUserId == userId && m.Date >= date.AddDays(-14) && m.Date <= date).ToListAsync();
 
-            if (user == null)
+            // if (user == null)
+            // {
+            //     return NotFound();
+            // }
+            // var measurements = user.Measurements.Where(m => m.Date >= date.AddDays(-14) && m.Date <= date).ToList();
+            if (userMeasurements == null || userMeasurements.Count == 0)
             {
-                return NotFound();
+                return NotFound("User has no measurements");
             }
-            var measurements = user.Measurements.Where(m => m.Date >= date.AddDays(-14) && m.Date <= date).ToList();
             var weightMeasurements = new List<Measurement>();
             var waistMeasurements = new List<Measurement>();
             var bfMeasurements = new List<Measurement>();
-            foreach (var measurement in measurements)
+            foreach (var measurement in userMeasurements)
             {
                 switch (measurement.Type)
                 {
@@ -156,20 +164,24 @@ namespace FitnessTrackMono.Server.Controllers
         }
 
         [HttpGet("GetMealsAverages")]
-        public async Task<ActionResult<List<AverageResults>>> GetMealsAverages([FromQuery] DateTime date)
+        public async Task<ActionResult<List<AverageResults>>> GetMealsAverages([FromQuery] string userId, [FromQuery] DateTime date)
         {
-            var user = await _context.Users.Include(u => u.Meals).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            //var user = await _context.Users.Include(u => u.Meals).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userMeals = await _context.Meals.Where(m => m.ApplicationUserId == userId && m.Date >= date.AddDays(-14) && m.Date <= date).ToListAsync();
 
 
-            if (user == null)
-            {
-                return NotFound();
-            }
+            // if (user == null)
+            // {
+            //     return NotFound();
+            // }
 
-            var meals = user.Meals.Where(m => m.Date >= date.AddDays(-14) && m.Date <= date).ToList();
+            // var meals = user.Meals.Where(m => m.Date >= date.AddDays(-14) && m.Date <= date).ToList();
+            if (userMeals == null)
+                {
+                    return NotFound("User has not Meals");
+                }
 
-
-            return CalculateMealsAverages(date, meals);
+            return CalculateMealsAverages(date, userMeals);
         }
 
         private List<AverageResults> CalculateMealsAverages(DateTime date, List<Meal> meals)

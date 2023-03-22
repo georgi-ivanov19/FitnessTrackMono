@@ -11,9 +11,9 @@ namespace FitnessTrackMono.Client.Services.DashboardService
         {
             _http = http;
         }
-        public async Task<DashboardResults> GetDashboardData(DateTime date)
+        public async Task<DashboardResults> GetDashboardData(string userId, DateTime date)
         {
-            var result = await _http.GetFromJsonAsync<DashboardResults>($"api/Dashboard?Date={date}");
+            var result = await _http.GetFromJsonAsync<DashboardResults>($"api/Dashboard?Date={date}&userId={userId}");
             if (result == null)
                 throw new Exception("No results found");
             return result;

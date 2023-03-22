@@ -4,6 +4,6 @@ namespace FitnessTrackMono.Client.Services.DashboardService
 {
     public interface IDashboardService
     {
-        public Task<DashboardResults> GetDashboardData(DateTime date);
+        public Task<DashboardResults> GetDashboardData(string userId, DateTime date);
     }
 }
