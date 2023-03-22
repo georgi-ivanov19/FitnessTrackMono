@@ -18,19 +18,21 @@ namespace FitnessTrackMono.Client.Services.MealService
             _navManager = navManager;
             _localStorage = localStorage;
         }
-        public async Task GetMeals()
+        public async Task GetMeals(string userId)
         {
             List<Meal>? result;
-            var mealsInLocalStorage = await _localStorage.ContainKeyAsync("Meals");
-            if (mealsInLocalStorage)
-            {
-                result = await _localStorage.GetItemAsync<List<Meal>>("Meals");
-            }
-            else
-            {
-                result = await _http.GetFromJsonAsync<List<Meal>>("api/meal");
-                await _localStorage.SetItemAsync<List<Meal>>("Meals", result);
-            }
+            result = await _http.GetFromJsonAsync<List<Meal>>($"api/Meal?applicationUserId={userId}");
+
+            // var mealsInLocalStorage = await _localStorage.ContainKeyAsync("Meals");
+            // if (mealsInLocalStorage)
+            // {
+            //     result = await _localStorage.GetItemAsync<List<Meal>>("Meals");
+            // }
+            // else
+            // {
+            //     result = await _http.GetFromJsonAsync<List<Meal>>("api/meal");
+            //    // await _localStorage.SetItemAsync<List<Meal>>("Meals", result);
+            // }
 
             if (result != null)
             {
@@ -44,7 +46,7 @@ namespace FitnessTrackMono.Client.Services.MealService
             var response = await result.Content.ReadFromJsonAsync<Meal>();
             // TODO: null check
             Meals.Add(response);
-            await _localStorage.SetItemAsync("Meals", Meals);
+            //await _localStorage.SetItemAsync("Meals", Meals);
             _navManager.NavigateTo("meals");
         }
 
@@ -52,7 +54,7 @@ namespace FitnessTrackMono.Client.Services.MealService
         {
             await _http.DeleteAsync($"api/meal/{id}");
             Meals.RemoveAt(Meals.FindIndex(m => m.Id == id));
-            await _localStorage.SetItemAsync("Meals", Meals);
+            //await _localStorage.SetItemAsync("Meals", Meals);
         }
 
 
@@ -86,7 +88,7 @@ namespace FitnessTrackMono.Client.Services.MealService
             if (index != -1)
             {
                 Meals[index] = meal;
-                await _localStorage.SetItemAsync("Meals", Meals);
+               //await _localStorage.SetItemAsync("Meals", Meals);
             }
 
             _navManager.NavigateTo("meals");

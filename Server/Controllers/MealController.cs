@@ -21,37 +21,46 @@ namespace FitnessTrackMono.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Meal>>> GetMeals()
+        public async Task<ActionResult<List<Meal>>> GetMeals(string applicationUserId)
         {
-            var user = await _context.Users.Include(u => u.Meals).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-            if (user == null)
+            if (applicationUserId == null)
+            {
+                return BadRequest("User ID is a required parameter");
+            }
+            var meals = await _context.Meals.Where(m => m.ApplicationUserId == applicationUserId).ToListAsync();
+            if (meals == null)
             {
                 return NotFound();
             }
-            return Ok(user.Meals);
+            return Ok(meals);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Meal>> GetSingleMeal(int id)
         {
-            var user = await _context.Users.Include(u => u.Meals).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-            if (user == null)
+            var meal = await _context.Meals.FirstOrDefaultAsync(m => m.Id == id);
+            if (meal == null)
             {
-                return NotFound();
+                return NotFound("Meal not found");
             }
-            return Ok(user.Meals.FirstOrDefault(m => m.Id == id));
+            return Ok(meal);
         }
 
         [HttpPost]
         public async Task<ActionResult<Meal>> CreateMeal(Meal meal)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-            // TODO:
-            meal.ApplicationUserId = user.Id;
             _context.Meals.Add(meal);
             await _context.SaveChangesAsync();
 
             return Ok(meal);
+
+            // var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            // // TODO:
+            // meal.ApplicationUserId = user.Id;
+            // _context.Meals.Add(meal);
+            // await _context.SaveChangesAsync();
+
+            // return Ok(meal);
         }
 
         [HttpPut("{id}")]

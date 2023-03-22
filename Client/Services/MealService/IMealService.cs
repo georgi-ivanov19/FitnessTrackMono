@@ -6,7 +6,7 @@ namespace FitnessTrackMono.Client.Services.MealService
     {
         List<Meal> Meals { get; set; }
 
-        Task GetMeals();
+        Task GetMeals(string userId);
         Task<Meal> GetSingleMeal(int id);
         Task CreateMeal(Meal meal);
         Task UpdateMeal(Meal meal);
