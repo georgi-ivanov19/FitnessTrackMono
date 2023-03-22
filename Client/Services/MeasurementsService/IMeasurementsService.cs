@@ -6,7 +6,7 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
     {
         List<Measurement> Measurements { get; set; }
 
-        Task GetMeasurements();
+        Task GetMeasurements(string applicationUserId);
         Task<Measurement> GetSingleMeasurement(int id);
         Task CreateMeasurement(Measurement measurement);
         Task UpdateMeasurement(Measurement measurement);

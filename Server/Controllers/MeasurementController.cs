@@ -22,32 +22,31 @@ namespace FitnessTrackMono.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Measurement>>> GetMeasurements()
+        public async Task<ActionResult<List<Measurement>>> GetMeasurements(string applicationUserId)
         {
-            var user = await _context.Users.Include(u => u.Measurements).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-            if (user == null)
+            if(applicationUserId == null)
             {
-                return NotFound();
+                return BadRequest("User ID is a required parameter");
             }
-            return Ok(user.Measurements);
+            var measurements = await _context.Measurements.Where(m => m.ApplicationUserId == applicationUserId).ToListAsync();
+
+            return Ok(measurements);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Measurement>> GetSingleMeasurement(int id)
         {
-            var user = await _context.Users.Include(u => u.Measurements).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-            if (user == null)
+            var measurement = await _context.Measurements.FirstOrDefaultAsync(m => m.Id == id);
+            if (measurement == null)
             {
-                return NotFound();
+                return NotFound("Measurement not found");
             }
-            return Ok(user.Measurements.FirstOrDefault(m => m.Id == id));
+            return Ok(measurement);
         }
 
         [HttpPost]
         public async Task<ActionResult<Measurement>> CreateMeasurement(Measurement measurement)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-            measurement.ApplicationUserId = user.Id;
             _context.Measurements.Add(measurement);
             await _context.SaveChangesAsync();
 

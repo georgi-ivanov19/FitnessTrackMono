@@ -19,7 +19,7 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
             _localStorage = localStorage;
         }
 
-        public async Task GetMeasurements()
+        public async Task GetMeasurements(string applicationUserId)
         {
             List<Measurement>? result;
             var measurementsInLocalStorage = await _localStorage.ContainKeyAsync("Measurements");
@@ -29,8 +29,8 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
             }
             else
             {
-                result = await _http.GetFromJsonAsync<List<Measurement>>("api/measurement");
-                await _localStorage.SetItemAsync<List<Measurement>>("Measurements", result);
+                result = await _http.GetFromJsonAsync<List<Measurement>>($"api/measurement?applicationUserId={applicationUserId}");
+                //await _localStorage.SetItemAsync<List<Measurement>>("Measurements", result);
             }
 
             if (result != null)
@@ -71,7 +71,7 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
             var response = await result.Content.ReadFromJsonAsync<Measurement>();
             // TODO: null check
             Measurements.Add(response);
-            await _localStorage.SetItemAsync("Measurements", Measurements);
+            //await _localStorage.SetItemAsync("Measurements", Measurements);
             _navManager.NavigateTo("measurements");
         }
 
@@ -84,7 +84,7 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
             if (index != -1)
             {
                 Measurements[index] = measurement;
-                await _localStorage.SetItemAsync("Measurements", Measurements);
+                //await _localStorage.SetItemAsync("Measurements", Measurements);
             }
             _navManager.NavigateTo("measurements");
         }
@@ -93,7 +93,7 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
         {
             await _http.DeleteAsync($"api/measurement/{id}");
             Measurements.RemoveAt(Measurements.FindIndex(m => m.Id == id));
-            await _localStorage.SetItemAsync("Measurements", Measurements);
+           // await _localStorage.SetItemAsync("Measurements", Measurements);
         }
 
         public async Task<List<AverageResults>> GetAverages(DateTime date)
