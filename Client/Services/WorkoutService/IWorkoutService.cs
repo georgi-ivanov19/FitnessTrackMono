@@ -6,7 +6,7 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
     {
         List<Workout> Workouts { get; set; }
 
-        Task GetWorkouts();
+        Task GetWorkouts(string userId);
         Task<Workout> GetSingleWorkout(int id);
         Task CreateWorkout(Workout workout);
         Task UpdateWorkout(Workout workout, bool fromForm);

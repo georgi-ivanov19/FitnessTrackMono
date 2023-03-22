@@ -22,14 +22,14 @@ namespace FitnessTrackMono.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Workout>>> GetWorkouts()
+        public async Task<ActionResult<List<Workout>>> GetWorkouts(string userId)
         {
-            var user = await _context.Users.Include(u => u.Workouts).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-            if (user == null)
+            if (userId == null)
             {
-                return NotFound("User not found");
+                return NotFound("UserId is a required query parameter");
             }
-            return Ok(user.Workouts);
+            var workouts = await _context.Workouts.Where(w => w.ApplicationUserId == userId).ToListAsync();
+            return Ok(workouts);
         }
 
         [HttpGet("GetWorkout/{id}")]
@@ -46,12 +46,16 @@ namespace FitnessTrackMono.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<Workout>> CreateWorkout(Workout workout)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
-            if (user == null)
-            {
-                return NotFound("User not found");
-            }
-            workout.ApplicationUserId = user.Id;
+            // var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            // if (user == null)
+            // {
+            //     return NotFound("User not found");
+            // }
+            // workout.ApplicationUserId = user.Id;
+            // _context.Workouts.Add(workout);
+            // await _context.SaveChangesAsync();
+
+            // return Ok(workout);
             _context.Workouts.Add(workout);
             await _context.SaveChangesAsync();
 

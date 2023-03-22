@@ -26,17 +26,17 @@ namespace FitnessTrackMono.Client.Services.ExerciseService
             var response = await result.Content.ReadFromJsonAsync<Exercise>();
             // TODO: null check
             Exercises.Add(response);
-            var workoutsInLocalStorage = await _localStorage.ContainKeyAsync("Workouts");
-            if (workoutsInLocalStorage)
-            {
-                var workouts = await _localStorage.GetItemAsync<List<Workout>>("Workouts");
-                var index = workouts.FindIndex(w => w.Id == response.WorkoutId);
-                if (index != -1)
-                {
-                    workouts[index].Exercises.Add(response);
-                    await _localStorage.SetItemAsync("Workouts", workouts);
-                }
-            }
+            // var workoutsInLocalStorage = await _localStorage.ContainKeyAsync("Workouts");
+            // if (workoutsInLocalStorage)
+            // {
+            //     var workouts = await _localStorage.GetItemAsync<List<Workout>>("Workouts");
+            //     var index = workouts.FindIndex(w => w.Id == response.WorkoutId);
+            //     if (index != -1)
+            //     {
+            //         workouts[index].Exercises.Add(response);
+            //         await _localStorage.SetItemAsync("Workouts", workouts);
+            //     }
+            // }
             _navManager.NavigateTo($"workout/{response.WorkoutId}");
         }
 
@@ -44,7 +44,7 @@ namespace FitnessTrackMono.Client.Services.ExerciseService
         {
             await _http.DeleteAsync($"api/Exercises/{id}");
             Exercises.RemoveAt(Exercises.FindIndex(r => r.Id == id));
-            await _localStorage.RemoveItemAsync("Workouts");
+            // await _localStorage.RemoveItemAsync("Workouts");
         }
 
         public async Task GetExercises(int workoutId)
@@ -58,7 +58,7 @@ namespace FitnessTrackMono.Client.Services.ExerciseService
 
         public async Task<Exercise> GetSingleExercise(int id)
         {
-            var result = await _http.GetFromJsonAsync<Exercise>($"api/Exercises/GetExercise/{id}");
+            var result = await _http.GetFromJsonAsync<Exercise>($"api/Exercises/{id}");
             if (result != null)
             {
                 return result;
@@ -74,7 +74,7 @@ namespace FitnessTrackMono.Client.Services.ExerciseService
             int index = Exercises.FindIndex(e => e.Id == ex.Id);
             if (index != -1)
                 Exercises[index] = ex;
-            await _localStorage.RemoveItemAsync("Workouts");
+            // await _localStorage.RemoveItemAsync("Workouts");
             _navManager.NavigateTo($"workout/{response.WorkoutId}");
         }
     }

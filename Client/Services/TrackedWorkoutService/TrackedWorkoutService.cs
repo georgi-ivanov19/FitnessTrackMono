@@ -26,9 +26,9 @@ namespace FitnessTrackMono.Client.Services.TrackedWorkoutService
 
             var result = await _http.PostAsJsonAsync($"api/trackedworkouts", workoutToStart);
             var response = await result.Content.ReadFromJsonAsync<TrackedWorkout>();
-            // TODO: null check  
+            // TODO: null check
             TrackedWorkouts.Add(response);
-            await _localStorage.SetItemAsync($"TrackedWorkout{response.Id}", response);
+            //await _localStorage.SetItemAsync($"TrackedWorkout{response.Id}", response);
 
             return response;
         }
@@ -84,7 +84,7 @@ namespace FitnessTrackMono.Client.Services.TrackedWorkoutService
             if (index != -1)
             {
                 TrackedWorkouts[index] = workout;
-                await _localStorage.SetItemAsync($"TrackedWorkout{response.Id}", workout);
+               //await _localStorage.SetItemAsync($"TrackedWorkout{response.Id}", workout);
             }
             if (finish)
             {
@@ -93,10 +93,10 @@ namespace FitnessTrackMono.Client.Services.TrackedWorkoutService
                 {
                     var workouts = await _localStorage.GetItemAsync<List<Workout>>("Workouts");
                     workouts.First(w => w.Id == workout.WorkoutId).TrackedWorkouts.Add(workout);
-                    await _localStorage.SetItemAsync("Workouts", workouts);
+                    //await _localStorage.SetItemAsync("Workouts", workouts);
                 }
-            }          
-            
+            }
+
         }
 
         public async Task<List<TrackedWorkout>> GetCompletedTrackedWorkouts(int parentWorkoutId)
@@ -114,7 +114,7 @@ namespace FitnessTrackMono.Client.Services.TrackedWorkoutService
                 result = await _http.GetFromJsonAsync<List<TrackedWorkout>>($"api/trackedworkouts/{parentWorkoutId}");
                 result = result.Where(tw => tw.IsCompleted == true).ToList();
             }
-            
+
             if (result != null)
             {
                 return result;

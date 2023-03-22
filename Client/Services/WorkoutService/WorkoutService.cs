@@ -24,7 +24,7 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
             var response = await result.Content.ReadFromJsonAsync<Workout>();
             // TODO: null check
             Workouts.Add(response);
-            await _localStorage.SetItemAsync("Workouts", Workouts);
+           // await _localStorage.SetItemAsync("Workouts", Workouts);
             _navManager.NavigateTo($"workout/{response.Id}");
         }
 
@@ -32,7 +32,7 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
         {
             await _http.DeleteAsync($"api/workouts/{id}");
             Workouts.RemoveAt(Workouts.FindIndex(r => r.Id == id));
-            await _localStorage.SetItemAsync("Workouts", Workouts);
+            //await _localStorage.SetItemAsync("Workouts", Workouts);
         }
 
         public async Task<Workout> GetSingleWorkout(int id)
@@ -56,18 +56,18 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
             throw new Exception("Workout not found");
         }
 
-        public async Task GetWorkouts()
+        public async Task GetWorkouts(string userId)
         {
             List<Workout>? result;
-            var workoutsInLocalStorage = await _localStorage.ContainKeyAsync("Workouts");
-            if (workoutsInLocalStorage)
-            {
-                result = await _localStorage.GetItemAsync<List<Workout>>("Workouts");
-            } else
-            {
-                result = await _http.GetFromJsonAsync<List<Workout>>($"api/workouts");
-                await _localStorage.SetItemAsync<List<Workout>>("Workouts", result);
-            }
+            // var workoutsInLocalStorage = await _localStorage.ContainKeyAsync("Workouts");
+            // if (workoutsInLocalStorage)
+            // {
+            //     result = await _localStorage.GetItemAsync<List<Workout>>("Workouts");
+            // } else
+            // {
+                result = await _http.GetFromJsonAsync<List<Workout>>($"api/workouts?userId={userId}");
+                //await _localStorage.SetItemAsync<List<Workout>>("Workouts", result);
+            //}
 
             if (result != null)
             {
@@ -84,7 +84,7 @@ namespace FitnessTrackMono.Client.Services.WorkoutService
             if (index != -1)
             {
                 Workouts[index] = workout;
-                await _localStorage.SetItemAsync("Workouts", Workouts);
+                //await _localStorage.SetItemAsync("Workouts", Workouts);
             }
 
             if (fromForm)
