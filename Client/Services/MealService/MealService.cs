@@ -21,7 +21,7 @@ namespace FitnessTrackMono.Client.Services.MealService
         public async Task GetMeals(string userId)
         {
             List<Meal>? result;
-            result = await _http.GetFromJsonAsync<List<Meal>>($"api/Meal?applicationUserId={userId}");
+            result = await _http.GetFromJsonAsync<List<Meal>>($"api/meals?applicationUserId={userId}");
 
             // var mealsInLocalStorage = await _localStorage.ContainKeyAsync("Meals");
             // if (mealsInLocalStorage)
@@ -42,7 +42,7 @@ namespace FitnessTrackMono.Client.Services.MealService
 
         public async Task CreateMeal(Meal meal)
         {
-            var result = await _http.PostAsJsonAsync("api/meal", meal);
+            var result = await _http.PostAsJsonAsync("api/Meals", meal);
             var response = await result.Content.ReadFromJsonAsync<Meal>();
             // TODO: null check
             Meals.Add(response);
@@ -52,7 +52,7 @@ namespace FitnessTrackMono.Client.Services.MealService
 
         public async Task DeleteMeal(int id)
         {
-            await _http.DeleteAsync($"api/meal/{id}");
+            await _http.DeleteAsync($"api/Meals/{id}");
             Meals.RemoveAt(Meals.FindIndex(m => m.Id == id));
             //await _localStorage.SetItemAsync("Meals", Meals);
         }
@@ -69,7 +69,7 @@ namespace FitnessTrackMono.Client.Services.MealService
             }
             else
             {
-                result = await _http.GetFromJsonAsync<Meal>($"api/meal/{id}");
+                result = await _http.GetFromJsonAsync<Meal>($"api/Meals/{id}");
             }
             if (result != null)
             {
@@ -80,7 +80,7 @@ namespace FitnessTrackMono.Client.Services.MealService
 
         public async Task UpdateMeal(Meal meal)
         {
-            var httpResult = await _http.PutAsJsonAsync($"api/meal/{meal.Id}", meal);
+            var httpResult = await _http.PutAsJsonAsync($"api/Meals/{meal.Id}", meal);
             var response = await httpResult.Content.ReadFromJsonAsync<Meal>();
 
             // TODO: null check
@@ -117,7 +117,7 @@ namespace FitnessTrackMono.Client.Services.MealService
         }
         public async Task<List<AverageResults>> GetAverages(DateTime date)
         {
-            var result = await _http.GetFromJsonAsync<List<AverageResults>>($"api/meal/GetAverages?Date={date}");
+            var result = await _http.GetFromJsonAsync<List<AverageResults>>($"api/Meals/GetAverages?Date={date}");
             if (result == null)
                 throw new Exception("No results found");
             return result;

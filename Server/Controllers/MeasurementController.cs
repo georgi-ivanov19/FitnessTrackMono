@@ -10,7 +10,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FitnessTrackMono.Server.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Measurements")]
     [ApiController]
     public class MeasurementController : ControllerBase
     {

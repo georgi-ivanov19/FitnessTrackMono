@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FitnessTrackMono.Server.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Meals")]
     [ApiController]
     public class MealController : ControllerBase
     {
@@ -23,6 +23,7 @@ namespace FitnessTrackMono.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Meal>>> GetMeals(string applicationUserId)
         {
+            Console.WriteLine("GetMeals");
             if (applicationUserId == null)
             {
                 return BadRequest("User ID is a required parameter");

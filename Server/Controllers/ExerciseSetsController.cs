@@ -20,43 +20,43 @@ namespace FitnessTrackMono.Server.Controllers
             _context = context;
         }
 
-        [HttpGet("GetExerciseSets/{id}")]
-        public async Task<ActionResult<List<ExerciseSet>>> GetExerciseSetsForExercise(int id)
-        {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+        // [HttpGet("GetExerciseSets/{id}")]
+        // public async Task<ActionResult<List<ExerciseSet>>> GetExerciseSetsForExercise(int id)
+        // {
+        //     var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (user == null)
-            {
-                return NotFound("User not found");
-            }
+        //     if (user == null)
+        //     {
+        //         return NotFound("User not found");
+        //     }
 
-            var tw = await _context.TrackedWorkouts.FirstOrDefaultAsync(e => e.Id == id);
-            if (tw == null)
-            {
-                return NotFound("Workout not found");
-            }
-            return Ok(tw.ExerciseSetsCompleted);
-        }
+        //     var tw = await _context.TrackedWorkouts.FirstOrDefaultAsync(e => e.Id == id);
+        //     if (tw == null)
+        //     {
+        //         return NotFound("Workout not found");
+        //     }
+        //     return Ok(tw.ExerciseSetsCompleted);
+        // }
 
-        [HttpGet("GetExerciseSet/{id}")]
-        public async Task<ActionResult<ExerciseSet>> GetSingleExerciseSet(int id)
-        {
-            var exerciseSet = await _context.ExerciseSets.FirstOrDefaultAsync(e => e.Id == id);
-            if (exerciseSet == null)
-            {
-                return NotFound("Set not found");
-            }
-            return Ok(exerciseSet);
-        }
+        // [HttpGet("GetExerciseSet/{id}")]
+        // public async Task<ActionResult<ExerciseSet>> GetSingleExerciseSet(int id)
+        // {
+        //     var exerciseSet = await _context.ExerciseSets.FirstOrDefaultAsync(e => e.Id == id);
+        //     if (exerciseSet == null)
+        //     {
+        //         return NotFound("Set not found");
+        //     }
+        //     return Ok(exerciseSet);
+        // }
 
-        [HttpPost]
-        public async Task<ActionResult<ExerciseSet>> CreateExerciseSet(ExerciseSet exerciseSet)
-        {
-            _context.ExerciseSets.Add(exerciseSet);
-            await _context.SaveChangesAsync();
+        // [HttpPost]
+        // public async Task<ActionResult<ExerciseSet>> CreateExerciseSet(ExerciseSet exerciseSet)
+        // {
+        //     _context.ExerciseSets.Add(exerciseSet);
+        //     await _context.SaveChangesAsync();
 
-            return Ok(exerciseSet);
-        }
+        //     return Ok(exerciseSet);
+        // }
 
         [HttpPost("range")]
         public async Task<ActionResult<ExerciseSet>> CreateExerciseSetRange(List<ExerciseSet> exerciseSets)
