@@ -21,7 +21,7 @@ namespace FitnessTrackMono.Client.Services.MealService
         public async Task GetMeals(string userId)
         {
             List<Meal>? result;
-            result = await _http.GetFromJsonAsync<List<Meal>>($"api/meals?applicationUserId={userId}");
+            result = await _http.GetFromJsonAsync<List<Meal>>($"api/meals?userId={userId}");
 
             // var mealsInLocalStorage = await _localStorage.ContainKeyAsync("Meals");
             // if (mealsInLocalStorage)

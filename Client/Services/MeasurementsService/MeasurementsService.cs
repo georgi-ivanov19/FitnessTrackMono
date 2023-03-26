@@ -29,7 +29,7 @@ namespace FitnessTrackMono.Client.Services.MeasurementsService
             }
             else
             {
-                result = await _http.GetFromJsonAsync<List<Measurement>>($"api/measurements?applicationUserId={applicationUserId}");
+                result = await _http.GetFromJsonAsync<List<Measurement>>($"api/measurements?userId={applicationUserId}");
                 //await _localStorage.SetItemAsync<List<Measurement>>("Measurements", result);
             }
 

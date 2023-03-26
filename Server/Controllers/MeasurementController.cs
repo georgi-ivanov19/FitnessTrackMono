@@ -22,13 +22,13 @@ namespace FitnessTrackMono.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Measurement>>> GetMeasurements(string applicationUserId)
+        public async Task<ActionResult<List<Measurement>>> GetMeasurements(string userId)
         {
-            if(applicationUserId == null)
+            if(userId == null)
             {
                 return BadRequest("User ID is a required parameter");
             }
-            var measurements = await _context.Measurements.Where(m => m.ApplicationUserId == applicationUserId).ToListAsync();
+            var measurements = await _context.Measurements.Where(m => m.ApplicationUserId == userId).ToListAsync();
 
             return Ok(measurements);
         }

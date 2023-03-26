@@ -21,14 +21,14 @@ namespace FitnessTrackMono.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Meal>>> GetMeals(string applicationUserId)
+        public async Task<ActionResult<List<Meal>>> GetMeals(string userId)
         {
             Console.WriteLine("GetMeals");
-            if (applicationUserId == null)
+            if (userId == null)
             {
                 return BadRequest("User ID is a required parameter");
             }
-            var meals = await _context.Meals.Where(m => m.ApplicationUserId == applicationUserId).ToListAsync();
+            var meals = await _context.Meals.Where(m => m.ApplicationUserId == userId).ToListAsync();
             if (meals == null)
             {
                 return NotFound();
