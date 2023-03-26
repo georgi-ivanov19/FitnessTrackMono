@@ -99,31 +99,31 @@ namespace FitnessTrackMono.Client.Services.TrackedWorkoutService
 
         }
 
-        public async Task<List<TrackedWorkout>> GetCompletedTrackedWorkouts(int parentWorkoutId)
-        {
-            List<TrackedWorkout>? result;
-            var workoutsInLocalStorage = await _localStorage.ContainKeyAsync("Workouts");
-            if (workoutsInLocalStorage)
-            {
-                var workouts = await _localStorage.GetItemAsync<List<Workout>>("Workouts");
-                var parentWorkout = workouts.First(w => w.Id == parentWorkoutId);
-                result = parentWorkout.TrackedWorkouts.Where(tw => tw.IsCompleted == true).ToList();
-            }
-            else
-            {
-                result = await _http.GetFromJsonAsync<List<TrackedWorkout>>($"api/trackedworkouts/{parentWorkoutId}");
-                result = result.Where(tw => tw.IsCompleted == true).ToList();
-            }
+        //public async Task<List<TrackedWorkout>> GetCompletedTrackedWorkouts(int parentWorkoutId)
+        //{
+        //    List<TrackedWorkout>? result;
+        //    var workoutsInLocalStorage = await _localStorage.ContainKeyAsync("Workouts");
+        //    if (workoutsInLocalStorage)
+        //    {
+        //        var workouts = await _localStorage.GetItemAsync<List<Workout>>("Workouts");
+        //        var parentWorkout = workouts.First(w => w.Id == parentWorkoutId);
+        //        result = parentWorkout.TrackedWorkouts.Where(tw => tw.IsCompleted == true).ToList();
+        //    }
+        //    else
+        //    {
+        //        result = await _http.GetFromJsonAsync<List<TrackedWorkout>>($"api/trackedworkouts/{parentWorkoutId}");
+        //        result = result.Where(tw => tw.IsCompleted == true).ToList();
+        //    }
 
-            if (result != null)
-            {
-                return result;
-            }
-            else
-            {
-                return new List<TrackedWorkout>();
-            }
-        }
+        //    if (result != null)
+        //    {
+        //        return result;
+        //    }
+        //    else
+        //    {
+        //        return new List<TrackedWorkout>();
+        //    }
+        //}
 
         public async Task<Dictionary<int, List<AverageResults>>> GetAverages(DateTime date)
         {

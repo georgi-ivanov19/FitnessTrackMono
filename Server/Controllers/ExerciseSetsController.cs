@@ -86,7 +86,7 @@ namespace FitnessTrackMono.Server.Controllers
             return Ok(dbExerciseSet);
         }
 
-        [HttpDelete("{id}")]
+        // [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteExerciseSet(int id)
         {
             var dbExerciseSet = await _context.ExerciseSets.FirstOrDefaultAsync(ex => ex.Id == id);

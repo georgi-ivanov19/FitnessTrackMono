@@ -36,8 +36,7 @@ namespace FitnessTrackMono.Server.Controllers
             return new DashboardResults(measurementsAverages, mealsAverages, workoutsAverages);
         }
 
-        [HttpGet("GetWorkoutsAverages")]
-        public async Task<ActionResult<Dictionary<int, List<AverageResults>>>> GetWorkoutsAverages([FromQuery] string userId, [FromQuery] DateTime date)
+        private async Task<ActionResult<Dictionary<int, List<AverageResults>>>> GetWorkoutsAverages([FromQuery] string userId, [FromQuery] DateTime date)
         {
            // var user = await _context.Users.Include(u => u.Workouts).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
             var userWorkouts = await _context.Workouts.Where(w => w.ApplicationUserId == userId).ToListAsync();
@@ -102,8 +101,8 @@ namespace FitnessTrackMono.Server.Controllers
                 new AverageResults(averageCurrentDuration, currentWorkouts.Count, averagePrevDuration),
             };
         }
-        [HttpGet("GetMeasurementsAverages")]
-        public async Task<ActionResult<List<AverageResults>>> GetMeasurementsAverages([FromQuery] string userId, [FromQuery] DateTime date)
+
+        private async Task<ActionResult<List<AverageResults>>> GetMeasurementsAverages([FromQuery] string userId, [FromQuery] DateTime date)
         {
             // 7 days moving average from date for each measurement
             //var user = await _context.Users.Include(u => u.Measurements).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -163,8 +162,7 @@ namespace FitnessTrackMono.Server.Controllers
             return new AverageResults(currentAverage, currentCount, previousAverage);
         }
 
-        [HttpGet("GetMealsAverages")]
-        public async Task<ActionResult<List<AverageResults>>> GetMealsAverages([FromQuery] string userId, [FromQuery] DateTime date)
+        private async Task<ActionResult<List<AverageResults>>> GetMealsAverages([FromQuery] string userId, [FromQuery] DateTime date)
         {
             //var user = await _context.Users.Include(u => u.Meals).FirstOrDefaultAsync(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
             var userMeals = await _context.Meals.Where(m => m.ApplicationUserId == userId && m.Date >= date.AddDays(-14) && m.Date <= date).ToListAsync();
