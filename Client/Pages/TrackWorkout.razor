@@ -135,6 +135,7 @@
 
     private async Task SetCompleted(bool value, ExerciseSet set)
     {
+        await ExerciseSetService.UpdateExerciseSet(set);
         trackedWorkout.TotalVolume += (double)set.Weight! * (double)set.Reps!;
         var setIndex = trackedWorkout.ExerciseSetsCompleted.FindIndex(s => s.Id == set.Id);
         trackedWorkout.ExerciseSetsCompleted[setIndex] = set;

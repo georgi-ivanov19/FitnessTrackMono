@@ -42,5 +42,17 @@ namespace FitnessTrackMono.Client.Services.ExerciseSetService
             //trackedWorkout.ExerciseSetsCompleted = ExerciseSets;
             // await _localStorage.SetItemAsync($"TrackedWorkout{tw.Id}", trackedWorkout);
         }
+
+        public async Task<ExerciseSet> UpdateExerciseSet(ExerciseSet set)
+        {
+            var result = await _http.PutAsJsonAsync($"api/ExerciseSets/{set.Id}", set);
+            var response = await result.Content.ReadFromJsonAsync<ExerciseSet>();
+            // TODO: null check
+            int index = ExerciseSets.FindIndex(e => e.Id == set.Id);
+            if (index != -1)
+                ExerciseSets[index] = set;
+
+            return response;
+        }
     }
 }
