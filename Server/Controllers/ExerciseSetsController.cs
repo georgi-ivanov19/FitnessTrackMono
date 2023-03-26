@@ -87,18 +87,18 @@ namespace FitnessTrackMono.Server.Controllers
         }
 
         // [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteExerciseSet(int id)
-        {
-            var dbExerciseSet = await _context.ExerciseSets.FirstOrDefaultAsync(ex => ex.Id == id);
-            if (dbExerciseSet == null)
-            {
-                return NotFound("ExerciseSet Not Found");
-            }
+        //public async Task<ActionResult> DeleteExerciseSet(int id)
+        //{
+        //    var dbExerciseSet = await _context.ExerciseSets.FirstOrDefaultAsync(ex => ex.Id == id);
+        //    if (dbExerciseSet == null)
+        //    {
+        //        return NotFound("ExerciseSet Not Found");
+        //    }
 
-            _context.ExerciseSets.Remove(dbExerciseSet);
-            await _context.SaveChangesAsync();
+        //    _context.ExerciseSets.Remove(dbExerciseSet);
+        //    await _context.SaveChangesAsync();
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
     }
 }
